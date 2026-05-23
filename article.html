@@ -717,16 +717,21 @@
       if (articles.length === 0) { section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
 
-      grid.innerHTML = articles.map(a => `
-        <a href="article.html?id=${a.id}" class="group flex gap-4 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200">
+      grid.innerHTML = articles.map(a => {
+        const isSelf = String(a.id) === String(id);
+        const href = isSelf ? window.location.href : `article.html?id=${a.id}`;
+        return `
+        <a href="${href}" class="group flex gap-4 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200">
           <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 dark:bg-obsidian-700 bg-gray-100">
             <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'">
           </div>
           <div class="flex-1 min-w-0">
             <span class="text-[9px] tracking-widest uppercase dark:text-platinum/40 text-obsidian-400">${a.category}</span>
             <p class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mt-0.5 line-clamp-2 group-hover:dark:text-white transition-colors">${a.title}</p>
+            ${isSelf ? '<span class="text-[9px] dark:text-platinum/25 text-obsidian-400">Currently reading</span>' : ''}
           </div>
-        </a>`).join('');
+        </a>`;
+      }).join('');
       lucide.createIcons({ nodes: [grid] });
     }
 
