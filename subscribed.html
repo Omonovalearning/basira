@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribed — BASIRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            obsidian: { 900:'#0A0A0A', 800:'#111111', 700:'#1A1A1A', 500:'#2A2A2A' },
+            platinum: { DEFAULT:'#C0C0C0' },
+            cream: { DEFAULT:'#FAFAF8' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; }
+    @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+    .pop-in { animation: popIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .fade-1 { opacity:0; animation: fadeUp 0.8s ease forwards 0.4s; }
+    .fade-2 { opacity:0; animation: fadeUp 0.8s ease forwards 0.6s; }
+    .fade-3 { opacity:0; animation: fadeUp 0.8s ease forwards 0.8s; }
+  </style>
+</head>
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen flex items-center justify-center">
+  <div class="text-center px-5 py-12 max-w-[500px] mx-auto">
+
+    <div class="pop-in w-20 h-20 rounded-full dark:bg-white/[0.05] bg-obsidian-800/[0.05] border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center mx-auto mb-8">
+      <i data-lucide="mail-check" class="w-9 h-9 dark:text-platinum text-obsidian-700"></i>
+    </div>
+
+    <h1 class="text-[36px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900 mb-3 fade-1">You're in! 🎉</h1>
+    <p class="text-[15px] font-light dark:text-platinum/50 text-obsidian-500 mb-8 leading-relaxed fade-2">
+      Welcome to the BASIRA community. You'll be the first to know about new articles.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center fade-3">
+      <a href="articles.html" class="inline-flex items-center justify-center gap-2 px-6 py-3 dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream font-semibold text-[13px] rounded-xl hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-300">
+        <i data-lucide="book-open" class="w-4 h-4"></i>
+        Browse Articles
+      </a>
+      <a href="index.html" class="inline-flex items-center justify-center gap-2 px-6 py-3 dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum text-obsidian-600 font-medium text-[13px] rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] hover:dark:bg-white/[0.07] transition-all duration-300">
+        <i data-lucide="home" class="w-4 h-4"></i>
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+  <script>
+    lucide.createIcons();
+    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+  </script>
+</body>
+</html>

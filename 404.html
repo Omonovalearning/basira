@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | BASIRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            obsidian: { 900:'#0A0A0A', 800:'#111111', 700:'#1A1A1A', 500:'#2A2A2A' },
+            platinum: { DEFAULT:'#C0C0C0', light:'#D4D4D4' },
+            cream: { DEFAULT:'#FAFAF8' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    .float { animation: float 4s ease-in-out infinite; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .fade-1 { opacity:0; animation: fadeUp 0.8s ease forwards 0.1s; }
+    .fade-2 { opacity:0; animation: fadeUp 0.8s ease forwards 0.3s; }
+    .fade-3 { opacity:0; animation: fadeUp 0.8s ease forwards 0.5s; }
+  </style>
+</head>
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen flex items-center justify-center">
+
+  <div class="text-center px-5 py-12 max-w-[600px] mx-auto">
+
+    <!-- Big 404 -->
+    <div class="float mb-8">
+      <p class="text-[10rem] sm:text-[14rem] font-bold leading-none dark:text-white/[0.04] text-obsidian-800/[0.04] select-none">404</p>
+    </div>
+
+    <div class="fade-1">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] mb-6">
+        <span class="w-1 h-1 rounded-full dark:bg-platinum bg-obsidian-600"></span>
+        <span class="text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500">Page Not Found</span>
+      </div>
+    </div>
+
+    <h1 class="text-[28px] sm:text-[40px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900 mb-4 fade-2">
+      This page doesn't exist
+    </h1>
+
+    <p class="text-[15px] font-light dark:text-platinum/40 text-obsidian-500 mb-10 leading-relaxed fade-2">
+      The page you're looking for may have been moved, deleted, or never existed. Let's get you back on track.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center fade-3">
+      <a href="index.html" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream font-semibold text-[13px] tracking-wide rounded-xl hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-300 shadow-lg shadow-black/10">
+        <i data-lucide="home" class="w-4 h-4"></i>
+        Back to Home
+      </a>
+      <a href="articles.html" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum text-obsidian-600 font-medium text-[13px] tracking-wide rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
+        <i data-lucide="book-open" class="w-4 h-4"></i>
+        Browse Articles
+      </a>
+    </div>
+
+    <p class="text-[11px] font-light dark:text-platinum/20 text-obsidian-400 mt-12">
+      Redirecting to home in <span id="countdown">10</span> seconds...
+    </p>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+    let n = 10;
+    setInterval(() => {
+      n--;
+      const el = document.getElementById('countdown');
+      if (el) el.textContent = n;
+      if (n <= 0) window.location.href = 'index.html';
+    }, 1000);
+  </script>
+
+</body>
+</html>

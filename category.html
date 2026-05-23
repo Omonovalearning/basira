@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse articles by category — BASIRA">
+  <title>Category — BASIRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            obsidian: { 950:'#050505', 900:'#0A0A0A', 800:'#111111', 700:'#1A1A1A', 600:'#222222', 500:'#2A2A2A', 400:'#333333', 300:'#444444' },
+            platinum: { DEFAULT:'#C0C0C0', light:'#D4D4D4', lighter:'#E5E5E5', muted:'rgba(192,192,192,0.1)' },
+            cream: { DEFAULT:'#FAFAF8', warm:'#F5F3F0', muted:'#E8E6E3' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; overflow-x:hidden; }
+    ::-webkit-scrollbar { width:5px; }
+    .dark ::-webkit-scrollbar-thumb { background:#2A2A2A; border-radius:10px; }
+    ::-webkit-scrollbar-thumb { background:#CCC; border-radius:10px; }
+    .header-blur { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+    .theme-transition, .theme-transition * { transition:background-color .5s ease,color .5s ease,border-color .5s ease !important; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .anim-fade { opacity:0; transform:translateY(30px); }
+    .anim-fade.visible { animation:fadeInUp .8s cubic-bezier(.16,1,.3,1) forwards; }
+    .toggle-thumb { transition:transform .35s cubic-bezier(.68,-.3,.32,1.3); }
+    @keyframes toastIn { from{transform:translateY(-16px) scale(.96);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
+    @keyframes toastOut { from{transform:translateY(0) scale(1);opacity:1} to{transform:translateY(-16px) scale(.96);opacity:0} }
+    .toast-in { animation:toastIn .35s cubic-bezier(.16,1,.3,1) forwards; }
+    .toast-out { animation:toastOut .25s ease-in forwards; }
+    .card-lift { transition:transform .4s cubic-bezier(.16,1,.3,1); }
+    .card-lift:hover { transform:translateY(-6px); }
+    .tag-pill { transition:all .2s ease; cursor:pointer; }
+    .tag-pill:hover { background:rgba(192,192,192,0.15) !important; }
+    .tag-pill.active { background:rgba(192,192,192,0.15) !important; color:#C0C0C0 !important; border-color:rgba(192,192,192,0.3) !important; }
+  </style>
+</head>
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">
+
+<!-- TOAST -->
+<div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-[100] header-blur dark:bg-obsidian-900/70 bg-cream/70 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
+  <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="flex items-center justify-between h-[72px] gap-4">
+      <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+        <div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/20 border-obsidian-800/10 flex items-center justify-center">
+          <i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i>
+        </div>
+        <span class="text-[15px] font-semibold tracking-[0.25em] uppercase dark:text-platinum-light text-obsidian-800">BASIRA</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="index.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Home</a>
+        <a href="articles.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Articles</a>
+        <a href="about.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">About</a>
+        <a href="index.html#contact" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <button onclick="toggleLanguage()" id="langBtn" class="px-3 py-1.5 text-[12px] font-medium border dark:border-platinum/20 border-obsidian-800/20 dark:text-platinum/70 text-obsidian-600 rounded-lg dark:hover:bg-platinum/10 hover:bg-obsidian-800/5 transition-all duration-200">العربية</button>
+        <button onclick="toggleTheme()" class="relative w-[52px] h-[28px] rounded-full dark:bg-obsidian-600 bg-obsidian-200 toggle-track cursor-pointer flex items-center px-[3px]">
+          <div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700 flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0">
+            <i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i>
+            <i data-lucide="sun" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i>
+          </div>
+        </button>
+        <button id="mobile-btn" onclick="toggleMobile()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg dark:hover:bg-white/5 hover:bg-obsidian-800/5 transition">
+          <i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+    <div class="px-5 py-4 flex flex-col gap-1 dark:bg-obsidian-900/90 bg-cream/90 header-blur">
+      <a href="index.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Home</a>
+      <a href="articles.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Articles</a>
+      <a href="about.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">About</a>
+      <a href="index.html#contact" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main class="pt-[72px]">
+
+  <!-- HERO -->
+  <section class="py-16 lg:py-24 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="anim-fade">
+        <div id="cat-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] mb-5">
+          <span class="w-1 h-1 rounded-full dark:bg-platinum bg-obsidian-600"></span>
+          <span id="cat-label" class="text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500">Category</span>
+        </div>
+        <h1 id="cat-title" class="text-[36px] sm:text-[52px] lg:text-[64px] font-bold tracking-[-0.02em] leading-[1.1] dark:text-white text-obsidian-900 mb-4">All Articles</h1>
+        <p id="cat-desc" class="text-[15px] font-light dark:text-platinum/40 text-obsidian-500 max-w-[600px]">Explore our knowledge library.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES NAV -->
+  <section class="py-6 dark:bg-obsidian-800/20 bg-obsidian-800/[0.02] sticky top-[72px] z-40 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="flex flex-wrap gap-2">
+        <button onclick="switchCategory('all')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum text-obsidian-700 dark:bg-white/[0.05] bg-obsidian-800/[0.04] transition-all duration-200">All</button>
+        <button onclick="switchCategory('science')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">🔬 Science</button>
+        <button onclick="switchCategory('technology')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">💻 Technology</button>
+        <button onclick="switchCategory('culture')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">🏛️ Culture</button>
+        <button onclick="switchCategory('history')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">📜 History</button>
+        <button onclick="switchCategory('quotes')" class="cat-btn px-4 py-2 rounded-full text-[12px] font-medium border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">💬 Quotes</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTICLES GRID -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+
+      <!-- Stats -->
+      <div class="flex items-center justify-between mb-8">
+        <p id="results-count" class="text-[13px] font-light dark:text-platinum/40 text-obsidian-500"></p>
+      </div>
+
+      <!-- Grid -->
+      <div id="articles-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Loading skeleton -->
+        <div class="anim-fade visible">
+          <div class="rounded-2xl dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4 animate-pulse"></div>
+          <div class="h-4 dark:bg-obsidian-700/50 bg-gray-200 rounded mb-2 animate-pulse"></div>
+          <div class="h-3 dark:bg-obsidian-700/30 bg-gray-100 rounded w-3/4 animate-pulse"></div>
+        </div>
+        <div class="anim-fade visible hidden sm:block">
+          <div class="rounded-2xl dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4 animate-pulse"></div>
+          <div class="h-4 dark:bg-obsidian-700/50 bg-gray-200 rounded mb-2 animate-pulse"></div>
+          <div class="h-3 dark:bg-obsidian-700/30 bg-gray-100 rounded w-3/4 animate-pulse"></div>
+        </div>
+        <div class="anim-fade visible hidden lg:block">
+          <div class="rounded-2xl dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4 animate-pulse"></div>
+          <div class="h-4 dark:bg-obsidian-700/50 bg-gray-200 rounded mb-2 animate-pulse"></div>
+          <div class="h-3 dark:bg-obsidian-700/30 bg-gray-100 rounded w-3/4 animate-pulse"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+  <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/15 border-obsidian-800/10 flex items-center justify-center">
+          <i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum/60 text-obsidian-500"></i>
+        </div>
+        <span class="text-[13px] font-semibold tracking-[0.25em] uppercase dark:text-platinum/50 text-obsidian-500">BASIRA</span>
+      </div>
+      <p class="text-[11px] font-light dark:text-platinum/20 text-obsidian-400/50">© 2025 BASIRA. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const SB_URL = 'https://yteicgsqfpzexvkllhec.supabase.co';
+  const SB_KEY = 'sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP';
+
+  const CATEGORIES = {
+    all:        { title: 'All Articles',    desc: 'Explore our full knowledge library.', emoji: '📚' },
+    science:    { title: 'Science',         desc: 'Physics, biology, astronomy — explained simply.', emoji: '🔬' },
+    technology: { title: 'Technology',      desc: 'AI, blockchain, the internet — demystified.', emoji: '💻' },
+    culture:    { title: 'Culture',         desc: 'Philosophy, art, storytelling — made accessible.', emoji: '🏛️' },
+    history:    { title: 'History',         desc: 'Ancient civilizations, empires, turning points.', emoji: '📜' },
+    quotes:     { title: 'Quotes',          desc: 'Wisdom from thinkers, leaders, and visionaries.', emoji: '💬' }
+  };
+
+  let currentCat = 'all';
+  let allArticles = [];
+
+  async function loadArticles(category) {
+    const grid = document.getElementById('articles-grid');
+    grid.innerHTML = `
+      <div class="anim-fade visible">
+        <div class="rounded-2xl dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4 animate-pulse"></div>
+        <div class="h-4 dark:bg-obsidian-700/50 bg-gray-200 rounded mb-2 animate-pulse w-3/4"></div>
+        <div class="h-3 dark:bg-obsidian-700/30 bg-gray-100 rounded w-1/2 animate-pulse"></div>
+      </div>`.repeat(3);
+
+    try {
+      const path = category === 'all'
+        ? 'articles?status=eq.published&order=created_at.desc'
+        : `articles?status=eq.published&category=ilike.*${category}*&order=created_at.desc`;
+
+      const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      });
+      allArticles = res.ok ? await res.json() : [];
+    } catch(e) {
+      allArticles = [];
+    }
+
+    renderGrid(allArticles);
+  }
+
+  function renderGrid(articles) {
+    const grid = document.getElementById('articles-grid');
+    const count = document.getElementById('results-count');
+    count.textContent = articles.length + ' article' + (articles.length !== 1 ? 's' : '') + ' found';
+
+    if (articles.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-3 text-center py-24">
+          <p class="text-[40px] mb-4">📭</p>
+          <p class="text-[15px] font-light dark:text-platinum/40 text-obsidian-500">No articles in this category yet.</p>
+          <p class="text-[13px] dark:text-platinum/25 text-obsidian-400 mt-2">Check back soon!</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = articles.map((a, i) => `
+      <a href="article.html?id=${a.id}" class="group card-lift anim-fade" style="animation-delay:${i*0.08}s">
+        <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4">
+          <img src="${a.image || ''}" alt="${a.title}"
+            class="w-full h-full object-cover dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 group-hover:scale-105 transition-transform duration-500"
+            onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=600&q=80'">
+          <div class="absolute top-4 left-4 px-2.5 py-1 rounded-md dark:bg-obsidian-900/70 bg-cream/80 backdrop-blur-sm">
+            <span class="text-[9px] tracking-[0.2em] uppercase font-medium dark:text-platinum/70 text-obsidian-600">${a.category || ''}</span>
+          </div>
+        </div>
+        <h3 class="text-[16px] font-semibold dark:text-white text-obsidian-900 mb-2 group-hover:dark:text-platinum/80 transition-colors duration-300 line-clamp-2">${a.title}</h3>
+        <p class="text-[13px] font-light dark:text-platinum/35 text-obsidian-400 mb-4 leading-relaxed line-clamp-2">${a.excerpt || ''}</p>
+        <div class="flex items-center justify-between pt-4 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+          <span class="text-[11px] font-light dark:text-platinum/25 text-obsidian-400">${a.read_time || '5 min'}</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5 dark:text-platinum/30 text-obsidian-400 group-hover:dark:text-platinum group-hover:text-obsidian-800 group-hover:translate-x-1 transition-all duration-300"></i>
+        </div>
+      </a>`).join('');
+
+    lucide.createIcons();
+    setTimeout(() => document.querySelectorAll('.anim-fade').forEach(el => el.classList.add('visible')), 50);
+  }
+
+  function switchCategory(cat) {
+    currentCat = cat;
+    const info = CATEGORIES[cat] || CATEGORIES.all;
+
+    // Update header
+    document.getElementById('cat-label').textContent = info.emoji + ' ' + info.title;
+    document.getElementById('cat-title').textContent = info.title;
+    document.getElementById('cat-desc').textContent = info.desc;
+    document.title = info.title + ' — BASIRA';
+
+    // Update URL without reload
+    const url = new URL(window.location);
+    url.searchParams.set('cat', cat);
+    window.history.pushState({}, '', url);
+
+    // Update nav buttons
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.classList.remove('dark:bg-white/[0.05]', 'bg-obsidian-800/[0.04]', 'dark:text-platinum', 'text-obsidian-700', 'dark:border-white/[0.08]', 'border-obsidian-800/[0.08]');
+      btn.classList.add('dark:text-platinum/60', 'text-obsidian-500', 'dark:border-white/[0.04]', 'border-obsidian-800/[0.04]');
+    });
+    event.target.classList.add('dark:bg-white/[0.05]', 'bg-obsidian-800/[0.04]', 'dark:text-platinum', 'text-obsidian-700', 'dark:border-white/[0.08]', 'border-obsidian-800/[0.08]');
+    event.target.classList.remove('dark:text-platinum/60', 'text-obsidian-500', 'dark:border-white/[0.04]', 'border-obsidian-800/[0.04]');
+
+    loadArticles(cat);
+  }
+
+  // Theme / Lang
+  let currentLang = 'en';
+  function toggleLanguage() {
+    const html = document.documentElement, btn = document.getElementById('langBtn');
+    if (currentLang==='en') {
+      currentLang='ar'; html.setAttribute('dir','rtl'); html.setAttribute('lang','ar'); btn.textContent='English';
+      showToast('تم التبديل إلى العربية','languages');
+    } else {
+      currentLang='en'; html.setAttribute('dir','ltr'); html.setAttribute('lang','en'); btn.textContent='العربية';
+      showToast('Switched to English','languages');
+    }
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement, thumb = document.querySelector('.toggle-thumb');
+    html.classList.add('theme-transition');
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark'); thumb.classList.remove('translate-x-[24px]'); thumb.classList.add('translate-x-0');
+      localStorage.setItem('theme','light'); showToast('Light mode','sun');
+    } else {
+      html.classList.add('dark'); thumb.classList.remove('translate-x-0'); thumb.classList.add('translate-x-[24px]');
+      localStorage.setItem('theme','dark'); showToast('Dark mode','moon');
+    }
+    setTimeout(()=>lucide.createIcons(),60);
+    setTimeout(()=>html.classList.remove('theme-transition'),600);
+  }
+
+  function toggleMobile() {
+    const menu = document.getElementById('mobile-menu'), btn = document.getElementById('mobile-btn');
+    menu.classList.toggle('hidden');
+    btn.innerHTML = menu.classList.contains('hidden')
+      ? '<i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>'
+      : '<i data-lucide="x" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>';
+    lucide.createIcons();
+  }
+
+  function showToast(msg, icon) {
+    const c = document.getElementById('toast-box');
+    const t = document.createElement('div');
+    t.className = 'toast-in pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl dark:bg-obsidian-700/90 bg-white/90 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[220px]';
+    t.innerHTML = `<div class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0"><i data-lucide="${icon}" class="w-3 h-3 dark:text-platinum/70 text-obsidian-600"></i></div><span class="text-[12px] font-medium dark:text-platinum/80 text-obsidian-700">${msg}</span>`;
+    c.appendChild(t); lucide.createIcons({nodes:[t]});
+    setTimeout(()=>{ t.classList.remove('toast-in'); t.classList.add('toast-out'); setTimeout(()=>t.remove(),300); },2200);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme')==='light') {
+      document.documentElement.classList.remove('dark');
+      const th = document.querySelector('.toggle-thumb');
+      if (th) { th.classList.remove('translate-x-[24px]'); th.classList.add('translate-x-0'); }
+    }
+    lucide.createIcons();
+    // Read category from URL
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('cat') || 'all';
+    // Trigger the button click for correct cat
+    const btn = [...document.querySelectorAll('.cat-btn')].find(b => b.textContent.toLowerCase().includes(cat));
+    if (btn && cat !== 'all') {
+      currentCat = cat;
+      const info = CATEGORIES[cat] || CATEGORIES.all;
+      document.getElementById('cat-label').textContent = info.emoji + ' ' + info.title;
+      document.getElementById('cat-title').textContent = info.title;
+      document.getElementById('cat-desc').textContent = info.desc;
+      document.title = info.title + ' — BASIRA';
+      btn.classList.add('dark:bg-white/[0.05]','bg-obsidian-800/[0.04]','dark:text-platinum','text-obsidian-700','dark:border-white/[0.08]','border-obsidian-800/[0.08]');
+      btn.classList.remove('dark:text-platinum/60','text-obsidian-500','dark:border-white/[0.04]','border-obsidian-800/[0.04]');
+      const allBtn = document.querySelector('.cat-btn');
+      allBtn.classList.remove('dark:bg-white/[0.05]','bg-obsidian-800/[0.04]','dark:text-platinum','text-obsidian-700');
+      allBtn.classList.add('dark:text-platinum/60','text-obsidian-500');
+    }
+    loadArticles(cat);
+    setTimeout(()=>document.querySelectorAll('.anim-fade').forEach(el=>el.classList.add('visible')),200);
+  });
+</script>
+</body>
+</html>

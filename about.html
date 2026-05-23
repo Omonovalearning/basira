@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About BASIRA — Our Vision to Simplify Knowledge. Meet Omer, the founder behind the knowledge simplification mission.">
+  <meta name="keywords" content="about, vision, knowledge simplification, BASIRA, Omer, education platform">
+  <meta property="og:title" content="About BASIRA — Knowledge Simplification">
+  <meta property="og:description" content="Learn about BASIRA's vision and meet the creator behind it.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://omonovalearning.github.io/basira/about.html">
+  <title>About — BASIRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Dark mode persistence — runs before paint
+    (function() {
+      const saved = localStorage.getItem('basira-theme');
+      if (saved === 'light') document.documentElement.classList.remove('dark');
+      else document.documentElement.classList.add('dark');
+    })();
+
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            obsidian: { 950:'#050505',900:'#0A0A0A',800:'#111111',700:'#1A1A1A',600:'#222222',500:'#2A2A2A',400:'#333333',300:'#444444' },
+            platinum: { DEFAULT:'#C0C0C0',light:'#D4D4D4',lighter:'#E5E5E5',muted:'rgba(192,192,192,0.1)',faint:'rgba(192,192,192,0.05)' },
+            cream: { DEFAULT:'#FAFAF8',warm:'#F5F3F0',muted:'#E8E6E3',border:'#DDDBD8' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;overflow-x:hidden}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    .dark ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}
+    ::-webkit-scrollbar-thumb{background:#CCC;border-radius:10px}
+    .header-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .theme-transition,.theme-transition *,.theme-transition *::before,.theme-transition *::after{
+      transition:background-color .5s ease,color .5s ease,border-color .5s ease,box-shadow .5s ease !important}
+
+    /* TICKER */
+    #ticker-bar{height:30px;overflow:hidden}
+    .ticker-track{display:flex;align-items:center;gap:32px;white-space:nowrap;animation:tickerRoll 45s linear infinite}
+    .ticker-track:hover{animation-play-state:paused}
+    @keyframes tickerRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    /* PLATINUM SHIMMER */
+    @keyframes platinumShimmer{
+      0%{background-position:-300% center}100%{background-position:300% center}}
+    .platinum-shimmer{
+      background:linear-gradient(90deg,#C0C0C0 0%,#E5E5E5 20%,#FFFFFF 40%,#E5E5E5 60%,#C0C0C0 80%,#C0C0C0 100%);
+      background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;animation:platinumShimmer 8s linear infinite}
+
+    /* ANIMATIONS */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+    .anim-fade{opacity:0;transform:translateY(36px)}
+    .anim-fade.visible{animation:fadeInUp .9s cubic-bezier(.16,1,.3,1) forwards}
+    .anim-delay-1{animation-delay:.1s !important}
+    .anim-delay-2{animation-delay:.25s !important}
+    .anim-delay-3{animation-delay:.4s !important}
+
+    /* TOGGLE */
+    .toggle-track{transition:background-color .3s ease}
+    .toggle-thumb{transition:transform .35s cubic-bezier(.68,-.3,.32,1.3)}
+
+    /* BREATHE */
+    @keyframes breathe{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+    .breathe{animation:breathe 3s ease-in-out infinite}
+
+    /* TOAST */
+    @keyframes tIn{from{transform:translateY(-12px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+    @keyframes tOut{from{transform:translateY(0) scale(1);opacity:1}to{transform:translateY(-12px) scale(.96);opacity:0}}
+    .toast-in{animation:tIn .3s cubic-bezier(.16,1,.3,1) forwards}
+    .toast-out{animation:tOut .25s ease-in forwards}
+
+    /* NO SCROLLBAR */
+    .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .no-scrollbar::-webkit-scrollbar{display:none}
+  </style>
+</head>
+
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">
+
+<!-- TOAST -->
+<div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- ========== TICKER ========== -->
+<div id="ticker-bar" class="dark:bg-obsidian-800/50 bg-obsidian-800/[0.03] border-b dark:border-white/[0.04] border-obsidian-800/[0.04] flex items-center overflow-hidden">
+  <div class="ticker-track" id="ticker-track"><!-- JS --></div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header id="site-header" class="sticky top-0 z-[100] header-blur dark:bg-obsidian-900/80 bg-cream/80 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
+  <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="flex items-center justify-between h-[68px] gap-4">
+
+      <!-- LOGO -->
+      <a href="index.html" class="flex-shrink-0 flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/20 border-obsidian-800/10 flex items-center justify-center group-hover:dark:bg-platinum/20 group-hover:bg-obsidian-800/10 transition-colors duration-300">
+          <i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i>
+        </div>
+        <span class="text-[15px] font-semibold tracking-[0.25em] uppercase dark:text-platinum-light text-obsidian-800">BASIRA</span>
+      </a>
+
+      <!-- NAV -->
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="index.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200" data-en="Home" data-ar="الرئيسية">Home</a>
+        <a href="articles.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200" data-en="Articles" data-ar="المقالات">Articles</a>
+        <a href="about.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum dark:bg-white/[0.05] text-obsidian-800 bg-obsidian-800/[0.05] rounded-lg" data-en="About" data-ar="حول">About</a>
+        <a href="index.html#contact" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200" data-en="Contact" data-ar="تواصل">Contact</a>
+      </nav>
+
+      <!-- CONTROLS -->
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <button onclick="toggleLanguage()" id="langBtn" class="px-3 py-1.5 text-[12px] font-medium tracking-wide border dark:border-platinum/20 border-obsidian-800/20 dark:text-platinum/70 text-obsidian-600 rounded-lg dark:hover:bg-platinum/10 hover:bg-obsidian-800/5 transition-all duration-200">العربية</button>
+        <button onclick="toggleTheme()" class="relative w-[52px] h-[28px] rounded-full dark:bg-obsidian-600 bg-gray-200 toggle-track cursor-pointer flex items-center px-[3px]" aria-label="Toggle theme">
+          <div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700 flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0">
+            <i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i>
+            <i data-lucide="sun" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i>
+          </div>
+        </button>
+        <button id="mobile-btn" onclick="toggleMobile()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg dark:hover:bg-white/5 hover:bg-obsidian-800/5 transition">
+          <i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu" class="md:hidden hidden border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+    <div class="px-5 py-4 flex flex-col gap-1 dark:bg-obsidian-900/95 bg-cream/95 header-blur">
+      <a href="index.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg transition" data-en="Home" data-ar="الرئيسية">Home</a>
+      <a href="articles.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg transition" data-en="Articles" data-ar="المقالات">Articles</a>
+      <a href="about.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum text-obsidian-800 rounded-lg" data-en="About" data-ar="حول">About</a>
+      <a href="index.html#contact" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg transition" data-en="Contact" data-ar="تواصل">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== PAGE HERO ========== -->
+  <section class="py-24 lg:py-32 text-center">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="anim-fade">
+        <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] mb-8">
+          <span class="w-1.5 h-1.5 rounded-full dark:bg-platinum bg-obsidian-600 breathe"></span>
+          <span class="text-[11px] font-medium tracking-[0.25em] uppercase dark:text-platinum/70 text-obsidian-500" data-en="About BASIRA" data-ar="عن بصيرة">About BASIRA</span>
+        </div>
+        <h1 class="text-[36px] sm:text-[52px] lg:text-[64px] font-bold tracking-[-0.02em] leading-[1.1]">
+          <span class="dark:text-white text-obsidian-900" data-en="The Story" data-ar="القصة والرؤية">The Story</span>
+          <span class="platinum-shimmer block mt-1" data-en="& The Vision" data-ar="خلف بصيرة">& The Vision</span>
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== OUR VISION ========== -->
+  <section id="vision" class="py-20 lg:py-28 dark:bg-obsidian-800/20 bg-obsidian-800/[0.02]">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="max-w-[800px] mx-auto">
+
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] mb-8 anim-fade">
+          <span class="w-1 h-1 rounded-full dark:bg-platinum bg-obsidian-600"></span>
+          <span class="text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500" data-en="Our Vision" data-ar="رؤيتنا">Our Vision</span>
+        </div>
+
+        <h2 class="text-[28px] lg:text-[40px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900 leading-[1.2] mb-8 anim-fade anim-delay-1" data-en="A World Where No One Feels Left Behind" data-ar="عالم لا يشعر فيه أحد بالتخلف عن الركب">
+          A World Where No One Feels Left Behind
+        </h2>
+
+        <div class="space-y-6 anim-fade anim-delay-2">
+          <p class="text-[16px] font-light leading-[1.9] dark:text-platinum/50 text-obsidian-500" data-en="Every day, millions of people encounter concepts they don't fully understand — in the news, in their studies, at work. Not because they lack intelligence, but because no one took the time to explain it clearly." data-ar="كل يوم، يصادف الملايين مفاهيم لا يفهمونها تماماً — في الأخبار، في دراساتهم، في العمل. ليس لأنهم يفتقرون إلى الذكاء، بل لأن أحداً لم يأخذ الوقت الكافي لشرحها بوضوح.">
+            Every day, millions of people encounter concepts they don't fully understand — in the news, in their studies, at work. Not because they lack intelligence, but because no one took the time to explain it clearly.
+          </p>
+          <p class="text-[16px] font-light leading-[1.9] dark:text-platinum/50 text-obsidian-500" data-en="BASIRA's vision is to change that. We believe that every complex idea has a simple explanation waiting to be found — and that finding it is a service worth dedicating a platform to." data-ar="رؤية بصيرة هي تغيير ذلك. نحن نؤمن أن لكل فكرة معقدة تفسيراً بسيطاً ينتظر أن يُكتشف — وأن إيجاده خدمة تستحق تخصيص منصة لها.">
+            BASIRA's vision is to change that. We believe that every complex idea has a simple explanation waiting to be found — and that finding it is a service worth dedicating a platform to.
+          </p>
+          <p class="text-[16px] font-light leading-[1.9] dark:text-platinum/50 text-obsidian-500" data-en="In the long term, we aim to build a comprehensive Arabic-English knowledge library — covering science, technology, culture, and beyond — where curiosity always finds an answer." data-ar="على المدى البعيد، نهدف إلى بناء مكتبة معرفية شاملة باللغتين العربية والإنجليزية — تغطي العلوم والتقنية والثقافة وما هو أبعد — حيث يجد الفضول دائماً إجابة.">
+            In the long term, we aim to build a comprehensive Arabic-English knowledge library — covering science, technology, culture, and beyond — where curiosity always finds an answer.
+          </p>
+        </div>
+
+        <!-- Vision Pillars -->
+        <div class="grid sm:grid-cols-3 gap-4 mt-12 anim-fade anim-delay-3">
+          <div class="p-6 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+            <i data-lucide="eye" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mx-auto mb-3"></i>
+            <p class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-1" data-en="Clarity" data-ar="الوضوح">Clarity</p>
+            <p class="text-[11px] font-light dark:text-platinum/30 text-obsidian-400" data-en="No jargon. No fluff." data-ar="لا مصطلحات. لا حشو.">No jargon. No fluff.</p>
+          </div>
+          <div class="p-6 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+            <i data-lucide="heart" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mx-auto mb-3"></i>
+            <p class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-1" data-en="Accessibility" data-ar="الإتاحة">Accessibility</p>
+            <p class="text-[11px] font-light dark:text-platinum/30 text-obsidian-400" data-en="Free, bilingual, for all." data-ar="مجاني، ثنائي اللغة، للجميع.">Free, bilingual, for all.</p>
+          </div>
+          <div class="p-6 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+            <i data-lucide="trending-up" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mx-auto mb-3"></i>
+            <p class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-1" data-en="Growth" data-ar="النمو">Growth</p>
+            <p class="text-[11px] font-light dark:text-platinum/30 text-obsidian-400" data-en="Always expanding." data-ar="في توسع مستمر.">Always expanding.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT THE DEVELOPER ========== -->
+  <section id="developer" class="py-20 lg:py-28">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="grid lg:grid-cols-2 gap-16 items-center max-w-[1000px] mx-auto">
+
+        <!-- Photo -->
+        <div class="flex justify-center anim-fade">
+          <div class="relative">
+            <div class="w-64 h-64 sm:w-80 sm:h-80 rounded-3xl overflow-hidden border dark:border-white/[0.06] border-obsidian-800/[0.06]">
+              <img src="profile.png" alt="Omer"
+                class="w-full h-full object-cover dark:brightness-90 brightness-95"
+                onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80'">
+            </div>
+            <!-- Floating badge -->
+            <div class="absolute -bottom-4 -right-4 px-4 py-3 rounded-2xl dark:bg-obsidian-800 bg-white border dark:border-white/[0.06] border-obsidian-800/[0.06] shadow-xl">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                <span class="text-[12px] font-medium dark:text-platinum/70 text-obsidian-600" data-en="Open to ideas" data-ar="مفتوح للأفكار">Open to ideas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="anim-fade anim-delay-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] mb-6">
+            <span class="w-1 h-1 rounded-full dark:bg-platinum bg-obsidian-600"></span>
+            <span class="text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500" data-en="About the Creator" data-ar="عن المطور">About the Creator</span>
+          </div>
+
+          <h2 class="text-[28px] lg:text-[36px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900 leading-[1.2] mb-2" data-en="Omer" data-ar="عمر">Omer</h2>
+          <p class="text-[14px] font-light dark:text-platinum/40 text-obsidian-400 mb-6 tracking-wide" data-en="Founder & Creator of BASIRA" data-ar="مؤسس ومنشئ بصيرة">Founder & Creator of BASIRA</p>
+
+          <div class="space-y-4 mb-8">
+            <p class="text-[15px] font-light leading-[1.9] dark:text-platinum/50 text-obsidian-500" data-en="I built BASIRA out of a personal frustration — I was tired of reading articles filled with jargon that left me more confused than before. I believed there had to be a better way to share knowledge." data-ar="بنيت بصيرة من إحباط شخصي — كنت متعباً من قراءة مقالات مليئة بالمصطلحات تتركني أكثر ارتباكاً. آمنت أنه يجب أن تكون هناك طريقة أفضل لمشاركة المعرفة.">
+              I built BASIRA out of a personal frustration — I was tired of reading articles filled with jargon that left me more confused than before. I believed there had to be a better way to share knowledge.
+            </p>
+            <p class="text-[15px] font-light leading-[1.9] dark:text-platinum/50 text-obsidian-500" data-en="This platform is my answer to that. Every article is written with one goal: that anyone — student, professional, or curious mind — walks away having truly understood something." data-ar="هذه المنصة هي إجابتي على ذلك. كل مقال يُكتب بهدف واحد: أن يغادر أي شخص — طالب أو محترف أو عقل فضولي — وقد فهم شيئاً حقاً.">
+              This platform is my answer to that. Every article is written with one goal: that anyone — student, professional, or curious mind — walks away having truly understood something.
+            </p>
+          </div>
+
+          <!-- Stats row -->
+          <div class="grid grid-cols-3 gap-3 mb-8">
+            <div class="p-4 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+              <p class="text-[20px] font-bold dark:text-white text-obsidian-900">12+</p>
+              <p class="text-[10px] font-light dark:text-platinum/35 text-obsidian-400 mt-0.5" data-en="Articles" data-ar="مقالة">Articles</p>
+            </div>
+            <div class="p-4 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+              <p class="text-[20px] font-bold dark:text-white text-obsidian-900">5</p>
+              <p class="text-[10px] font-light dark:text-platinum/35 text-obsidian-400 mt-0.5" data-en="Categories" data-ar="تصنيف">Categories</p>
+            </div>
+            <div class="p-4 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 text-center">
+              <p class="text-[20px] font-bold dark:text-white text-obsidian-900">Free</p>
+              <p class="text-[10px] font-light dark:text-platinum/35 text-obsidian-400 mt-0.5" data-en="Always" data-ar="دائماً">Always</p>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="pt-6 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+            <p class="text-[10px] tracking-[0.25em] uppercase font-medium dark:text-platinum/30 text-obsidian-400 mb-4" data-en="Connect with Omer" data-ar="تواصل مع عمر">Connect with Omer</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Email -->
+              <a href="mailto:omermo7a245@gmail.com" class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl border dark:border-white/[0.05] border-obsidian-800/[0.05] dark:bg-white/[0.01] bg-white/60 hover:dark:bg-white/[0.04] hover:bg-obsidian-800/[0.03] transition-all duration-300">
+                <i data-lucide="mail" class="w-4 h-4 dark:text-platinum/50 text-obsidian-500 group-hover:dark:text-platinum group-hover:text-obsidian-800 transition-colors duration-300"></i>
+                <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-600">Email</span>
+              </a>
+              <!-- Instagram -->
+              <a href="https://www.instagram.com/om.r_38?igsh=MWY1ZmhqeG4wbW9pMw==" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl border dark:border-white/[0.05] border-obsidian-800/[0.05] dark:bg-white/[0.01] bg-white/60 hover:dark:bg-white/[0.04] hover:bg-obsidian-800/[0.03] transition-all duration-300">
+                <svg class="w-4 h-4 dark:text-platinum/50 text-obsidian-500 group-hover:dark:text-platinum group-hover:text-obsidian-800 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-600">Instagram</span>
+              </a>
+              <!-- Telegram -->
+              <a href="https://t.me/umrr7" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl border dark:border-white/[0.05] border-obsidian-800/[0.05] dark:bg-white/[0.01] bg-white/60 hover:dark:bg-white/[0.04] hover:bg-obsidian-800/[0.03] transition-all duration-300">
+                <svg class="w-4 h-4 dark:text-platinum/50 text-obsidian-500 group-hover:dark:text-platinum group-hover:text-obsidian-800 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 3.5L2.5 10.5l7 2.5 2.5 7 3-5 5 3z"></path>
+                  <path d="M9.5 13l4.5-4.5"></path>
+                </svg>
+                <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-600">Telegram</span>
+              </a>
+              <!-- GitHub -->
+              <a href="https://github.com/Omonovalearning" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl border dark:border-white/[0.05] border-obsidian-800/[0.05] dark:bg-white/[0.01] bg-white/60 hover:dark:bg-white/[0.04] hover:bg-obsidian-800/[0.03] transition-all duration-300">
+                <svg class="w-4 h-4 dark:text-platinum/50 text-obsidian-500 group-hover:dark:text-platinum group-hover:text-obsidian-800 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+                <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-600">GitHub</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WHAT MAKES BASIRA DIFFERENT ========== -->
+  <section class="py-20 lg:py-28 dark:bg-obsidian-800/20 bg-obsidian-800/[0.02]">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="text-center mb-14 anim-fade">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] mb-5">
+          <span class="w-1 h-1 rounded-full dark:bg-platinum bg-obsidian-600"></span>
+          <span class="text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500" data-en="Our Approach" data-ar="نهجنا">Our Approach</span>
+        </div>
+        <h2 class="text-[26px] lg:text-[36px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900" data-en="What Makes BASIRA Different" data-ar="ما الذي يميز بصيرة">
+          What Makes BASIRA Different
+        </h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="p-7 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 anim-fade">
+          <i data-lucide="lightbulb" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mb-4"></i>
+          <h3 class="text-[15px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-2" data-en="Simplicity First" data-ar="البساطة أولاً">Simplicity First</h3>
+          <p class="text-[12px] font-light dark:text-platinum/30 text-obsidian-400 leading-relaxed" data-en="Every article is tested with one question: would a curious 14-year-old understand it? If not, we rewrite it." data-ar="كل مقال يُختبر بسؤال واحد: هل يفهمه شاب فضولي عمره 14 عاماً؟ إن لم يكن كذلك، نعيد كتابته.">Every article is tested with one question: would a curious 14-year-old understand it? If not, we rewrite it.</p>
+        </div>
+        <div class="p-7 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 anim-fade anim-delay-1">
+          <i data-lucide="book-marked" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mb-4"></i>
+          <h3 class="text-[15px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-2" data-en="Source Transparency" data-ar="الشفافية في المصادر">Source Transparency</h3>
+          <p class="text-[12px] font-light dark:text-platinum/30 text-obsidian-400 leading-relaxed" data-en="Every article links to its verified sources — academic institutions, trusted media, and original research." data-ar="كل مقال يرتبط بمصادره الموثقة — مؤسسات أكاديمية ووسائل إعلام موثوقة وأبحاث أصلية.">Every article links to its verified sources — academic institutions, trusted media, and original research.</p>
+        </div>
+        <div class="p-7 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 anim-fade anim-delay-2">
+          <i data-lucide="globe-2" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mb-4"></i>
+          <h3 class="text-[15px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-2" data-en="Bilingual" data-ar="ثنائي اللغة">Bilingual</h3>
+          <p class="text-[12px] font-light dark:text-platinum/30 text-obsidian-400 leading-relaxed" data-en="BASIRA speaks both Arabic and English — bridging the knowledge gap for millions of Arabic-speaking readers." data-ar="بصيرة تتحدث العربية والإنجليزية — سد الفجوة المعرفية لملايين القراء العرب.">BASIRA speaks both Arabic and English — bridging the knowledge gap for millions of Arabic-speaking readers.</p>
+        </div>
+        <div class="p-7 rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-white/[0.01] bg-white/50 anim-fade anim-delay-3">
+          <i data-lucide="infinity" class="w-6 h-6 dark:text-platinum/50 text-obsidian-500 mb-4"></i>
+          <h3 class="text-[15px] font-semibold dark:text-platinum/80 text-obsidian-700 mb-2" data-en="Forever Free" data-ar="مجاني للأبد">Forever Free</h3>
+          <p class="text-[12px] font-light dark:text-platinum/30 text-obsidian-400 leading-relaxed" data-en="No subscriptions, no paywalls, no ads. Knowledge belongs to everyone — and that's non-negotiable." data-ar="لا اشتراكات، لا حواجز دفع، لا إعلانات. المعرفة للجميع — وهذا غير قابل للتفاوض.">No subscriptions, no paywalls, no ads. Knowledge belongs to everyone — and that's non-negotiable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+  <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/15 border-obsidian-800/10 flex items-center justify-center">
+          <i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum/60 text-obsidian-500"></i>
+        </div>
+        <span class="text-[13px] font-semibold tracking-[0.25em] uppercase dark:text-platinum/50 text-obsidian-500">BASIRA</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300" data-en="Home" data-ar="الرئيسية">Home</a>
+        <a href="articles.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300" data-en="Articles" data-ar="المقالات">Articles</a>
+        <a href="about.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300" data-en="About" data-ar="حول">About</a>
+        <a href="index.html#contact" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300" data-en="Contact" data-ar="تواصل">Contact</a>
+      </div>
+      <p class="text-[11px] font-light dark:text-platinum/20 text-obsidian-400/50">© 2025 BASIRA. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== JS ========== -->
+<script>
+
+  // ===== TICKER =====
+  function buildTicker() {
+    const items = [
+      { icon:'clock', getText:() => new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) + ' · ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) },
+      { icon:'brain', getText:() => 'BASIRA — Knowledge for Everyone' },
+      { icon:'flask-conical', getText:() => 'Latest: Quantum Physics Explained' },
+      { icon:'cpu', getText:() => 'Latest: How AI Really Works' },
+      { icon:'landmark', getText:() => 'Latest: The Renaissance Explained' },
+      { icon:'book-open', getText:() => '12 articles · 5 categories · Always free' },
+
+    ];
+    function render() {
+      const doubled = [...items, ...items];
+      document.getElementById('ticker-track').innerHTML = doubled.map(item => `
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <i data-lucide="${item.icon}" class="w-3 h-3 dark:text-platinum/30 text-obsidian-400 flex-shrink-0"></i>
+          <span class="text-[11px] font-medium tracking-wide dark:text-platinum/40 text-obsidian-500">${item.getText()}</span>
+          <span class="mx-3 dark:text-platinum/15 text-obsidian-300">·</span>
+        </div>`).join('');
+      if (window.lucide) lucide.createIcons({ nodes: [document.getElementById('ticker-track')] });
+    }
+    render();
+    setInterval(render, 30000);
+  }
+
+  // ===== THEME =====
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.classList.add('theme-transition');
+    const thumb = document.querySelector('.toggle-thumb');
+    const isDark = html.classList.contains('dark');
+    html.classList.toggle('dark', !isDark);
+    if (isDark) {
+      thumb.classList.replace('translate-x-[24px]', 'translate-x-0');
+      localStorage.setItem('basira-theme', 'light');
+      showToast('Light mode', 'sun');
+    } else {
+      thumb.classList.replace('translate-x-0', 'translate-x-[24px]');
+      localStorage.setItem('basira-theme', 'dark');
+      showToast('Dark mode', 'moon');
+    }
+    setTimeout(() => { if(window.lucide) lucide.createIcons(); }, 60);
+    setTimeout(() => html.classList.remove('theme-transition'), 600);
+  }
+
+  // ===== LANGUAGE =====
+  let lang = 'en';
+  function toggleLanguage() {
+    const html = document.documentElement;
+    const btn = document.getElementById('langBtn');
+    lang = lang === 'en' ? 'ar' : 'en';
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    html.setAttribute('lang', lang);
+    btn.textContent = lang === 'ar' ? 'English' : 'العربية';
+    document.querySelectorAll(lang === 'ar' ? '[data-ar]' : '[data-en]').forEach(el => {
+      el.textContent = el.getAttribute(lang === 'ar' ? 'data-ar' : 'data-en');
+    });
+    showToast(lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English', 'languages');
+  }
+
+  // ===== MOBILE MENU =====
+  function toggleMobile() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('mobile-btn');
+    const open = menu.classList.toggle('hidden');
+    btn.innerHTML = `<i data-lucide="${open ? 'menu' : 'x'}" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>`;
+    if(window.lucide) lucide.createIcons({ nodes: [btn] });
+  }
+
+  // ===== TOAST =====
+  function showToast(msg, icon) {
+    const box = document.getElementById('toast-box');
+    const t = document.createElement('div');
+    t.className = 'toast-in pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-xl dark:bg-obsidian-700/95 bg-white/95 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[200px]';
+    t.innerHTML = `<div class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0"><i data-lucide="${icon}" class="w-3 h-3 dark:text-platinum/70 text-obsidian-600"></i></div><span class="text-[12px] font-medium dark:text-platinum/80 text-obsidian-700">${msg}</span>`;
+    box.appendChild(t);
+    if(window.lucide) lucide.createIcons({ nodes: [t] });
+    setTimeout(() => { t.classList.replace('toast-in','toast-out'); setTimeout(()=>t.remove(),300); }, 2200);
+  }
+
+  // ===== SCROLL ANIMATIONS =====
+  const animObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); animObs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTicker();
+
+    // Sync toggle thumb with saved theme
+    const isDark = document.documentElement.classList.contains('dark');
+    const thumb = document.querySelector('.toggle-thumb');
+    if (thumb) {
+      if (isDark) { thumb.classList.add('translate-x-[24px]'); thumb.classList.remove('translate-x-0'); }
+      else { thumb.classList.add('translate-x-0'); thumb.classList.remove('translate-x-[24px]'); }
+    }
+
+    document.querySelectorAll('.anim-fade').forEach(el => animObs.observe(el));
+    setTimeout(() => {
+      document.querySelectorAll('section:first-of-type .anim-fade').forEach(el => el.classList.add('visible'));
+    }, 200);
+
+    if(window.lucide) lucide.createIcons();
+  });
+</script>
+</body>
+</html>
