@@ -200,11 +200,16 @@
           <!-- Content will be inserted here dynamically -->
         </article>
 
-        <!-- SOURCES BUTTON -->
-        <div class="mt-10">
+        <!-- SOURCES BUTTON + LANG TOGGLE -->
+        <div class="mt-10 flex flex-wrap items-center gap-3">
           <button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span data-en="Sources Used" data-ar="المصادر المستخدمة">Sources Used</span>
+          </button>
+          <!-- Language Toggle — only shows if Arabic translation exists -->
+          <button id="lang-toggle-btn" onclick="toggleArticleLang()" class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
+            <i data-lucide="languages" class="w-4 h-4"></i>
+            <span id="lang-toggle-label">اقرأ بالعربية</span>
           </button>
         </div>
 
@@ -459,6 +464,38 @@
       } catch(e) { return false; }
     }
 
+    // ── Language Toggle ──────────────────────────────────────────────────────
+    let articleLang = 'en';
+    let articleData = {};
+
+    function toggleArticleLang() {
+      articleLang = articleLang === 'en' ? 'ar' : 'en';
+      const isAr = articleLang === 'ar';
+
+      // Toggle title
+      const titleEl = document.getElementById('article-title');
+      if (titleEl) {
+        titleEl.textContent = isAr && articleData.title_ar ? articleData.title_ar : articleData.title;
+        titleEl.style.direction = isAr ? 'rtl' : 'ltr';
+        titleEl.style.textAlign = isAr ? 'right' : 'left';
+      }
+
+      // Toggle content
+      const contentEl = document.getElementById('article-content');
+      if (contentEl) {
+        contentEl.innerHTML = isAr && articleData.content_ar ? articleData.content_ar : articleData.content;
+        contentEl.style.direction = isAr ? 'rtl' : 'ltr';
+        contentEl.style.textAlign = isAr ? 'right' : 'left';
+        contentEl.style.fontFamily = isAr ? "'Cairo', sans-serif" : '';
+      }
+
+      // Update button label
+      const label = document.getElementById('lang-toggle-label');
+      if (label) label.textContent = isAr ? 'Read in English' : 'اقرأ بالعربية';
+
+      showToast(isAr ? 'تم التبديل للعربية' : 'Switched to English', 'languages');
+    }
+
     async function trackView(id) {
       // Track once per session per article
       const key = `basira-viewed-${id}`;
@@ -473,7 +510,7 @@
 
     async function loadArticle() {
       const id = getArticleId();
-      const data = await sbGet(`articles?id=eq.${id}&status=eq.published`);
+      const data = await sbGet(`articles?id=eq.${id}&status=eq.published&select=*`);
       let article = null;
       if (data && data.length > 0) {
         const a = data[0];
@@ -482,7 +519,8 @@
           date: new Date(a.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
           readTime: a.read_time || '5 min',
           image: a.image || '', content: a.content || '',
-          sources: a.sources || [], excerpt: a.excerpt || ''
+          sources: a.sources || [], excerpt: a.excerpt || '',
+          title_ar: a.title_ar || '', content_ar: a.content_ar || ''
         };
       } else {
         // Try fallback local db
@@ -495,6 +533,7 @@
       // Track view
       trackView(id);
       currentArticle = article;
+      articleData = article; // store for lang toggle
       document.getElementById('article-title').textContent = article.title;
       document.getElementById('article-category').textContent = article.category;
       document.getElementById('article-date').textContent = article.date;
@@ -502,6 +541,11 @@
       img.src = article.image; img.alt = article.title;
       document.getElementById('article-content').innerHTML = article.content;
       document.title = article.title + ' — BASIRA';
+      // Show lang toggle if Arabic translation exists
+      if (article.title_ar && article.content_ar) {
+        const btn = document.getElementById('lang-toggle-btn');
+        if (btn) btn.classList.remove('hidden');
+      }
       document.querySelector('meta[name="description"]').setAttribute('content', article.excerpt || article.title);
       // Update og tags dynamically
       document.querySelector('meta[property="og:title"]').setAttribute('content', article.title + ' — BASIRA');
@@ -700,18 +744,13 @@
 
       let articles = [];
 
-      // Try Supabase first
+      // Try Supabase only — no fallback to avoid self-article
       const data = await sbGet(`articles?category=eq.${currentArticle.category}&status=eq.published&id=neq.${id}`, 3);
       if (data && data.length > 0) {
         articles = data.map(a => ({
           id: a.id, title: a.title, category: a.category,
           image: a.image || '', excerpt: a.excerpt || ''
         }));
-      } else {
-        // Fallback: filter articlesDb by same category
-        articles = Object.values(articlesDb)
-          .filter(a => a.category === currentArticle.category && String(a.id) !== id)
-          .slice(0, 3);
       }
 
       if (articles.length === 0) { section.classList.add('hidden'); return; }
