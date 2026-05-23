@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You — BASIRA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            obsidian: { 950:'#050505', 900:'#0A0A0A', 800:'#111111', 700:'#1A1A1A', 600:'#222222', 500:'#2A2A2A', 400:'#333333', 300:'#444444' },
+            platinum: { DEFAULT:'#C0C0C0', light:'#D4D4D4', lighter:'#E5E5E5', muted:'rgba(192,192,192,0.1)', faint:'rgba(192,192,192,0.05)' },
+            cream: { DEFAULT:'#FAFAF8', warm:'#F5F3F0', muted:'#E8E6E3', border:'#DDDBD8' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim-fade { opacity: 0; transform: translateY(40px); animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .anim-delay-1 { animation-delay: 0.2s !important; }
+    .anim-delay-2 { animation-delay: 0.4s !important; }
+    @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .bounce-in { animation: bounce 1s ease-in-out; }
+  </style>
+</head>
+
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen flex items-center justify-center">
+
+  <div class="text-center px-5 py-12">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full dark:bg-white/[0.05] bg-obsidian-800/[0.05] mb-8 bounce-in">
+      <i data-lucide="check-circle" class="w-10 h-10 dark:text-platinum text-obsidian-700"></i>
+    </div>
+
+    <h1 class="text-[40px] lg:text-[56px] font-bold tracking-[-0.02em] dark:text-white text-obsidian-900 mb-4 anim-fade">
+      Thank You!
+    </h1>
+
+    <p class="text-[18px] font-light dark:text-platinum/60 text-obsidian-600 mb-8 max-w-[500px] mx-auto anim-fade anim-delay-1">
+      We've received your message and will get back to you as soon as possible.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center anim-fade anim-delay-2">
+      <a href="index.html" class="inline-flex items-center gap-2 px-7 py-3.5 bg-obsidian-800 dark:bg-white/90 dark:text-obsidian-900 text-cream font-semibold text-[13px] tracking-wide rounded-xl hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-300 shadow-lg shadow-black/10">
+        <i data-lucide="home" class="w-4 h-4"></i>
+        Back to Home
+      </a>
+      <a href="articles.html" class="inline-flex items-center gap-2 px-7 py-3.5 dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum text-obsidian-600 font-medium text-[13px] tracking-wide rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
+        Explore Articles
+      </a>
+    </div>
+
+    <p class="text-[12px] font-light dark:text-platinum/25 text-obsidian-400 mt-12">
+      Redirecting in <span id="countdown">5</span> seconds...
+    </p>
+  </div>
+
+  <script>
+    let count = 5;
+    setInterval(() => {
+      count--;
+      document.getElementById('countdown').textContent = count;
+      if (count <= 0) window.location.href = 'index.html';
+    }, 1000);
+
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>
