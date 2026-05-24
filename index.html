@@ -104,6 +104,8 @@
     /* NO SCROLLBAR */
     .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
     .no-scrollbar::-webkit-scrollbar{display:none}
+    #back-to-top { opacity:0; transform:translateY(10px); transition:all 0.3s ease; pointer-events:none; }
+    #back-to-top.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
   </style>
 </head>
 
@@ -199,7 +201,7 @@
   <!-- ========== HERO ========== -->
   <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0">
-      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=60" alt="" class="w-full h-full object-cover dark:brightness-[0.15] brightness-[0.35] dark:saturate-[0.2] saturate-[0.3]" onerror="this.style.display='none'">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=60" loading="lazy" alt="" class="w-full h-full object-cover dark:brightness-[0.15] brightness-[0.35] dark:saturate-[0.2] saturate-[0.3]" onerror="this.style.display='none'">
       <div class="absolute inset-0 dark:bg-gradient-to-b dark:from-obsidian-900/60 dark:via-transparent dark:to-obsidian-900 bg-gradient-to-b from-cream/60 via-cream/20 to-cream/95"></div>
     </div>
     <!-- Grid lines decoration -->
@@ -450,7 +452,17 @@
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
     const src = articles.slice(0, 6);
-    if (src.length === 0) { grid.innerHTML = ''; return; }
+    if (src.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-3 text-center py-20">
+          <div class="w-14 h-14 rounded-2xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="book-open" class="w-6 h-6 dark:text-platinum/30 text-obsidian-400"></i>
+          </div>
+          <p class="text-[14px] font-light dark:text-platinum/30 text-obsidian-400">No articles yet — check back soon.</p>
+          </div>`;
+      if(window.lucide) lucide.createIcons({nodes:[grid]});
+      return;
+    }
 
     // First article: big card (full width on mobile, spans 2 cols on lg)
     const first = src[0];
@@ -675,6 +687,15 @@
     // Load from Supabase (ticker + stats). Falls back to static if unreachable.
     loadFromSupabase();
   });
-</script>
+
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('back-to-top');
+        if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+    });
+  </script>
+  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full dark:bg-white/10 bg-obsidian-800/10 backdrop-blur-sm border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center dark:text-platinum/60 text-obsidian-500 hover:dark:bg-white/20 hover:bg-obsidian-800/20 transition-all duration-300">
+    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+  </button>
 </body>
 </html>
