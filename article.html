@@ -153,7 +153,20 @@
     </div>
   </header>
 
-  <main id="article-main" class="pt-[72px]">
+  <!-- Loading skeleton -->
+  <div id="article-skeleton" class="pt-[72px] max-w-[680px] mx-auto px-5 py-16">
+    <div class="w-24 h-4 rounded-full dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-6"></div>
+    <div class="w-3/4 h-8 rounded-xl dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-3"></div>
+    <div class="w-1/2 h-8 rounded-xl dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-8"></div>
+    <div class="w-full aspect-video rounded-2xl dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-10"></div>
+    <div class="space-y-3">
+      <div class="w-full h-4 rounded-full dark:bg-white/[0.04] bg-obsidian-800/[0.04] animate-pulse"></div>
+      <div class="w-5/6 h-4 rounded-full dark:bg-white/[0.04] bg-obsidian-800/[0.04] animate-pulse"></div>
+      <div class="w-4/6 h-4 rounded-full dark:bg-white/[0.04] bg-obsidian-800/[0.04] animate-pulse"></div>
+    </div>
+  </div>
+
+  <main id="article-main" class="pt-[72px] hidden">
 
     <!-- ========== ARTICLE HERO ========== -->
     <section class="py-16 lg:py-24 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
@@ -179,7 +192,7 @@
             </div>
             <div class="flex items-center gap-2">
               <i data-lucide="user" class="w-4 h-4"></i>
-              <span data-en="By Omer" data-ar="بقلم عمر">By Omer</span>
+              <span data-en="By Omar" data-ar="بقلم عمر">By Omar</span>
             </div>
           </div>
         </div>
@@ -189,7 +202,7 @@
     <!-- ========== ARTICLE IMAGE ========== -->
     <section class="py-0">
       <div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12">
-        <img id="article-image" src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80" alt="Article" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="this.style.display='none'">
+        <img id="article-image" src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80" alt="Article" loading="lazy" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="this.style.display='none'">
       </div>
     </section>
 
@@ -565,6 +578,11 @@
       document.head.appendChild(canon);
       const words = article.content.replace(/<[^>]*>/g,'').split(/\s+/).length;
       document.getElementById('article-read-time').textContent = Math.max(1,Math.round(words/200)) + ' min read';
+      // Hide skeleton, show article
+      const skeleton = document.getElementById('article-skeleton');
+      const main = document.getElementById('article-main');
+      if (skeleton) skeleton.style.display = 'none';
+      if (main) main.classList.remove('hidden');
       loadReactions(); loadComments(); loadRelated();
     }
 
@@ -663,7 +681,7 @@
           <div class="flex items-center gap-2 mb-2">
             <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'R')[0].toUpperCase()}</div>
             <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author||'Reader')}</span>
-            <span class="text-[11px] dark:text-platinum/25 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
             ${deleteBtn}
           </div>
           <p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p>
