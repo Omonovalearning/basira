@@ -474,6 +474,7 @@
 
       // Pagination controls
       const pag = document.getElementById('pagination');
+      if (!pag) return;
       if (totalPages <= 1) { pag.classList.add('hidden'); return; }
       pag.classList.remove('hidden');
       pag.innerHTML = `
