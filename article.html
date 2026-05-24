@@ -647,7 +647,7 @@
         lb.classList.toggle('liked', type === 'like');
         db.classList.toggle('disliked', type === 'dislike');
         localStorage.setItem(storageKey, type);
-        await sbPost('reactions', { article_id: id, type: type });
+        await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
         showToast(type === 'like' ? 'Thanks! ❤️' : 'Feedback noted', type === 'like' ? 'heart' : 'frown');
       }
       loadReactions();
