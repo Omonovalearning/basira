@@ -55,4 +55,14 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+  <loc>https://omonovalearning.github.io/basira/article.html?id=10</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+<url>
+  <loc>https://omonovalearning.github.io/basira/article.html?id=11</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
 </urlset>
