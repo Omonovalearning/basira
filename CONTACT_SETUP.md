@@ -9,7 +9,7 @@ FormSubmit is a free service that handles form submissions and sends emails. Her
 1. **In index.html, replace the contact form section with:**
 
 ```html
-<form action="https://formsubmit.co/basira.learning@gmail.com" method="POST" class="max-w-[500px] mx-auto">
+<form action="https://formsubmit.co/basiralearning@gmail.com" method="POST" class="max-w-[500px] mx-auto">
   <div class="space-y-4">
     <input 
       type="text" 
@@ -44,7 +44,7 @@ FormSubmit is a free service that handles form submissions and sends emails. Her
 ```
 
 2. Go to https://formsubmit.co and follow their setup
-3. Done! Emails will now go to basira.learning@gmail.com
+3. Done! Emails will now go to basiralearning@gmail.com
 
 ---
 
@@ -100,6 +100,6 @@ For a production app, Firebase is more robust:
 
 Steps:
 1. Replace the contact form HTML as shown above
-2. Replace `basira.learning@gmail.com` with your actual email
+2. Replace `basiralearning@gmail.com` with your actual email
 3. Test it by submitting a message
 4. Done!
