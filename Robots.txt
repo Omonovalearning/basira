@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://omonovalearning.github.io/basira/sitemap.xml
+Sitemap: https://basira.top/sitemap.xml
