@@ -17,8 +17,12 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: {
-          email: "MS_test@trial-xxx.mailersend.work", // هذا الإيميل التجريبي، سنقوم بتحديثه لاحقاً عند توثيق النطاق
+          email: "welcome@basira.top", // الإيميل الرسمي للنطاق الموثق
           name: "بصيرة | Basira"
+        },
+        reply_to: {
+          email: "basiralearning@gmail.com", // إيميل الجيميل الخاص بك لتلقي ردود المشتركين عليه
+          name: "دعم بصيرة"
         },
         to: [{ email: userEmail }],
         subject: "Welcome to Basira! | أهلاً بك في منصة بصيرة",
