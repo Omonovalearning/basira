@@ -43,6 +43,11 @@ serve(async (req) => {
             <h1 style="margin: 0; font-size: 28px; color: #ffffff;">بصيرة | Basira</h1>
           </div>
 
+          <!-- Logo -->
+<div style="text-align: center; padding: 20px; background-color: #1a1a2e;">
+  <img src="https://basira.top/favicon.png" alt="بصيرة" style="height: 60px;" />
+</div>
+
           <!-- Body -->
           <div style="padding: 30px; direction: rtl; text-align: right; color: #334155; background: #ffffff;">
             <h2 style="color: #0f172a;">أهلاً بك في بصيرة! 👋</h2>
