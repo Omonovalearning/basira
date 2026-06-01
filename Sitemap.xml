@@ -39,7 +39,7 @@
     <loc>https://basira.top/article.html?id=6</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
+  </url>s
   <url>
     <loc>https://basira.top/article.html?id=7</loc>
     <changefreq>monthly</changefreq>
@@ -62,6 +62,21 @@
   </url>
   <url>
     <loc>https://basira.top/article.html?id=11</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  </url>
+   <loc>https://basira.top/article.html?id=12</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  </url>
+   <loc>https://basira.top/article.html?id=13</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  </url>
+   <loc>https://basira.top/article.html?id=14</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
