@@ -13,7 +13,8 @@
   <meta name="keywords" content="knowledge, learning, simplified, education, articles, science, technology, culture">
   <meta property="og:title" content="BASIRA — Knowledge Simplification">
   <meta property="og:description" content="Explore simplified knowledge on complex topics">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://basira.top/article.html">
   <title>Article — BASIRA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -559,6 +560,21 @@
       img.src = article.image; img.alt = article.title;
       document.getElementById('article-content').innerHTML = article.content;
       document.title = article.title + ' — BASIRA';
+      // Schema Markup for Google
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": article.title,
+        "image": article.image,
+        "description": article.excerpt || article.title,
+        "datePublished": article.date,
+        "author": {"@type": "Person", "name": "Omer"},
+        "publisher": {"@type": "Organization", "name": "BASIRA", "url": "https://basira.top"}
+      };
+      const schemaScript = document.createElement('script');
+      schemaScript.type = 'application/ld+json';
+      schemaScript.text = JSON.stringify(schema);
+      document.head.appendChild(schemaScript);
       // Show lang toggle if Arabic translation exists
       if (article.title_ar && article.content_ar) {
         const btn = document.getElementById('lang-toggle-btn');

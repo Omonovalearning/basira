@@ -56,7 +56,7 @@ basira/
 1. Push all files to your GitHub repository
 2. Enable GitHub Pages in repository settings
 3. Set source to `main` branch (or your branch)
-4. Your site is live at: `https://username.github.io/basira/`
+4. Your site is live at: `https://basira.top/`
 
 ---
 
