@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An analog computer from the ancient world? A quick look at the Antikythera Mechanism, the 2,000-year-old device that rewrote technological history.">
+  <meta property="og:title" content="A Computer from the Past: The Mystery of the Antikythera Mechanism — BASIRA">
+  <meta property="og:description" content="An analog computer from the ancient world? A quick look at the Antikythera Mechanism, the 2,000-year-old device that rewrote technological history.">
+  <meta property="og:image" content="https://img.youm7.com/large/20210313103202322.jpg">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://basira.top/articles/a-computer-from-the-past-the-mystery-of-the-antikythera-mech.html">
+  <title>A Computer from the Past: The Mystery of the Antikythera Mechanism — BASIRA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.383.0"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        fontFamily: { sans: ['Inter','sans-serif'] },
+        colors: {
+          obsidian: { 900:'#0A0A0A',800:'#111111',700:'#1A1A1A',500:'#2A2A2A' },
+          platinum: { DEFAULT:'#C0C0C0',light:'#D4D4D4' },
+          cream: { DEFAULT:'#FAFAF8' }
+        }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif}
+    .header-blur{backdrop-filter:blur(20px)}
+    ::-webkit-scrollbar{width:5px}
+    .dark ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}
+    ::-webkit-scrollbar-thumb{background:#CCC;border-radius:10px}
+    .article-content h2{font-size:1.4rem;font-weight:600;margin:2rem 0 1rem;
+      color:rgba(192,192,192,.88)}
+    .article-content p{font-size:1rem;line-height:1.9;margin-bottom:1rem;
+      color:rgba(192,192,192,.6);font-weight:300}
+    .toggle-thumb{transition:transform .35s cubic-bezier(.68,-.3,.32,1.3)}
+  </style>
+</head>
+<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">
+
+  <header class="sticky top-0 z-50 header-blur dark:bg-obsidian-900/80 bg-cream/80
+                 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
+    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="flex items-center justify-between h-[68px]">
+        <a href="../index.html" class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-md dark:bg-platinum/10 border dark:border-platinum/20
+                      border-obsidian-800/10 flex items-center justify-center">
+            <i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i>
+          </div>
+          <span class="text-[15px] font-semibold tracking-[0.25em] uppercase
+                       dark:text-platinum text-obsidian-800">BASIRA</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="../index.html"    class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Home</a>
+          <a href="../articles.html" class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Articles</a>
+          <a href="../about.html"    class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">About</a>
+        </nav>
+        <button onclick="if(document.documentElement.classList.contains('dark')){document.documentElement.classList.remove('dark');localStorage.setItem('basira-theme','light')}else{document.documentElement.classList.add('dark');localStorage.setItem('basira-theme','dark')}"
+          class="relative w-[52px] h-[28px] rounded-full dark:bg-gray-600 bg-gray-200
+                 cursor-pointer flex items-center px-[3px]">
+          <div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700
+                      flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0">
+            <i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i>
+            <i data-lucide="sun"  class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[860px] mx-auto px-5 sm:px-8 py-16">
+
+    <a href="../articles.html"
+       class="inline-flex items-center gap-2 text-[12px] tracking-widest uppercase
+              dark:text-platinum/40 text-obsidian-400 hover:dark:text-platinum
+              hover:text-obsidian-800 transition mb-8">
+      <i data-lucide="arrow-left" class="w-3 h-3"></i> Back to Articles
+    </a>
+
+    <span class="inline-block px-3 py-1.5 rounded-full dark:bg-platinum/[0.05]
+                 bg-obsidian-800/[0.04] text-[10px] tracking-[0.25em] uppercase
+                 dark:text-platinum/60 text-obsidian-500 mb-5">history</span>
+
+    <h1 class="text-[36px] sm:text-[48px] font-bold tracking-[-0.02em] leading-[1.1]
+               dark:text-white text-obsidian-900 mb-6">A Computer from the Past: The Mystery of the Antikythera Mechanism</h1>
+
+    <div class="flex flex-wrap items-center gap-5 text-[13px] dark:text-platinum/40
+                text-obsidian-500 mb-10">
+      <div class="flex items-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        6 min read
+      </div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="user" class="w-4 h-4"></i>By Omer
+      </div>
+    </div>
+
+    <img src="https://img.youm7.com/large/20210313103202322.jpg" alt="A Computer from the Past: The Mystery of the Antikythera Mechanism"
+      class="w-full rounded-2xl dark:brightness-75 brightness-90 mb-12"
+      onerror="this.style.display='none'">
+
+    <article class="article-content"><h2>The Discovery That Stunned the World</h2>
+<p>In 1900, Greek sponge divers discovered the wreck of an ancient Roman vessel near the island of Antikythera. Among statues, amphorae, and coins, there was something strange: a shoebox-sized mass of corroded metal, covered in tiny Greek inscriptions. No one understood what it was — until scientists began peeling back its layers and found something that baffled them completely.</p>
+
+<h2>What Is the Antikythera Mechanism?</h2>
+<p>It is a device dating to the 2nd century BCE, built from more than 30 interlocking bronze gears of extraordinary precision. It calculated the positions of the sun, moon, and known planets, predicted solar and lunar eclipses, tracked Olympic cycles, and followed multiple calendar systems — all by turning a hand crank. Scientists today describe it as the world's first analog computer.</p>
+
+<h2>Why Is It So Astonishing?</h2>
+<p>Because the technology it required was not thought to exist in the ancient world. The precision gears have teeth barely a millimeter long, and the astronomical calculations embedded within reflect advanced mathematical understanding. No other device from that era approaches its complexity — and this technology was lost for over a thousand years afterward.</p>
+
+<h2>How Did We Decode Its Secrets?</h2>
+<p>It took centuries. In the 1950s and 1970s, historian Derek de Solla Price began studying it and building early models. In 2006, a research team used X-ray imaging and 3D tomography to read inscriptions hidden inside corroded layers. And in 2021, a University College London team published a comprehensive model in Scientific Reports explaining how the mechanism simulated planetary motions.</p>
+
+<h2>Who Built It and Why?</h2>
+<p>It was most likely crafted in a specialized Greek workshop around 100 BCE. It may have served astronomical education, astrological use, or the regulation of religious calendars. Historian Alexander Jones of New York University believes it was not unique — perhaps a small number were made for a narrow elite clientele.</p>
+
+<h2>What Does It Mean for Us Today?</h2>
+<p>This discovery fundamentally rewrites our understanding of technological history. Ancient minds were no less intelligent — they thought deeply and produced tools of remarkable genius. The Antikythera Mechanism isn't merely an artifact; it's proof that humanity's curiosity about the cosmos is anything but a modern invention.</p></article>
+
+    
+    <div class="mt-12 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+      <p class="text-[11px] tracking-[0.25em] uppercase dark:text-platinum/30
+                text-obsidian-400 mb-4">Sources & References</p>
+      <div class="space-y-3">
+      <a href="https://www.nature.com/articles/s41598-021-84310-w" target="_blank" rel="noopener noreferrer"
+         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-gray-50
+                border dark:border-white/[0.06] border-gray-200 hover:dark:bg-white/[0.06] transition group">
+        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-gray-100 flex items-center justify-center
+                     text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0">1</span>
+        <div>
+          <p class="text-[13px] font-medium dark:text-platinum/80 text-gray-700">A Model of the Cosmos in the Antikythera Mechanism — Nature / Scientific Reports (2021)</p>
+          <p class="text-[11px] dark:text-platinum/30 text-gray-400 break-all mt-0.5">https://www.nature.com/articles/s41598-021-84310-w</p>
+        </div>
+      </a>
+      <a href="https://www.history.com/articles/antikythera-mechanism-ancient-computer-secrets" target="_blank" rel="noopener noreferrer"
+         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-gray-50
+                border dark:border-white/[0.06] border-gray-200 hover:dark:bg-white/[0.06] transition group">
+        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-gray-100 flex items-center justify-center
+                     text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0">2</span>
+        <div>
+          <p class="text-[13px] font-medium dark:text-platinum/80 text-gray-700">How the Secrets of an Ancient Greek 'Computer' Were Revealed — History.com</p>
+          <p class="text-[11px] dark:text-platinum/30 text-gray-400 break-all mt-0.5">https://www.history.com/articles/antikythera-mechanism-ancient-computer-secrets</p>
+        </div>
+      </a>
+      <a href="https://www.worldhistory.org/Antikythera_Mechanism/" target="_blank" rel="noopener noreferrer"
+         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-gray-50
+                border dark:border-white/[0.06] border-gray-200 hover:dark:bg-white/[0.06] transition group">
+        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-gray-100 flex items-center justify-center
+                     text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0">3</span>
+        <div>
+          <p class="text-[13px] font-medium dark:text-platinum/80 text-gray-700">Antikythera Mechanism — World History Encyclopedia</p>
+          <p class="text-[11px] dark:text-platinum/30 text-gray-400 break-all mt-0.5">https://www.worldhistory.org/Antikythera_Mechanism/</p>
+        </div>
+      </a></div>
+    </div>
+
+  </main>
+
+  <footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] mt-16">
+    <div class="max-w-[1440px] mx-auto px-5 text-center">
+      <p class="text-[11px] dark:text-platinum/20 text-obsidian-400">
+        © 2025 BASIRA. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    const t = localStorage.getItem('basira-theme');
+    if (t === 'light') {
+      document.documentElement.classList.remove('dark');
+      const th = document.querySelector('.toggle-thumb');
+      if (th) { th.classList.remove('translate-x-[24px]'); th.classList.add('translate-x-0'); }
+    }
+  </script>
+</body>
+</html>
