@@ -18,7 +18,6 @@
   <meta name="twitter:title" content="BASIRA — Knowledge Simplification">
   <meta name="twitter:description" content="Simplified articles on science, technology, history, culture and more.">
   <link rel="canonical" href="https://basira.top/">
-  <meta name="robots" content="index, follow">
   <title>BASIRA — Knowledge Simplification</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,7 +206,7 @@
   <!-- ========== HERO ========== -->
   <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0">
-      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=60" loading="lazy" alt="BASIRA Knowledge Platform" class="w-full h-full object-cover dark:brightness-[0.15] brightness-[0.35] dark:saturate-[0.2] saturate-[0.3]" onerror="this.style.display='none'">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=60" loading="lazy" alt="" class="w-full h-full object-cover dark:brightness-[0.15] brightness-[0.35] dark:saturate-[0.2] saturate-[0.3]" onerror="this.style.display='none'">
       <div class="absolute inset-0 dark:bg-gradient-to-b dark:from-obsidian-900/60 dark:via-transparent dark:to-obsidian-900 bg-gradient-to-b from-cream/60 via-cream/20 to-cream/95"></div>
     </div>
     <!-- Grid lines decoration -->
@@ -439,6 +438,18 @@
     culture: 'book-open', quotes: 'quote'
   };
 
+
+  function toSlug(title) {
+    if (!title) return 'article';
+    const s = title.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60);
+    return s || 'article';
+  }
+
   const fallbackArticles = [
     { id:1, title:'What is Quantum Physics?',                    category:'science',  image:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80',      excerpt:'Understanding the strange world at the atomic scale.',               readTime:'5 min' },
     { id:2, title:'DNA: The Blueprint of Life',                  category:'science',  image:'https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=900&q=80',           excerpt:'The blueprint of life, demystified for everyone.',                  readTime:'6 min' },
@@ -475,7 +486,7 @@
     const rest  = src.slice(1, 6);
 
     const bigCard = `
-      <a href="article.html?id=${first.id}" class="group card-lift anim-fade sm:col-span-2 lg:col-span-2">
+      <a href="articles/${toSlug(first.title)}.html" class="group card-lift anim-fade sm:col-span-2 lg:col-span-2">
         <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[16/9]">
           <img src="${first.image || 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=900&q=80'}"
                alt="${first.title}"
@@ -497,7 +508,7 @@
       </a>`;
 
     const smallCards = rest.map((a, i) => `
-      <a href="article.html?id=${a.id}" class="group card-lift anim-fade anim-delay-${Math.min(i+1,4)}">
+      <a href="articles/${toSlug(a.title)}.html" class="group card-lift anim-fade anim-delay-${Math.min(i+1,4)}">
         <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-3">
           <img src="${a.image || 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=600&q=80'}"
                alt="${a.title}"
