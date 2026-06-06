@@ -1,461 +1,99 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="At the atomic scale, reality behaves in ways that challenge everything we know.">
-  <meta property="og:title" content="What is Quantum Physics? — BASIRA">
-  <meta property="og:description" content="At the atomic scale, reality behaves in ways that challenge everything we know.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80">
-  <meta property="og:type" content="article">
-  <link rel="canonical" href="https://basira.top/articles/what-is-quantum-physics.html">
-  <title>What is Quantum Physics? — BASIRA</title>
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"BlogPosting","headline":"What is Quantum Physics?","image":"https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80","description":"At the atomic scale, reality behaves in ways that challenge everything we know.","author":{"@type":"Person","name":"Omer"},"publisher":{"@type":"Organization","name":"BASIRA","url":"https://basira.top"}}
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@0.383.0"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: {
-        fontFamily: { sans: ['Inter','sans-serif'] },
-        colors: {
-          obsidian: { 900:'#0A0A0A',800:'#111111',700:'#1A1A1A',600:'#222222',500:'#2A2A2A',400:'#333333' },
-          platinum: { DEFAULT:'#C0C0C0',light:'#D4D4D4' },
-          cream:    { DEFAULT:'#FAFAF8' }
-        }
-      }}
-    }
-  </script>
-  <style>
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{font-family:'Inter',sans-serif;overflow-x:hidden}
-    .header-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-    ::-webkit-scrollbar{width:5px}
-    .dark ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}
-    ::-webkit-scrollbar-thumb{background:#CCC;border-radius:10px}
-    .article-content h2{font-size:1.4rem;font-weight:600;margin:2rem 0 1rem;color:rgba(192,192,192,.88)}
-    .dark .article-content p{font-size:1rem;line-height:1.9;margin-bottom:1rem;color:rgba(192,192,192,.6);font-weight:300}
-    .article-content p{font-size:1rem;line-height:1.9;margin-bottom:1rem;color:#444;font-weight:300}
-    .toggle-thumb{transition:transform .35s cubic-bezier(.68,-.3,.32,1.3)}
-    .reaction-btn{transition:all .2s ease}
-    .reaction-btn.liked{color:#22c55e!important;border-color:#22c55e!important}
-    .reaction-btn.disliked{color:#ef4444!important;border-color:#ef4444!important}
-    #read-progress{transition:width .1s linear}
-    #back-to-top{opacity:0;transform:translateY(10px);transition:all .3s ease;pointer-events:none}
-    #back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
-    @keyframes tIn{from{transform:translateY(-10px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-    @keyframes tOut{from{opacity:1}to{transform:translateY(-10px) scale(.96);opacity:0}}
-    .toast-in{animation:tIn .3s cubic-bezier(.16,1,.3,1) forwards}
-    .toast-out{animation:tOut .25s ease-in forwards}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
-  </style>
-</head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="At the atomic scale, reality behaves in ways that challenge everything we know.">
+<meta property="og:title" content="What is Quantum Physics? — BASIRA">
+<meta property="og:description" content="At the atomic scale, reality behaves in ways that challenge everything we know.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&amp;q=80">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://basira.top/articles/what-is-quantum-physics.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://basira.top/articles/what-is-quantum-physics.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"What is Quantum Physics?","image":"https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80","description":"At the atomic scale, reality behaves in ways that challenge everything we know.","datePublished":"May 23, 2026","author":{"@type":"Person","name":"Omer"},"publisher":{"@type":"Organization","name":"BASIRA","url":"https://basira.top"}}</script>
+<title>What is Quantum Physics? — BASIRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@0.383.0"></script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{fontFamily:{sans:["Inter","sans-serif"]},colors:{obsidian:{950:"#050505",900:"#0A0A0A",800:"#111111",700:"#1A1A1A",600:"#222222",500:"#2A2A2A",400:"#333333",300:"#444444"},platinum:{DEFAULT:"#C0C0C0",light:"#D4D4D4"},cream:{DEFAULT:"#FAFAF8",warm:"#F5F3F0",muted:"#E8E6E3"}}}}}</script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:"Inter",sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}.dark ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}::-webkit-scrollbar-thumb{background:#CCC;border-radius:10px}
+.header-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.theme-transition,.theme-transition *{transition:background-color .5s ease,color .5s ease,border-color .5s ease !important}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}.anim-fade{opacity:0;transform:translateY(40px)}.anim-fade.visible{animation:fadeInUp .9s cubic-bezier(.16,1,.3,1) forwards}
+.toggle-track{transition:background-color .3s ease}.toggle-thumb{transition:transform .35s cubic-bezier(.68,-.3,.32,1.3)}
+@keyframes tIn{from{transform:translateY(-16px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}@keyframes tOut{from{opacity:1}to{transform:translateY(-16px) scale(.96);opacity:0}}.toast-in{animation:tIn .35s cubic-bezier(.16,1,.3,1) forwards}.toast-out{animation:tOut .25s ease-in forwards}
+.article-content{line-height:1.9}.article-content h2{margin-top:2rem;margin-bottom:1rem;font-weight:600;font-size:1.5rem}.article-content p{margin-bottom:1rem}
+#back-to-top{opacity:0;transform:translateY(10px);transition:all .3s ease;pointer-events:none}#back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.reaction-btn{transition:all .2s ease}.reaction-btn.liked{color:#22c55e!important;border-color:#22c55e!important}.reaction-btn.disliked{color:#ef4444!important;border-color:#ef4444!important}
+.comment-area{display:none}.comment-area.open{display:block;animation:slideDown .25s ease}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.add-comment-panel{display:none}.add-comment-panel.open{display:block;animation:slideDown .25s ease}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
+</style></head>
 <body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">
-
-  <!-- PROGRESS BAR -->
-  <div class="fixed top-0 left-0 right-0 z-[150] h-[3px] dark:bg-obsidian-700 bg-obsidian-200">
-    <div id="read-progress" class="h-full bg-gradient-to-r from-platinum to-platinum/60" style="width:0%"></div>
-  </div>
-
-  <!-- TOAST -->
-  <div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- SOURCES MODAL -->
-  <div id="sources-modal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
-    <div class="max-w-[540px] w-full max-h-[80vh] overflow-y-auto rounded-2xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] p-6">
-      <div class="flex items-center justify-between mb-5">
-        <h3 class="text-[17px] font-semibold dark:text-white text-obsidian-900">Sources & References</h3>
-        <button onclick="document.getElementById('sources-modal').classList.add('hidden')" class="p-2 rounded-lg dark:hover:bg-white/[0.05] hover:bg-obsidian-800/[0.05] transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div id="sources-list" class="space-y-3">
-        
-      <a href="https://www.google.com/search?q=https://scienceexchange.caltech.edu/topics/quantum-science-explainers/quantum-physics" target="_blank" rel="noopener noreferrer"
-         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-white
-                border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.03] transition group">
-        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center
-                     justify-center text-[10px] font-bold dark:text-platinum/60
-                     text-obsidian-500 flex-shrink-0">1</span>
-        <div>
-          <p class="text-[13px] font-medium dark:text-platinum/80 text-obsidian-700 group-hover:dark:text-white transition-colors">Caltech: What Is Quantum Physics?</p>
-          <p class="text-[11px] dark:text-platinum/30 text-obsidian-400 break-all mt-0.5">https://www.google.com/search?q=https://scienceexchange.caltech.edu/topics/quantum-science-explainers/quantum-physics</p>
-        </div>
-      </a>
-      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer"
-         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-white
-                border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.03] transition group">
-        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center
-                     justify-center text-[10px] font-bold dark:text-platinum/60
-                     text-obsidian-500 flex-shrink-0">2</span>
-        <div>
-          <p class="text-[13px] font-medium dark:text-platinum/80 text-obsidian-700 group-hover:dark:text-white transition-colors">NASA Jet Propulsion Laboratory: The Strange World of Quantum Mechanics</p>
-          <p class="text-[11px] dark:text-platinum/30 text-obsidian-400 break-all mt-0.5">https://gemini.google.com/</p>
-        </div>
-      </a>
-      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer"
-         class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-white
-                border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.03] transition group">
-        <span class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center
-                     justify-center text-[10px] font-bold dark:text-platinum/60
-                     text-obsidian-500 flex-shrink-0">3</span>
-        <div>
-          <p class="text-[13px] font-medium dark:text-platinum/80 text-obsidian-700 group-hover:dark:text-white transition-colors">Scientific American: Understanding Quantum Superposition</p>
-          <p class="text-[11px] dark:text-platinum/30 text-obsidian-400 break-all mt-0.5">https://gemini.google.com/</p>
-        </div>
-      </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <header class="sticky top-0 z-[100] header-blur dark:bg-obsidian-900/80 bg-cream/80 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
-    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
-      <div class="flex items-center justify-between h-[68px] gap-4">
-        <a href="../index.html" class="flex items-center gap-2.5 flex-shrink-0">
-          <div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/20 border-obsidian-800/10 flex items-center justify-center">
-            <i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i>
-          </div>
-          <span class="text-[15px] font-semibold tracking-[0.25em] uppercase dark:text-platinum text-obsidian-800">BASIRA</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-1">
-          <a href="../index.html"    class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition">Home</a>
-          <a href="../articles.html" class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition">Articles</a>
-          <a href="../about.html"    class="px-4 py-2 text-[13px] dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition">About</a>
-        </nav>
-        <button onclick="toggleTheme()"
-          class="relative w-[52px] h-[28px] rounded-full dark:bg-obsidian-600 bg-gray-200 cursor-pointer flex items-center px-[3px]">
-          <div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700 flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0">
-            <i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i>
-            <i data-lucide="sun"  class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i>
-          </div>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- BACK TO TOP -->
-  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    class="fixed bottom-6 right-6 z-[100] w-11 h-11 rounded-full dark:bg-obsidian-700 bg-white shadow-lg border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center dark:text-platinum/60 text-obsidian-500 hover:dark:bg-obsidian-600 transition-all duration-300">
-    <i data-lucide="arrow-up" class="w-4 h-4"></i>
-  </button>
-
-  <main class="max-w-[860px] mx-auto px-5 sm:px-8 py-16">
-
-    <a href="../articles.html" class="inline-flex items-center gap-2 text-[12px] tracking-widest uppercase dark:text-platinum/40 text-obsidian-400 hover:dark:text-platinum hover:text-obsidian-800 transition mb-8">
-      <i data-lucide="arrow-left" class="w-3 h-3"></i> Back to Articles
-    </a>
-
-    <span class="inline-block px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] text-[10px] tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500 mb-6">science</span>
-
-    <h1 class="text-[36px] sm:text-[48px] font-bold tracking-[-0.02em] leading-[1.1] dark:text-white text-obsidian-900 mb-6">What is Quantum Physics?</h1>
-
-    <div class="flex flex-wrap items-center gap-5 text-[13px] dark:text-platinum/40 text-obsidian-500 mb-10">
-      <div class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i>8 min read</div>
-      <div class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>By Omer</div>
-    </div>
-
-    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80" alt="What is Quantum Physics?" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 mb-12" onerror="this.style.display='none'">
-
-    <article class="article-content"><h1>Quantum Physics: The Strange World of Subatomic Particles</h1>
-
-<h2>Why is Quantum Physics Different?</h2>
-<p>Quantum physics dives into the mysteries of the universe's smallest particles, such as electrons and photons, studying the hidden forces that govern their behavior. While classical physics successfully explains the motion of planets, cars, and everything visible to the naked eye, quantum mechanics completely shatters these conventional rules. It reveals that subatomic particles do not follow everyday logic; instead, they can exist in multiple states and locations simultaneously, defying the predictable laws of our macroscopic world.</p>
-
-<h2>Key Concepts: The Pillars of Quantum Mechanics</h2>
-<p>The quantum realm is built upon three foundational concepts that may seem counterintuitive but are scientifically proven. The first is wave-particle duality, which shows that light and matter can display characteristics of both waves and particles. The second is superposition, a phenomenon where a particle exists in all possible states at once until it is measured or observed. Finally, quantum entanglement links particles in such a way that the state of one instantly influences the other, regardless of how vast the distance is between them.</p>
-
-<h2>From Theory to Reality: Everyday Technologies</h2>
-<p>Although these ideas sound highly theoretical, our understanding of quantum mechanics has directly shaped modern civilization. This seemingly abstract science is responsible for some of the most critical technologies today. Without quantum physics, we wouldn't have lasers, transistors to power smartphones and computers, or MRI machines used in medical diagnostics. Today, simplifying and mastering these quantum phenomena is paving the way for the next technological frontier: ultra-powerful quantum computing and unhackable security networks.</p></article>
-
-    <!-- ACTIONS -->
-    <div class="mt-10 flex flex-wrap items-center gap-3">
-      <button onclick="document.getElementById('sources-modal').classList.remove('hidden')"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition">
-        <i data-lucide="book-open" class="w-4 h-4"></i> Sources Used
-      </button>
-    </div>
-
-    <!-- REACTIONS -->
-    <div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
-      <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p>
-      <div class="flex flex-wrap items-center gap-3 mb-10">
-        <button id="btn-like" onclick="react('like')"
-          class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium">
-          <i data-lucide="thumbs-up" class="w-4 h-4"></i>
-          <span id="like-count">0</span>
-        </button>
-        <button id="btn-dislike" onclick="react('dislike')"
-          class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium">
-          <i data-lucide="thumbs-down" class="w-4 h-4"></i>
-          <span id="dislike-count">0</span>
-        </button>
-        <button onclick="shareArticle('whatsapp')"
-          class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          WhatsApp
-        </button>
-        <button onclick="shareArticle('copy')"
-          class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium">
-          <i data-lucide="link" class="w-4 h-4"></i> Copy Link
-        </button>
-      </div>
-
-      <!-- COMMENTS -->
-      <div class="flex items-center gap-2 mb-4">
-        <i data-lucide="message-circle" class="w-4 h-4 dark:text-platinum/40 text-obsidian-400"></i>
-        <p class="text-[13px] font-semibold dark:text-platinum/70 text-obsidian-600">
-          Comments <span id="comments-count" class="dark:text-platinum/30 font-normal"></span>
-        </p>
-      </div>
-      <div id="comments-preview" class="space-y-3 mb-3"></div>
-      <button id="show-all-btn" onclick="showAllComments()"
-        class="hidden w-full py-2.5 rounded-xl text-[12px] font-medium dark:bg-white/[0.03] bg-obsidian-800/[0.03] dark:text-platinum/50 text-obsidian-500 border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] transition mb-3">
-      </button>
-      <div id="comments-all" class="hidden space-y-3 mb-3"></div>
-
-      <!-- WRITE COMMENT -->
-      <div class="mt-4 pt-4 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
-        <p class="text-[11px] font-medium tracking-[0.15em] uppercase dark:text-platinum/30 text-obsidian-400 mb-3">Write a comment</p>
-        <input id="comment-name" type="text" placeholder="Your name (optional)"
-          class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[13px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition">
-        <textarea id="comment-input" rows="3" placeholder="Share your thoughts..."
-          class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[14px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition resize-none"></textarea>
-        <button onclick="submitComment()"
-          class="mt-3 px-5 py-2.5 rounded-xl dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:dark:bg-white hover:bg-obsidian-700 transition">
-          Post Comment
-        </button>
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] mt-10">
-    <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/15 border-obsidian-800/10 flex items-center justify-center">
-            <i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum/60 text-obsidian-500"></i>
-          </div>
-          <span class="text-[13px] font-semibold tracking-[0.25em] uppercase dark:text-platinum/50 text-obsidian-500">BASIRA</span>
-        </div>
-        <div class="flex items-center gap-6">
-          <a href="../index.html"    class="text-[11px] tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition">Home</a>
-          <a href="../articles.html" class="text-[11px] tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition">Articles</a>
-          <a href="../about.html"    class="text-[11px] tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition">About</a>
-        </div>
-        <p class="text-[11px] dark:text-platinum/20 text-obsidian-400/50">© 2025 BASIRA. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    const SB_URL = 'https://yteicgsqfpzexvkllhec.supabase.co';
-    const SB_KEY = 'sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP';
-    const ARTICLE_ID = '1';
-
-    // ── Supabase helpers ──
-    async function sbGet(path) {
-      try {
-        const r = await fetch(SB_URL+'/rest/v1/'+path, { headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY} });
-        return r.ok ? r.json() : null;
-      } catch(e){ return null; }
-    }
-    async function sbPost(table, data) {
-      try {
-        const r = await fetch(SB_URL+'/rest/v1/'+table, {
-          method:'POST',
-          headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
-          body: JSON.stringify(data)
-        });
-        return r.ok ? r.json() : null;
-      } catch(e){ return null; }
-    }
-    async function sbDelete(path) {
-      try {
-        const r = await fetch(SB_URL+'/rest/v1/'+path, { method:'DELETE', headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY} });
-        return r.ok;
-      } catch(e){ return false; }
-    }
-
-    // ── Session ──
-    function getSid() {
-      let s = localStorage.getItem('basira-session');
-      if (!s) { s = 'sid_'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('basira-session',s); }
-      return s;
-    }
-
-    function sanitize(str) {
-      const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
-    }
-
-    // ── Theme ──
-    function toggleTheme() {
-      const html = document.documentElement;
-      const thumb = document.querySelector('.toggle-thumb');
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        thumb.classList.replace('translate-x-[24px]','translate-x-0');
-        localStorage.setItem('basira-theme','light');
-      } else {
-        html.classList.add('dark');
-        thumb.classList.replace('translate-x-0','translate-x-[24px]');
-        localStorage.setItem('basira-theme','dark');
-      }
-      if(window.lucide) lucide.createIcons();
-    }
-
-    // ── Toast ──
-    function showToast(msg, icon) {
-      const box = document.getElementById('toast-box');
-      const t = document.createElement('div');
-      t.className = 'toast-in pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-xl dark:bg-obsidian-700/95 bg-white/95 shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[200px]';
-      t.innerHTML = '<div class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0"><i data-lucide="'+icon+'" class="w-3 h-3 dark:text-platinum/70 text-obsidian-600"></i></div><span class="text-[12px] font-medium dark:text-platinum/80 text-obsidian-700">'+msg+'</span>';
-      box.appendChild(t);
-      if(window.lucide) lucide.createIcons({nodes:[t]});
-      setTimeout(()=>{ t.classList.replace('toast-in','toast-out'); setTimeout(()=>t.remove(),300); },2200);
-    }
-
-    // ── Reactions ──
-    async function loadReactions() {
-      const data = await sbGet('reactions?article_id=eq.'+ARTICLE_ID+'&select=type');
-      if (data) {
-        document.getElementById('like-count').textContent    = data.filter(r=>r.type==='like').length;
-        document.getElementById('dislike-count').textContent = data.filter(r=>r.type==='dislike').length;
-      }
-      const saved = localStorage.getItem('basira-reaction-'+ARTICLE_ID);
-      if (saved) {
-        document.getElementById('btn-like').classList.toggle('liked', saved==='like');
-        document.getElementById('btn-dislike').classList.toggle('disliked', saved==='dislike');
-      }
-    }
-
-    async function react(type) {
-      const key  = 'basira-reaction-'+ARTICLE_ID;
-      const prev = localStorage.getItem(key);
-      if (prev === type) {
-        await sbDelete('reactions?article_id=eq.'+ARTICLE_ID+'&type=eq.'+type);
-        localStorage.removeItem(key);
-        document.getElementById('btn-like').classList.remove('liked');
-        document.getElementById('btn-dislike').classList.remove('disliked');
-        showToast('Reaction removed','minus-circle');
-      } else {
-        if (prev) await sbDelete('reactions?article_id=eq.'+ARTICLE_ID+'&type=eq.'+prev);
-        await sbPost('reactions',{article_id:ARTICLE_ID,type:type,session_id:getSid()});
-        localStorage.setItem(key, type);
-        document.getElementById('btn-like').classList.toggle('liked', type==='like');
-        document.getElementById('btn-dislike').classList.toggle('disliked', type==='dislike');
-        showToast(type==='like'?'Thanks! ❤️':'Feedback noted', type==='like'?'heart':'frown');
-      }
-      loadReactions();
-    }
-
-    // ── Comments ──
-    let _allComments = [];
-
-    function buildCard(c) {
-      const isOwner = c.session_id === getSid();
-      const del = isOwner ? '<button onclick="delComment(''+c.id+'')" class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] dark:text-platinum/30 text-obsidian-400 hover:dark:text-red-400 hover:text-red-500 hover:dark:bg-red-500/10 hover:bg-red-500/5 border dark:border-white/[0.04] border-obsidian-800/[0.04] transition"><i data-lucide="trash-2" class="w-3 h-3"></i>Delete</button>' : '';
-      return '<div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]"><div class="flex items-center gap-2 mb-2"><div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">'+sanitize((c.author||'R')[0].toUpperCase())+'</div><span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">'+sanitize(c.author||'Reader')+'</span><span class="text-[10px] px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">'+new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</span>'+del+'</div><p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">'+sanitize(c.content)+'</p></div>';
-    }
-
-    async function loadComments() {
-      const data = await sbGet('comments?article_id=eq.'+ARTICLE_ID+'&order=created_at.desc');
-      _allComments = data || [];
-      const preview  = document.getElementById('comments-preview');
-      const allDiv   = document.getElementById('comments-all');
-      const showBtn  = document.getElementById('show-all-btn');
-      const countEl  = document.getElementById('comments-count');
-      if (countEl) countEl.textContent = _allComments.length > 0 ? '('+_allComments.length+')' : '';
-      if (_allComments.length === 0) {
-        preview.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 py-2">No comments yet. Be the first!</p>';
-        showBtn.classList.add('hidden'); allDiv.classList.add('hidden'); return;
-      }
-      preview.innerHTML = _allComments.slice(0,2).map(buildCard).join('');
-      lucide.createIcons({nodes:[preview]});
-      if (_allComments.length > 2) {
-        allDiv.innerHTML = _allComments.slice(2).map(buildCard).join('');
-        allDiv.classList.add('hidden');
-        lucide.createIcons({nodes:[allDiv]});
-        showBtn.textContent = 'View all '+_allComments.length+' comments';
-        showBtn.classList.remove('hidden');
-      } else {
-        showBtn.classList.add('hidden'); allDiv.classList.add('hidden');
-      }
-    }
-
-    function showAllComments() {
-      document.getElementById('comments-all').classList.remove('hidden');
-      document.getElementById('show-all-btn').classList.add('hidden');
-    }
-
-    async function submitComment() {
-      const input  = document.getElementById('comment-input');
-      const nameEl = document.getElementById('comment-name');
-      const text   = input.value.trim();
-      const author = (nameEl?nameEl.value.trim():'')||'Reader';
-      if (!text) { showToast('Please write something first','alert-circle'); return; }
-      const res = await sbPost('comments',{article_id:ARTICLE_ID,content:text,author:author,session_id:getSid()});
-      if (res) {
-        input.value = ''; if(nameEl) nameEl.value = '';
-        document.getElementById('comments-all').classList.remove('hidden');
-        document.getElementById('show-all-btn').classList.add('hidden');
-        await loadComments();
-        showToast('Comment posted!','check-circle');
-      } else showToast('Error posting comment','alert-circle');
-    }
-
-    async function delComment(id) {
-      if (!confirm('Delete your comment?')) return;
-      const ok = await sbDelete('comments?id=eq.'+id+'&session_id=eq.'+getSid());
-      if (ok) { loadComments(); showToast('Comment deleted','trash-2'); }
-      else showToast('Could not delete','alert-circle');
-    }
-
-    // ── Share ──
-    function shareArticle(platform) {
-      const url   = window.location.href;
-      const title = 'What is Quantum Physics?';
-      if (platform==='copy') navigator.clipboard.writeText(url).then(()=>showToast('Link copied!','check-circle'));
-      else if (platform==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(title+'\n'+url),'_blank');
-    }
-
-    // ── Progress bar ──
-    window.addEventListener('scroll', () => {
-      const doc = document.documentElement;
-      const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
-      document.getElementById('read-progress').style.width = Math.min(100,pct)+'%';
-      document.getElementById('back-to-top').classList.toggle('visible', window.scrollY > 400);
-    });
-
-    // ── Track view ──
-    async function trackView() {
-      const key = 'basira-viewed-'+ARTICLE_ID;
-      if (sessionStorage.getItem(key)) return;
-      sessionStorage.setItem(key,'1');
-      await sbPost('views',{article_id:ARTICLE_ID});
-    }
-
-    // ── Init ──
-    document.addEventListener('DOMContentLoaded', () => {
-      const saved = localStorage.getItem('basira-theme');
-      if (saved === 'light') {
-        document.documentElement.classList.remove('dark');
-        const th = document.querySelector('.toggle-thumb');
-        if (th) { th.classList.remove('translate-x-[24px]'); th.classList.add('translate-x-0'); }
-      }
-      if(window.lucide) lucide.createIcons();
-      loadReactions();
-      loadComments();
-      trackView();
-    });
-  </script>
-</body>
-</html>
+<div class="fixed top-0 left-0 right-0 z-[150] h-[3px] dark:bg-obsidian-700 bg-obsidian-200"><div id="read-progress" class="h-full bg-gradient-to-r from-platinum to-platinum/60" style="width:0%"></div></div>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:&quot;smooth&quot;})" class="fixed bottom-6 right-6 z-[100] w-11 h-11 rounded-full dark:bg-obsidian-700 bg-white shadow-lg border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center dark:text-platinum/60 text-obsidian-500 transition-all duration-300"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+<div id="sources-modal" class="modal-overlay hidden" onclick="closeSources(event)"><div class="max-w-[540px] w-full max-h-[80vh] overflow-y-auto rounded-2xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] p-6"><div class="flex items-center justify-between mb-5"><h3 class="text-[17px] font-semibold dark:text-white text-obsidian-900">Sources &amp; References</h3><button onclick="document.getElementById('sources-modal').classList.add('hidden')" class="p-2 rounded-lg dark:hover:bg-white/[0.05] transition"><i data-lucide="x" class="w-4 h-4"></i></button></div><div id="sources-list" class="space-y-3"></div></div></div>
+<div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+<header class="fixed top-0 left-0 right-0 z-[100] header-blur dark:bg-obsidian-900/70 bg-cream/70 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12"><div class="flex items-center justify-between h-[72px] gap-4">
+<a href="../index.html" class="flex-shrink-0 flex items-center gap-2.5 group"><div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/20 border-obsidian-800/10 flex items-center justify-center group-hover:dark:bg-platinum/20 transition-colors duration-300"><i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i></div><span class="text-[15px] font-semibold tracking-[0.25em] uppercase dark:text-platinum-light text-obsidian-800">BASIRA</span></a>
+<nav class="hidden md:flex items-center gap-1"><a href="../index.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Home</a><a href="../articles.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Articles</a><a href="../about.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">About</a><a href="../index.html#contact" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Contact</a></nav>
+<div class="flex items-center gap-3 flex-shrink-0"><button onclick="toggleLanguage()" id="langBtn" class="px-3 py-1.5 text-[12px] font-medium border dark:border-platinum/20 border-obsidian-800/20 dark:text-platinum/70 text-obsidian-600 rounded-lg dark:hover:bg-platinum/10 hover:bg-obsidian-800/5 transition-all duration-200">العربية</button><button onclick="toggleTheme()" class="relative w-[52px] h-[28px] rounded-full dark:bg-obsidian-600 bg-gray-200 toggle-track cursor-pointer flex items-center px-[3px]"><div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700 flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0"><i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i><i data-lucide="sun" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i></div></button><button id="mobile-btn" onclick="toggleMobile()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg dark:hover:bg-white/5 transition"><i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i></button></div>
+</div></div><div id="mobile-menu" class="md:hidden hidden border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="px-5 py-4 flex flex-col gap-1 dark:bg-obsidian-900/90 bg-cream/90 header-blur"><a href="../index.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Home</a><a href="../articles.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Articles</a><a href="../about.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">About</a><a href="../index.html#contact" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Contact</a></div></div></header>
+<main class="pt-[72px]">
+<section class="py-16 lg:py-24 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
+<a href="../articles.html" class="inline-flex items-center gap-2 text-[12px] font-medium tracking-widest uppercase dark:text-platinum/50 text-obsidian-400 hover:dark:text-platinum hover:text-obsidian-800 transition-colors mb-6"><i data-lucide="arrow-left" class="w-3 h-3"></i>Back to Articles</a>
+<div class="anim-fade"><span class="inline-block px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500 mb-6">science</span>
+<h1 class="text-[36px] sm:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.1] dark:text-white text-obsidian-900 mb-6">What is Quantum Physics?</h1>
+<div class="flex flex-wrap items-center gap-6 text-[13px] font-light dark:text-platinum/40 text-obsidian-500"><div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i><span>May 23, 2026</span></div><div class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i><span>8 min min read</span></div><div class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i><span>By Omer</span></div></div></div></div></section>
+<section class="py-0"><div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12"><img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&amp;q=80" alt="What is Quantum Physics?" loading="eager" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 my-12" onerror="this.style.display='none'"></div></section>
+<section class="py-16 lg:py-24"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
+<article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"></article>
+<div class="mt-10 flex flex-wrap items-center gap-3"><button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="book-open" class="w-4 h-4"></i>Sources Used</button>
+</div>
+<div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p>
+<div class="flex flex-wrap items-center gap-3"><button onclick="react('like')" id="btn-like" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="thumbs-up" class="w-4 h-4"></i><span id="like-count">0</span></button><button onclick="react('dislike')" id="btn-dislike" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="thumbs-down" class="w-4 h-4"></i><span id="dislike-count">0</span></button><button onclick="toggleComment()" id="comments-toggle-btn" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="message-circle" class="w-4 h-4"></i><span>Comments</span><span id="comments-count-badge" class="hidden min-w-[20px] h-5 px-1.5 rounded-full dark:bg-platinum/15 bg-obsidian-800/10 dark:text-platinum/80 text-obsidian-700 text-[10px] font-semibold flex items-center justify-center"></span></button><button onclick="shareArticle('whatsapp')" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp</button><button onclick="shareArticle('copy')" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="link" class="w-4 h-4"></i><span>Copy Link</span></button></div>
+<div id="comment-area" class="comment-area mt-5"><div id="comments-list" class="space-y-3 mb-5"></div>
+<button onclick="toggleAddComment()" id="add-comment-trigger" class="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] dark:text-platinum/35 text-obsidian-400 text-[13px] font-light hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.05] hover:dark:text-platinum/60 hover:text-obsidian-600 transition-all duration-200"><div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0"><i data-lucide="pencil-line" class="w-3.5 h-3.5"></i></div><span>Add a comment...</span></button>
+<div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] dark:bg-white/[0.02] bg-white/60"><div class="flex items-center justify-between mb-4"><p class="text-[12px] font-semibold dark:text-platinum/60 text-obsidian-600">New Comment</p><button onclick="toggleAddComment()" class="w-6 h-6 flex items-center justify-center rounded-lg dark:hover:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition dark:text-platinum/30 text-obsidian-400"><i data-lucide="x" class="w-3.5 h-3.5"></i></button></div><input id="comment-name" type="text" placeholder="Your name *" required class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[13px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300"><textarea id="comment-input" rows="3" placeholder="Write your comment..." class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[14px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea><div class="flex items-center justify-between mt-3"><p class="text-[10px] dark:text-platinum/20 text-obsidian-400">* Name is required</p><button onclick="submitComment()" class="flex items-center gap-2 px-6 py-2.5 rounded-xl dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200"><i data-lucide="send" class="w-3.5 h-3.5"></i>Post Comment</button></div></div></div></div>
+<div id="related-section" class="mt-12 pt-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] hidden"><p class="text-[12px] font-medium tracking-[0.25em] uppercase dark:text-platinum/30 text-obsidian-400 mb-5">Related Articles</p><div id="related-grid" class="space-y-3"></div></div>
+</div></section></main>
+<footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12"><div class="flex flex-col md:flex-row items-center justify-between gap-6"><div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/15 border-obsidian-800/10 flex items-center justify-center"><i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum/60 text-obsidian-500"></i></div><span class="text-[13px] font-semibold tracking-[0.25em] uppercase dark:text-platinum/50 text-obsidian-500">BASIRA</span></div><div class="flex items-center gap-6"><a href="../index.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">Home</a><a href="../articles.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">Articles</a><a href="../about.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">About</a></div><p class="text-[11px] font-light dark:text-platinum/20 text-obsidian-400/50">© 2025 BASIRA. All rights reserved.</p></div></div></footer>
+<script>
+const SB_URL="https://yteicgsqfpzexvkllhec.supabase.co";const SB_KEY="sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP";
+const STATIC_ID="1";const STATIC_TITLE="What is Quantum Physics?";const STATIC_TITLE_AR="";const STATIC_CONTENT="<h1>Quantum Physics: The Strange World of Subatomic Particles</h1>\n\n<h2>Why is Quantum Physics Different?</h2>\n<p>Quantum physics dives into the mysteries of the universe's smallest particles, such as electrons and photons, studying the hidden forces that govern their behavior. While classical physics successfully explains the motion of planets, cars, and everything visible to the naked eye, quantum mechanics completely shatters these conventional rules. It reveals that subatomic particles do not follow everyday logic; instead, they can exist in multiple states and locations simultaneously, defying the predictable laws of our macroscopic world.</p>\n\n<h2>Key Concepts: The Pillars of Quantum Mechanics</h2>\n<p>The quantum realm is built upon three foundational concepts that may seem counterintuitive but are scientifically proven. The first is wave-particle duality, which shows that light and matter can display characteristics of both waves and particles. The second is superposition, a phenomenon where a particle exists in all possible states at once until it is measured or observed. Finally, quantum entanglement links particles in such a way that the state of one instantly influences the other, regardless of how vast the distance is between them.</p>\n\n<h2>From Theory to Reality: Everyday Technologies</h2>\n<p>Although these ideas sound highly theoretical, our understanding of quantum mechanics has directly shaped modern civilization. This seemingly abstract science is responsible for some of the most critical technologies today. Without quantum physics, we wouldn't have lasers, transistors to power smartphones and computers, or MRI machines used in medical diagnostics. Today, simplifying and mastering these quantum phenomena is paving the way for the next technological frontier: ultra-powerful quantum computing and unhackable security networks.</p>";const STATIC_CONTENT_AR="";const STATIC_SOURCES=[{"url":"https://www.google.com/search?q=https://scienceexchange.caltech.edu/topics/quantum-science-explainers/quantum-physics","title":"Caltech: What Is Quantum Physics?"},{"url":"https://gemini.google.com/","title":"NASA Jet Propulsion Laboratory: The Strange World of Quantum Mechanics"},{"url":"https://gemini.google.com/","title":"Scientific American: Understanding Quantum Superposition"}];
+let articleLang="en";let currentArticle={id:STATIC_ID,title:STATIC_TITLE,title_ar:STATIC_TITLE_AR,content:STATIC_CONTENT,content_ar:STATIC_CONTENT_AR,sources:STATIC_SOURCES};let articleData=currentArticle;let userReaction=null;
+function getArticleId(){return STATIC_ID;}
+function getSessionId(){let s=localStorage.getItem("basira-session");if(!s){s="sid_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("basira-session",s);}return s;}
+function sanitize(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+async function sbGet(p){try{const r=await fetch(SB_URL+"/rest/v1/"+p,{headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});return r.ok?r.json():null;}catch(e){return null;}}
+async function sbPost(t,d){try{const r=await fetch(SB_URL+"/rest/v1/"+t,{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json","Prefer":"return=representation"},body:JSON.stringify(d)});return r.ok?r.json():null;}catch(e){return null;}}
+async function sbDelete(p){try{const r=await fetch(SB_URL+"/rest/v1/"+p,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});return r.ok;}catch(e){return false;}}
+function buildCommentCard(c,sid){const isOwner=c.session_id===sid;const db=isOwner?`<button onclick="deleteComment('${c.id}')" class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium dark:text-platinum/30 text-obsidian-400 hover:dark:text-red-400 hover:text-red-500 hover:dark:bg-red-500/10 hover:bg-red-500/5 border dark:border-white/[0.04] border-obsidian-800/[0.04] transition-all duration-200"><i data-lucide="trash-2" class="w-3 h-3"></i>Delete</button>`:"";return `<div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]"><div class="flex items-center gap-2 mb-2"><div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||"R")[0].toUpperCase()}</div><span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author||"")}</span><span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>${db}</div><p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p></div>`;}
+let _allComments=[];async function loadComments(){const id=getArticleId(),sid=getSessionId();const data=await sbGet("comments?article_id=eq."+id+"&order=created_at.desc");_allComments=data||[];const list=document.getElementById("comments-list");if(!list)return;const count=(_allComments||[]).length;const badge=document.getElementById("comments-count-badge");if(badge){if(count>0){badge.textContent=count;badge.classList.remove("hidden");badge.classList.add("flex");}else{badge.classList.add("hidden");badge.classList.remove("flex");}}if(!data||data.length===0){list.innerHTML='<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 pb-2">No comments yet. Be the first!</p>';return;}list.innerHTML=data.map(c=>{const isOwner=c.session_id===sid;const db=isOwner?`<button onclick="deleteComment('${c.id}')" class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium dark:text-platinum/30 text-obsidian-400 hover:dark:text-red-400 hover:text-red-500 hover:dark:bg-red-500/10 hover:bg-red-500/5 border dark:border-white/[0.04] border-obsidian-800/[0.04] transition-all duration-200"><i data-lucide="trash-2" class="w-3 h-3"></i>Delete</button>`:"";return `<div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]"><div class="flex items-center gap-2 mb-2"><div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'?')[0].toUpperCase()}</div><span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author)}</span><span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>${db}</div><p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p></div>`;}).join("");lucide.createIcons({nodes:[list]});}
+function toggleComment(){const box=document.getElementById("comment-area");box.classList.toggle("open");if(!box.classList.contains("open")){const p=document.getElementById("add-comment-panel");if(p)p.classList.remove("open");}}
+function toggleAddComment(){const panel=document.getElementById("add-comment-panel");panel.classList.toggle("open");if(panel.classList.contains("open")){setTimeout(()=>document.getElementById("comment-name").focus(),50);}}
+async function submitComment(){const input=document.getElementById("comment-input"),nameEl=document.getElementById("comment-name"),text=input.value.trim(),author=nameEl?nameEl.value.trim():"";if(!author){nameEl.style.borderColor="rgba(239,68,68,0.6)";nameEl.focus();showToast("Please enter your name","alert-circle");setTimeout(()=>nameEl.style.borderColor="",2000);return;}if(!text){showToast("Please write something first","alert-circle");return;}const result=await sbPost("comments",{article_id:String(getArticleId()),content:text,author:author,session_id:getSessionId()});if(result){input.value="";nameEl.value="";document.getElementById("add-comment-panel").classList.remove("open");loadComments();showToast("Comment posted!","check-circle");}else showToast("Error posting comment","alert-circle");}
+async function deleteComment(id){if(!confirm("Delete your comment?"))return;const ok=await sbDelete("comments?id=eq."+id+"&session_id=eq."+getSessionId());if(ok){loadComments();showToast("Comment deleted","trash-2");}else showToast("Could not delete","alert-circle");}
+async function loadReactions(){const id=getArticleId();const data=await sbGet("reactions?article_id=eq."+id+"&select=type");if(data){document.getElementById("like-count").textContent=data.filter(r=>r.type==="like").length;document.getElementById("dislike-count").textContent=data.filter(r=>r.type==="dislike").length;}const saved=localStorage.getItem("basira-reaction-"+id);if(saved){userReaction=saved;document.getElementById("btn-like").classList.toggle("liked",saved==="like");document.getElementById("btn-dislike").classList.toggle("disliked",saved==="dislike");}}
+async function react(type){const id=String(getArticleId()),k="basira-reaction-"+id,prev=localStorage.getItem(k);if(prev===type){try{await fetch(SB_URL+"/rest/v1/reactions?article_id=eq."+id+"&type=eq."+type,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});}catch(e){}userReaction=null;document.getElementById("btn-like").classList.remove("liked");document.getElementById("btn-dislike").classList.remove("disliked");localStorage.removeItem(k);showToast("Reaction removed","minus-circle");}else{if(prev){try{await fetch(SB_URL+"/rest/v1/reactions?article_id=eq."+id+"&type=eq."+prev,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});}catch(e){}}userReaction=type;document.getElementById("btn-like").classList.toggle("liked",type==="like");document.getElementById("btn-dislike").classList.toggle("disliked",type==="dislike");localStorage.setItem(k,type);await sbPost("reactions",{article_id:id,type:type,session_id:getSessionId()});showToast(type==="like"?"Thanks! ❤️":"Feedback noted",type==="like"?"heart":"frown");}loadReactions();}
+function openSources(){const sources=STATIC_SOURCES,list=document.getElementById("sources-list");if(!list)return;if(!sources||!sources.length){list.innerHTML="<p class="text-[13px] dark:text-platinum/40 text-obsidian-500">No sources listed.</p>";}else{list.innerHTML=sources.map((s,i)=>`<a href="${s.url}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] transition-all duration-200 group"><span class="flex-shrink-0 w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-obsidian-500">${i+1}</span><div><p class="text-[13px] font-medium dark:text-platinum/80 text-obsidian-700 group-hover:dark:text-white">${s.title}</p><p class="text-[11px] dark:text-platinum/30 text-obsidian-400 mt-0.5 break-all">${s.url}</p></div></a>`).join("");}document.getElementById("sources-modal").classList.remove("hidden");}
+function closeSources(e){if(e.target.id==="sources-modal")document.getElementById("sources-modal").classList.add("hidden");}
+function shareArticle(p){const u="https://basira.top/articles/what-is-quantum-physics.html",t=STATIC_TITLE;if(p==="copy")navigator.clipboard.writeText(u).then(()=>showToast("Link copied!","check-circle"));else if(p==="whatsapp")window.open("https://wa.me/?text="+encodeURIComponent(t+"
+"+u),"_blank");}
+function toggleArticleLang(){articleLang=articleLang==="en"?"ar":"en";const isAr=articleLang==="ar";const h=document.querySelector("h1");if(h&&isAr&&STATIC_TITLE_AR){h.textContent=STATIC_TITLE_AR;h.style.direction="rtl";h.style.textAlign="right";}else if(h){h.textContent=STATIC_TITLE;h.style.direction="ltr";h.style.textAlign="left";}const c=document.getElementById("article-content");if(c){c.innerHTML=isAr&&STATIC_CONTENT_AR?STATIC_CONTENT_AR:STATIC_CONTENT;c.style.direction=isAr?"rtl":"ltr";c.style.textAlign=isAr?"right":"left";c.style.fontFamily=isAr?"'Cairo',sans-serif":"";}const lbl=document.getElementById("lang-toggle-label");if(lbl)lbl.textContent=isAr?"Read in English":"اقرأ بالعربية";showToast(isAr?"تم التبديل للعربية":"Switched to English","languages");}
+async function loadRelated(){const cat="science",id=STATIC_ID;const s=document.getElementById("related-section"),g=document.getElementById("related-grid");if(!s||!g)return;const data=await sbGet("articles?category=eq."+cat+"&status=eq.published&id=neq."+id);if(!data||!data.length){s.classList.add("hidden");return;}const nonSelf=data.filter(x=>String(x.id)!==String(id)).slice(0,3);if(!nonSelf.length){s.classList.add("hidden");return;}s.classList.remove("hidden");g.innerHTML=nonSelf.map(x=>`<a href="../article.html?id=${x.id}" class="group flex gap-4 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200"><div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"><img src="${x.image||""}" alt="${x.title}" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'"></div><div class="flex-1 min-w-0"><span class="text-[9px] tracking-widest uppercase dark:text-platinum/40 text-obsidian-400">${x.category}</span><p class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mt-0.5 group-hover:dark:text-white transition-colors line-clamp-2">${x.title}</p></div></a>`).join("");lucide.createIcons({nodes:[g]});}
+function toggleLanguage(){const html=document.documentElement,btn=document.getElementById("langBtn");if(btn.textContent.trim()==="العربية"){html.setAttribute("dir","rtl");html.setAttribute("lang","ar");btn.textContent="English";showToast("تم التبديل إلى العربية","languages");}else{html.setAttribute("dir","ltr");html.setAttribute("lang","en");btn.textContent="العربية";showToast("Switched to English","languages");}}
+function toggleTheme(){const html=document.documentElement,thumb=document.querySelector(".toggle-thumb");html.classList.add("theme-transition");if(html.classList.contains("dark")){html.classList.remove("dark");thumb.classList.replace("translate-x-[24px]","translate-x-0");localStorage.setItem("basira-theme","light");showToast("Light mode","sun");}else{html.classList.add("dark");thumb.classList.replace("translate-x-0","translate-x-[24px]");localStorage.setItem("basira-theme","dark");showToast("Dark mode","moon");}setTimeout(()=>lucide.createIcons(),60);setTimeout(()=>html.classList.remove("theme-transition"),600);}
+function toggleMobile(){const menu=document.getElementById("mobile-menu"),btn=document.getElementById("mobile-btn"),isOpen=!menu.classList.contains("hidden");menu.classList.toggle("hidden");btn.innerHTML=isOpen?'<i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>':'<i data-lucide="x" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>';lucide.createIcons({nodes:[btn]});}
+function showToast(msg,icon){const box=document.getElementById("toast-box"),t=document.createElement("div");t.className="toast-in pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl dark:bg-obsidian-700/90 bg-white/90 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[220px]";t.innerHTML=`<div class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0"><i data-lucide="${icon}" class="w-3 h-3 dark:text-platinum/70 text-obsidian-600"></i></div><span class="text-[12px] font-medium dark:text-platinum/80 text-obsidian-700">${msg}</span>`;box.appendChild(t);lucide.createIcons({nodes:[t]});setTimeout(()=>{t.classList.replace("toast-in","toast-out");setTimeout(()=>t.remove(),300);},2200);}
+function initProgressBar(){const bar=document.getElementById("read-progress");if(!bar)return;window.addEventListener("scroll",()=>{const doc=document.documentElement;bar.style.width=Math.min(100,(doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100)+"%";});}
+async function trackView(){const key="basira-viewed-"+STATIC_ID;if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,"1");await sbPost("views",{article_id:STATIC_ID});}
+document.addEventListener("DOMContentLoaded",()=>{if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}document.getElementById("article-content").innerHTML=STATIC_CONTENT;initProgressBar();loadReactions();loadComments();loadRelated();trackView();lucide.createIcons();setTimeout(()=>document.querySelectorAll(".anim-fade").forEach(el=>el.classList.add("visible")),200);window.addEventListener("scroll",()=>{const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});
+</script></body></html>
