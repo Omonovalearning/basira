@@ -42,7 +42,8 @@
 </div></div></section>
 <section class="py-0"><div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12"><img src="https://www.historic-uk.com/wp-content/uploads/2017/06/black-death-768x395.jpg" alt="The Black Death: The Plague That Redrew the Map of Europe" class="w-full rounded-2xl dark:brightness-75 brightness-90 anim-fade my-12" onerror="this.style.display='none'"></div></section>
 <section class="py-16 lg:py-24"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
-<article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"><h2>When People Counted Their Dead in Millions</h2>
+<article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"></article>
+<div id="content-en-store" style="display:none"><h2>When People Counted Their Dead in Millions</h2>
 <p>Between 1347 and 1353, a plague struck Europe with a ferocity humanity had never witnessed before. The Black Death — as it came to be known — killed between 30 and 60 percent of Europe's population. In some cities, half the inhabitants died within a matter of months. This was not merely a health crisis — it was a civilizational earthquake.</p>
 
 <h2>Where Did It Come From?</h2>
@@ -58,7 +59,7 @@
 <p>The Black Death transformed the European spirit at its roots. Art gave rise to the "Dance of Death" motif — Death taking the rich and poor equally. A profound questioning of the Church, which had promised protection and delivered none, spread widely. This very skepticism was among the seeds of what would later become the Renaissance and the Reformation.</p>
 
 <h2>A Lesson Never Forgotten</h2>
-<p>Europe's population took two full centuries to recover to pre-plague levels. But the Europe that emerged was fundamentally different: more questioning, more open to innovation, and less deferential to traditional authority. From the depths of catastrophe, a new world was born.</p></article>
+<p>Europe's population took two full centuries to recover to pre-plague levels. But the Europe that emerged was fundamentally different: more questioning, more open to innovation, and less deferential to traditional authority. From the depths of catastrophe, a new world was born.</p></div>
 <div class="mt-10 flex flex-wrap items-center gap-3">
 <button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="book-open" class="w-4 h-4"></i>Sources Used</button>
 <button id="lang-toggle-btn" onclick="toggleArticleLang()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="languages" class="w-4 h-4"></i><span id="lang-toggle-label">اقرأ بالعربية</span></button>
@@ -78,7 +79,7 @@ let articleLang="en";
 let userReaction=null;
 const TITLE_EN="The Black Death: The Plague That Redrew the Map of Europe";
 const TITLE_AR="الموت الأسود: الوباء الذي أعاد رسم خريطة أوروبا";
-const CONTENT_EN=document.getElementById("article-content").innerHTML;
+const CONTENT_EN=document.getElementById("content-en-store").innerHTML;
 const CONTENT_AR=document.getElementById("content-ar-store").innerHTML;
 function getSessionId(){let s=localStorage.getItem("basira-session");if(!s){s="sid_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("basira-session",s);}return s;}
 function sanitize(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
@@ -102,7 +103,7 @@ function toggleMobile(){const menu=document.getElementById("mobile-menu"),btn=do
 function showToast(msg,icon){const box=document.getElementById("toast-box"),t=document.createElement("div");t.className="toast-in pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl dark:bg-obsidian-700/90 bg-white/90 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[220px]";t.innerHTML="<span style='font-size:12px;font-weight:500'>"+msg+"</span>";box.appendChild(t);setTimeout(()=>{t.classList.replace("toast-in","toast-out");setTimeout(()=>t.remove(),300);},2200);}
 function initProgressBar(){const bar=document.getElementById("read-progress");if(!bar)return;window.addEventListener("scroll",()=>{const doc=document.documentElement;bar.style.width=Math.min(100,(doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100)+"%";});}
 async function trackView(){const key="basira-viewed-"+STATIC_ID;if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,"1");await sbPost("views",{article_id:STATIC_ID});}
-document.addEventListener("DOMContentLoaded",()=>{if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}initProgressBar();loadReactions();loadComments();loadRelated();trackView();lucide.createIcons();setTimeout(()=>document.querySelectorAll(".anim-fade").forEach(el=>el.classList.add("visible")),200);window.addEventListener("scroll",()=>{const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});
+document.addEventListener("DOMContentLoaded",()=>{const ce=document.getElementById("article-content"),cs=document.getElementById("content-en-store");if(ce&&cs){ce.innerHTML=cs.innerHTML;}if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}initProgressBar();loadReactions();loadComments();loadRelated();trackView();lucide.createIcons();setTimeout(()=>document.querySelectorAll(".anim-fade").forEach(el=>el.classList.add("visible")),200);window.addEventListener("scroll",()=>{const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});
 </script>
 <div id="content-ar-store" style="display:none"><h2>حين أحصى الناس موتاهم بالملايين</h2>
 <p>بين عامَي 1347 و1353، ضرب وباء أوروبا بقسوة لم تعرف لها البشرية مثيلاً من قبل. الطاعون الأسود — كما سُمّي لاحقاً — أودى بحياة ما بين 30 و60 بالمئة من سكان القارة الأوروبية. في بعض المدن، مات نصف السكان في أشهر معدودة. لم يكن هذا مجرد كارثة صحية — كان زلزالاً حضارياً.</p>
