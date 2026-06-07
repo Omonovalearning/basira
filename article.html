@@ -13,7 +13,8 @@
   <meta name="keywords" content="knowledge, learning, simplified, education, articles, science, technology, culture">
   <meta property="og:title" content="BASIRA — Knowledge Simplification">
   <meta property="og:description" content="Explore simplified knowledge on complex topics">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://basira.top/article.html">
   <title>Article — BASIRA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,7 +78,10 @@
     .reaction-btn.disliked { color:#ef4444!important; border-color:#ef4444!important; }
     /* Comment area */
     .comment-area { display:none; }
-    .comment-area.open { display:block; }
+    .comment-area.open { display:block; animation: slideDown 0.25s ease; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+    .add-comment-panel { display:none; }
+    .add-comment-panel.open { display:block; animation: slideDown 0.25s ease; }
     /* Sources modal */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; }
   </style>
@@ -243,9 +247,10 @@
               <i data-lucide="thumbs-down" class="w-4 h-4"></i>
               <span id="dislike-count">0</span>
             </button>
-            <button onclick="toggleComment()" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
+            <button onclick="toggleComment()" id="comments-toggle-btn" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
-              <span>Comment</span>
+              <span id="comments-btn-label">Comments</span>
+              <span id="comments-count-badge" class="text-[11px] dark:text-platinum/30 text-obsidian-400"></span>
             </button>
             <button onclick="shareArticle('whatsapp')" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -258,14 +263,61 @@
           </div>
 
           <!-- Comment Area -->
-          <div id="comment-area" class="comment-area mt-6">
-            <input id="comment-name" type="text" placeholder="Your name (optional)" class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[13px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
-            <textarea id="comment-input" rows="3" placeholder="Write your comment..." class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[14px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
-            <div class="flex gap-3 mt-3">
-              <button onclick="submitComment()" class="px-5 py-2.5 rounded-xl dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">Post Comment</button>
-              <button onclick="toggleComment()" class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium hover:dark:bg-white/[0.07] transition-all duration-200">Cancel</button>
+          <div id="comment-area" class="comment-area mt-5">
+
+            <!-- قائمة التعليقات -->
+            <div id="comments-list" class="space-y-3 mb-4"></div>
+
+            <!-- زر Add your comment -->
+            <button onclick="toggleAddComment()"
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl
+                     border-2 border-dashed dark:border-white/[0.08] border-obsidian-800/[0.08]
+                     dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium
+                     hover:dark:border-platinum/20 hover:dark:text-platinum/70
+                     hover:border-obsidian-800/20 hover:text-obsidian-600
+                     transition-all duration-200 group">
+              <i data-lucide="plus-circle" class="w-4 h-4 group-hover:scale-110 transition-transform duration-200"></i>
+              Add your comment
+            </button>
+
+            <!-- نموذج إضافة تعليق -->
+            <div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl
+                 border dark:border-white/[0.06] border-obsidian-800/[0.06]
+                 dark:bg-white/[0.02] bg-white/60">
+              <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-3">New Comment</p>
+              <input id="comment-name" type="text" placeholder="Your name *" required
+                class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[13px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
+              <textarea id="comment-input" rows="3" placeholder="Write your comment..."
+                class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[14px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
+              <div class="flex gap-3 mt-3">
+                <button onclick="submitComment()"
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl
+                         dark:bg-white/90 bg-obsidian-800
+                         dark:text-obsidian-900 text-cream
+                         text-[13px] font-semibold
+                         hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  Post Comment
+                </button>
+                <button onclick="toggleAddComment()"
+                  class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04]
+                         dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium
+                         hover:dark:bg-white/[0.07] transition-all duration-200">
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div id="comments-list" class="mt-6 space-y-4"></div>
+
           </div>
         </div>
 
@@ -559,6 +611,21 @@
       img.src = article.image; img.alt = article.title;
       document.getElementById('article-content').innerHTML = article.content;
       document.title = article.title + ' — BASIRA';
+      // Schema Markup for Google
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": article.title,
+        "image": article.image,
+        "description": article.excerpt || article.title,
+        "datePublished": article.date,
+        "author": {"@type": "Person", "name": "Omer"},
+        "publisher": {"@type": "Organization", "name": "BASIRA", "url": "https://basira.top"}
+      };
+      const schemaScript = document.createElement('script');
+      schemaScript.type = 'application/ld+json';
+      schemaScript.text = JSON.stringify(schema);
+      document.head.appendChild(schemaScript);
       // Show lang toggle if Arabic translation exists
       if (article.title_ar && article.content_ar) {
         const btn = document.getElementById('lang-toggle-btn');
@@ -662,10 +729,16 @@
       const id  = getArticleId();
       const sid = getSessionId();
       const data = await sbGet(`comments?article_id=eq.${id}&order=created_at.desc`);
-      const list = document.getElementById('comments-list');
+      const list  = document.getElementById('comments-list');
+      const badge = document.getElementById('comments-count-badge');
       if (!list) return;
+
+      // تحديث العداد في الزر
+      const count = (data || []).length;
+      if (badge) badge.textContent = count > 0 ? `(${count})` : '';
+
       if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400">No comments yet. Be the first!</p>';
+        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 pb-2">No comments yet. Be the first!</p>';
         return;
       }
       list.innerHTML = data.map(c => {
@@ -684,8 +757,8 @@
         return `
         <div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]">
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'R')[0].toUpperCase()}</div>
-            <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author||'Reader')}</span>
+            <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'?')[0].toUpperCase()}</div>
+            <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author)}</span>
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
             ${deleteBtn}
           </div>
@@ -695,18 +768,41 @@
       lucide.createIcons({ nodes: [list] });
     }
 
+    // فتح/إغلاق قائمة التعليقات
     function toggleComment() {
       const box = document.getElementById('comment-area');
       box.classList.toggle('open');
-      if (box.classList.contains('open')) document.getElementById('comment-input').focus();
+      // أغلق نموذج الإضافة عند إغلاق القائمة
+      if (!box.classList.contains('open')) {
+        document.getElementById('add-comment-panel').classList.remove('open');
+      }
+    }
+
+    // فتح/إغلاق نموذج إضافة تعليق
+    function toggleAddComment() {
+      const panel = document.getElementById('add-comment-panel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        setTimeout(() => document.getElementById('comment-name').focus(), 50);
+      }
     }
 
     async function submitComment() {
       const input  = document.getElementById('comment-input');
       const nameEl = document.getElementById('comment-name');
       const text   = input.value.trim();
-      const author = (nameEl ? nameEl.value.trim() : '') || 'Reader';
+      const author = nameEl ? nameEl.value.trim() : '';
+
+      // الاسم مطلوب
+      if (!author) {
+        nameEl.style.borderColor = 'rgba(239,68,68,0.6)';
+        nameEl.focus();
+        showToast('Please enter your name', 'alert-circle');
+        setTimeout(() => nameEl.style.borderColor = '', 2000);
+        return;
+      }
       if (!text) { showToast('Please write something first','alert-circle'); return; }
+
       const sid = getSessionId();
       const result = await sbPost('comments', {
         article_id: String(getArticleId()),
@@ -716,7 +812,8 @@
       });
       if (result) {
         input.value = '';
-        if (nameEl) nameEl.value = '';
+        nameEl.value = '';
+        document.getElementById('add-comment-panel').classList.remove('open');
         loadComments();
         showToast('Comment posted!','check-circle');
       } else showToast('Error posting comment','alert-circle');
