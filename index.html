@@ -438,6 +438,18 @@
     culture: 'book-open', quotes: 'quote'
   };
 
+
+  function toSlug(title) {
+    if (!title) return 'article';
+    const s = title.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60);
+    return s || 'article';
+  }
+
   const fallbackArticles = [
     { id:1, title:'What is Quantum Physics?',                    category:'science',  image:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80',      excerpt:'Understanding the strange world at the atomic scale.',               readTime:'5 min' },
     { id:2, title:'DNA: The Blueprint of Life',                  category:'science',  image:'https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=900&q=80',           excerpt:'The blueprint of life, demystified for everyone.',                  readTime:'6 min' },
@@ -474,7 +486,7 @@
     const rest  = src.slice(1, 6);
 
     const bigCard = `
-      <a href="article.html?id=${first.id}" class="group card-lift anim-fade sm:col-span-2 lg:col-span-2">
+      <a href="articles/${toSlug(first.title)}.html" class="group card-lift anim-fade sm:col-span-2 lg:col-span-2">
         <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[16/9]">
           <img src="${first.image || 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=900&q=80'}"
                alt="${first.title}"
@@ -496,7 +508,7 @@
       </a>`;
 
     const smallCards = rest.map((a, i) => `
-      <a href="article.html?id=${a.id}" class="group card-lift anim-fade anim-delay-${Math.min(i+1,4)}">
+      <a href="articles/${toSlug(a.title)}.html" class="group card-lift anim-fade anim-delay-${Math.min(i+1,4)}">
         <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-3">
           <img src="${a.image || 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=600&q=80'}"
                alt="${a.title}"
@@ -639,38 +651,11 @@
   }
 
   // ===== NEWSLETTER =====
-  function isValidEmail(email) {
-    // تحقق من الصيغة الأساسية
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (!re.test(email)) return false;
-    // قائمة النطاقات المعروفة
-    const knownDomains = [
-      'gmail.com','yahoo.com','yahoo.co.uk','yahoo.fr','yahoo.de','yahoo.es',
-      'outlook.com','hotmail.com','hotmail.co.uk','live.com','msn.com',
-      'icloud.com','me.com','mac.com',
-      'protonmail.com','proton.me','pm.me',
-      'aol.com','mail.com','gmx.com','gmx.net','gmx.de',
-      'yandex.com','yandex.ru','mail.ru','inbox.com',
-      'zoho.com','fastmail.com','hey.com','tutanota.com',
-      'edu.sa','ksu.edu.sa','kau.edu.sa','psu.edu.sa',
-    ];
-    const domain = email.split('@')[1].toLowerCase();
-    return knownDomains.includes(domain);
-  }
-
   async function subscribeNewsletter() {
     const input = document.getElementById('newsletterInput');
     const btn = document.querySelector('[onclick="subscribeNewsletter()"]');
     const email = input.value.trim();
-
-    if (!email) { showToast('Please enter your email','alert-circle'); return; }
-    if (!isValidEmail(email)) {
-      showToast('Please use a valid email address','alert-circle');
-      input.style.borderColor = 'rgba(239,68,68,0.5)';
-      setTimeout(() => input.style.borderColor = '', 2000);
-      return;
-    }
-
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email','alert-circle'); return; }
     if (btn) { btn.disabled = true; btn.textContent = '...'; }
     const result = await sbPost('subscribers', { email: email });
     if (btn) { btn.disabled = false; btn.textContent = 'Subscribe'; }
@@ -678,6 +663,7 @@
       input.value = '';
       showToast('Subscribed! Welcome to BASIRA 🎉','check-circle');
     } else {
+      // Could be duplicate email or Supabase error
       showToast('Already subscribed or error — try again','alert-circle');
     }
   }
