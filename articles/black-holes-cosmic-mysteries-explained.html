@@ -42,7 +42,8 @@
 </div></div></section>
 <section class="py-0"><div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=900&amp;q=80" alt="Black Holes: Cosmic Mysteries Explained" class="w-full rounded-2xl dark:brightness-75 brightness-90 anim-fade my-12" onerror="this.style.display='none'"></div></section>
 <section class="py-16 lg:py-24"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
-<article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"><h1>Black Holes: The Dark Monsters of the Universe</h1>
+<article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"></article>
+<div id="content-en-store" style="display:none"><h1>Black Holes: The Dark Monsters of the Universe</h1>
 
 <h2>What is a Black Hole?</h2>
 <p>A black hole is a region in spacetime where the gravitational pull is so intensely powerful that absolutely nothing can escape its grasp, not even light or other electromagnetic waves. This extraordinary gravity occurs because a massive amount of matter has been squeezed into an incredibly tiny space. Since light cannot break free, black holes are completely invisible to the human eye. Scientists can only detect them by observing how their immense gravity affects nearby stars and gas clouds.</p>
@@ -51,7 +52,7 @@
 <p>While black holes come in various sizes, two main categories dominate the cosmos. The first is the "stellar black hole," which forms when a massive star exhausts its fuel and collapses under its own weight at the end of its life cycle. The second type is the "supermassive black hole," a cosmic giant with a mass millions to billions of times greater than our Sun. These massive entities lurk at the center of almost all large galaxies, including our own Milky Way, playing a fundamental role in cosmic evolution.</p>
 
 <h2>The Event Horizon: The Point of No Return</h2>
-<p>To truly understand a black hole, one must look at its boundary, known as the "event horizon." This is the ultimate point of no return. Once any object, particle, or ray of light crosses this invisible threshold, it is permanently pulled toward the mysterious center. Exploring these complex celestial bodies allows scientists to push the boundaries of modern physics, testing our understanding of gravity and spacetime under the most extreme conditions imaginable.</p></article>
+<p>To truly understand a black hole, one must look at its boundary, known as the "event horizon." This is the ultimate point of no return. Once any object, particle, or ray of light crosses this invisible threshold, it is permanently pulled toward the mysterious center. Exploring these complex celestial bodies allows scientists to push the boundaries of modern physics, testing our understanding of gravity and spacetime under the most extreme conditions imaginable.</p></div>
 <div class="mt-10 flex flex-wrap items-center gap-3">
 <button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="book-open" class="w-4 h-4"></i>Sources Used</button>
 <button id="lang-toggle-btn" onclick="toggleArticleLang()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="languages" class="w-4 h-4"></i><span id="lang-toggle-label">اقرأ بالعربية</span></button>
@@ -71,7 +72,7 @@ let articleLang="en";
 let userReaction=null;
 const TITLE_EN="Black Holes: Cosmic Mysteries Explained";
 const TITLE_AR="الثقوب السوداء: أسرار الكون المُفسَّرة";
-const CONTENT_EN=document.getElementById("article-content").innerHTML;
+const CONTENT_EN=document.getElementById("content-en-store").innerHTML;
 const CONTENT_AR=document.getElementById("content-ar-store").innerHTML;
 function getSessionId(){let s=localStorage.getItem("basira-session");if(!s){s="sid_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("basira-session",s);}return s;}
 function sanitize(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
@@ -95,7 +96,7 @@ function toggleMobile(){const menu=document.getElementById("mobile-menu"),btn=do
 function showToast(msg,icon){const box=document.getElementById("toast-box"),t=document.createElement("div");t.className="toast-in pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl dark:bg-obsidian-700/90 bg-white/90 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[220px]";t.innerHTML="<span style='font-size:12px;font-weight:500'>"+msg+"</span>";box.appendChild(t);setTimeout(()=>{t.classList.replace("toast-in","toast-out");setTimeout(()=>t.remove(),300);},2200);}
 function initProgressBar(){const bar=document.getElementById("read-progress");if(!bar)return;window.addEventListener("scroll",()=>{const doc=document.documentElement;bar.style.width=Math.min(100,(doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100)+"%";});}
 async function trackView(){const key="basira-viewed-"+STATIC_ID;if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,"1");await sbPost("views",{article_id:STATIC_ID});}
-document.addEventListener("DOMContentLoaded",()=>{if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}initProgressBar();loadReactions();loadComments();loadRelated();trackView();lucide.createIcons();setTimeout(()=>document.querySelectorAll(".anim-fade").forEach(el=>el.classList.add("visible")),200);window.addEventListener("scroll",()=>{const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});
+document.addEventListener("DOMContentLoaded",()=>{const ce=document.getElementById("article-content"),cs=document.getElementById("content-en-store");if(ce&&cs){ce.innerHTML=cs.innerHTML;}if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}initProgressBar();loadReactions();loadComments();loadRelated();trackView();lucide.createIcons();setTimeout(()=>document.querySelectorAll(".anim-fade").forEach(el=>el.classList.add("visible")),200);window.addEventListener("scroll",()=>{const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});
 </script>
 <div id="content-ar-store" style="display:none"><h2>ما هو الثقب الأسود؟</h2>
 <p>الثقب الأسود هو منطقة في الزمكان تكون فيها الجاذبية شديدة لدرجة أن لا شيء يستطيع الهروب منها — لا المادة ولا الضوء ولا حتى الموجات الكهرومغناطيسية.</p>
