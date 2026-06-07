@@ -639,11 +639,38 @@
   }
 
   // ===== NEWSLETTER =====
+  function isValidEmail(email) {
+    // تحقق من الصيغة الأساسية
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!re.test(email)) return false;
+    // قائمة النطاقات المعروفة
+    const knownDomains = [
+      'gmail.com','yahoo.com','yahoo.co.uk','yahoo.fr','yahoo.de','yahoo.es',
+      'outlook.com','hotmail.com','hotmail.co.uk','live.com','msn.com',
+      'icloud.com','me.com','mac.com',
+      'protonmail.com','proton.me','pm.me',
+      'aol.com','mail.com','gmx.com','gmx.net','gmx.de',
+      'yandex.com','yandex.ru','mail.ru','inbox.com',
+      'zoho.com','fastmail.com','hey.com','tutanota.com',
+      'edu.sa','ksu.edu.sa','kau.edu.sa','psu.edu.sa',
+    ];
+    const domain = email.split('@')[1].toLowerCase();
+    return knownDomains.includes(domain);
+  }
+
   async function subscribeNewsletter() {
     const input = document.getElementById('newsletterInput');
     const btn = document.querySelector('[onclick="subscribeNewsletter()"]');
     const email = input.value.trim();
-    if (!email || !email.includes('@')) { showToast('Please enter a valid email','alert-circle'); return; }
+
+    if (!email) { showToast('Please enter your email','alert-circle'); return; }
+    if (!isValidEmail(email)) {
+      showToast('Please use a valid email address','alert-circle');
+      input.style.borderColor = 'rgba(239,68,68,0.5)';
+      setTimeout(() => input.style.borderColor = '', 2000);
+      return;
+    }
+
     if (btn) { btn.disabled = true; btn.textContent = '...'; }
     const result = await sbPost('subscribers', { email: email });
     if (btn) { btn.disabled = false; btn.textContent = 'Subscribe'; }
@@ -651,7 +678,6 @@
       input.value = '';
       showToast('Subscribed! Welcome to BASIRA 🎉','check-circle');
     } else {
-      // Could be duplicate email or Supabase error
       showToast('Already subscribed or error — try again','alert-circle');
     }
   }

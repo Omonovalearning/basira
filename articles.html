@@ -194,6 +194,18 @@
   <!-- ========== JAVASCRIPT ========== -->
   <script>
 
+
+  function toSlug(title) {
+    if (!title) return 'article';
+    const s = title.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60);
+    return s || 'article';
+  }
+
     const articles = [
       {
         id: 1,
@@ -449,7 +461,7 @@
       const paginated = filtered.slice(start, start + PAGE_SIZE);
 
       grid.innerHTML = paginated.map((article, index) => `
-        <a href="article.html?id=${article.id}" class="group card-lift anim-fade" style="animation-delay: ${index * 0.1}s">
+        <a href="articles/${toSlug(article.title)}.html" class="group card-lift anim-fade" style="animation-delay: ${index * 0.1}s">
           <div class="relative overflow-hidden rounded-2xl border dark:border-white/[0.04] border-obsidian-800/[0.04] dark:bg-obsidian-800/30 bg-white aspect-[4/3] mb-4">
             <img src="${article.image}" alt="${article.title}" loading="lazy" class="w-full h-full object-cover dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=600&q=80'">
             <div class="absolute top-4 left-4 px-2.5 py-1 rounded-md dark:bg-obsidian-900/70 bg-cream/80 backdrop-blur-sm">

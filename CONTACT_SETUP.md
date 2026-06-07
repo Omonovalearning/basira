@@ -37,7 +37,7 @@ FormSubmit is a free service that handles form submissions and sends emails. Her
     </button>
   </div>
   <!-- Redirect to thank you page after submission -->
-  <input type="hidden" name="_next" value="https://omonovalearning.github.io/basira/thank-you.html">
+  <input type="hidden" name="_next" value="https://basira.top/thank-you.html">
   <!-- Disable email from FormSubmit -->
   <input type="hidden" name="_autoresponse" value="Thank you for contacting BASIRA! We'll get back to you soon.">
 </form>
