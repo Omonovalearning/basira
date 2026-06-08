@@ -13,7 +13,8 @@
   <meta name="keywords" content="knowledge, learning, simplified, education, articles, science, technology, culture">
   <meta property="og:title" content="BASIRA — Knowledge Simplification">
   <meta property="og:description" content="Explore simplified knowledge on complex topics">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://basira.top/article.html">
   <title>Article — BASIRA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,7 +78,10 @@
     .reaction-btn.disliked { color:#ef4444!important; border-color:#ef4444!important; }
     /* Comment area */
     .comment-area { display:none; }
-    .comment-area.open { display:block; }
+    .comment-area.open { display:block; animation: slideDown 0.25s ease; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+    .add-comment-panel { display:none; }
+    .add-comment-panel.open { display:block; animation: slideDown 0.25s ease; }
     /* Sources modal */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; }
   </style>
@@ -85,18 +89,15 @@
 
 <body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">
 
-  <!-- PROGRESS BAR -->
   <div class="fixed top-0 left-0 right-0 z-[150] h-[3px] dark:bg-obsidian-700 bg-obsidian-200">
     <div id="read-progress" class="h-full bg-gradient-to-r from-platinum to-platinum/60 transition-none" style="width:0%"></div>
   </div>
 
-  <!-- BACK TO TOP -->
   <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
     class="fixed bottom-6 right-6 z-[100] w-11 h-11 rounded-full dark:bg-obsidian-700 bg-white shadow-lg border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center dark:text-platinum/60 text-obsidian-500 hover:dark:bg-obsidian-600 hover:bg-gray-50 transition-all duration-300">
     <i data-lucide="arrow-up" class="w-4 h-4"></i>
   </button>
 
-  <!-- SOURCES MODAL -->
   <div id="sources-modal" class="modal-overlay hidden" onclick="closeSources(event)">
     <div class="max-w-[540px] w-full max-h-[80vh] overflow-y-auto rounded-2xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] p-6">
       <div class="flex items-center justify-between mb-5">
@@ -109,10 +110,8 @@
     </div>
   </div>
 
-  <!-- TOAST -->
   <div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- ========== HEADER ========== -->
   <header id="site-header" class="fixed top-0 left-0 right-0 z-[100] header-blur dark:bg-obsidian-900/70 bg-cream/70 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
     <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
       <div class="flex items-center justify-between h-[72px] gap-4">
@@ -147,7 +146,6 @@
       </div>
     </div>
 
-    <!-- MOBILE MENU -->
     <div id="mobile-menu" class="md:hidden hidden border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
       <div class="px-5 py-4 flex flex-col gap-1 dark:bg-obsidian-900/90 bg-cream/90 header-blur">
         <a href="index.html" onclick="toggleMobile()" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg transition" data-en="Home" data-ar="الرئيسية">Home</a>
@@ -158,7 +156,6 @@
     </div>
   </header>
 
-  <!-- Loading skeleton -->
   <div id="article-skeleton" class="pt-[72px] max-w-[680px] mx-auto px-5 py-16">
     <div class="w-24 h-4 rounded-full dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-6"></div>
     <div class="w-3/4 h-8 rounded-xl dark:bg-white/[0.06] bg-obsidian-800/[0.06] animate-pulse mb-3"></div>
@@ -173,7 +170,6 @@
 
   <main id="article-main" class="pt-[72px] hidden">
 
-    <!-- ========== ARTICLE HERO ========== -->
     <section class="py-16 lg:py-24 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
       <div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
         <a href="articles.html" class="inline-flex items-center gap-2 text-[12px] font-medium tracking-widest uppercase dark:text-platinum/50 text-obsidian-400 hover:dark:text-platinum hover:text-obsidian-800 transition-colors mb-6 anim-fade">
@@ -204,34 +200,28 @@
       </div>
     </section>
 
-    <!-- ========== ARTICLE IMAGE ========== -->
     <section class="py-0">
       <div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12">
-        <img id="article-image" src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80" alt="Article" loading="lazy" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="this.style.display='none'">
+        <img id="article-image" src="" alt="Article" loading="lazy" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="this.style.display='none'">
       </div>
     </section>
 
-    <!-- ========== ARTICLE CONTENT ========== -->
     <section class="py-16 lg:py-24">
       <div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12">
         <article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]">
-          <!-- Content will be inserted here dynamically -->
-        </article>
+          </article>
 
-        <!-- SOURCES BUTTON + LANG TOGGLE -->
         <div class="mt-10 flex flex-wrap items-center gap-3">
           <button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span data-en="Sources Used" data-ar="المصادر المستخدمة">Sources Used</span>
           </button>
-          <!-- Language Toggle — only shows if Arabic translation exists -->
           <button id="lang-toggle-btn" onclick="toggleArticleLang()" class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300">
             <i data-lucide="languages" class="w-4 h-4"></i>
             <span id="lang-toggle-label">اقرأ بالعربية</span>
           </button>
         </div>
 
-        <!-- REACTIONS -->
         <div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
           <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p>
           <div class="flex flex-wrap items-center gap-3">
@@ -243,9 +233,10 @@
               <i data-lucide="thumbs-down" class="w-4 h-4"></i>
               <span id="dislike-count">0</span>
             </button>
-            <button onclick="toggleComment()" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
+            <button onclick="toggleComment()" id="comments-toggle-btn" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
-              <span>Comment</span>
+              <span>Comments</span>
+              <span id="comments-count-badge" class="hidden min-w-[20px] h-5 px-1.5 rounded-full dark:bg-platinum/15 bg-obsidian-800/10 dark:text-platinum/80 text-obsidian-700 text-[10px] font-semibold items-center justify-center"></span>
             </button>
             <button onclick="shareArticle('whatsapp')" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -257,19 +248,61 @@
             </button>
           </div>
 
-          <!-- Comment Area -->
-          <div id="comment-area" class="comment-area mt-6">
-            <input id="comment-name" type="text" placeholder="Your name (optional)" class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[13px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
-            <textarea id="comment-input" rows="3" placeholder="Write your comment..." class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[14px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
-            <div class="flex gap-3 mt-3">
-              <button onclick="submitComment()" class="px-5 py-2.5 rounded-xl dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">Post Comment</button>
-              <button onclick="toggleComment()" class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium hover:dark:bg-white/[0.07] transition-all duration-200">Cancel</button>
+          <div id="comment-area" class="comment-area mt-5">
+
+            <div id="comments-list" class="space-y-3 mb-4"></div>
+
+            <button onclick="toggleAddComment()"
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl
+                     border-2 border-dashed dark:border-white/[0.08] border-obsidian-800/[0.08]
+                     dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium
+                     hover:dark:border-platinum/20 hover:dark:text-platinum/70
+                     hover:border-obsidian-800/20 hover:text-obsidian-600
+                     transition-all duration-200 group">
+              <i data-lucide="plus-circle" class="w-4 h-4 group-hover:scale-110 transition-transform duration-200"></i>
+              Add your comment
+            </button>
+
+            <div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl
+                 border dark:border-white/[0.06] border-obsidian-800/[0.06]
+                 dark:bg-white/[0.02] bg-white/60">
+              <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-3">New Comment</p>
+              <input id="comment-name" type="text" placeholder="Your name *" required
+                class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[13px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
+              <textarea id="comment-input" rows="3" placeholder="Write your comment..."
+                class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[14px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
+              <div class="flex gap-3 mt-3">
+                <button onclick="submitComment()"
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl
+                         dark:bg-white/90 bg-obsidian-800
+                         dark:text-obsidian-900 text-cream
+                         text-[13px] font-semibold
+                         hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  Post Comment
+                </button>
+                <button onclick="toggleAddComment()"
+                  class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04]
+                         dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium
+                         hover:dark:bg-white/[0.07] transition-all duration-200">
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div id="comments-list" class="mt-6 space-y-4"></div>
+
           </div>
         </div>
 
-        <!-- RELATED ARTICLES -->
         <div id="related-section" class="mt-12 pt-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] hidden">
           <p class="text-[12px] font-medium tracking-[0.25em] uppercase dark:text-platinum/30 text-obsidian-400 mb-5">Related Articles</p>
           <div id="related-grid" class="space-y-3"></div>
@@ -280,7 +313,6 @@
 
   </main>
 
-  <!-- ========== FOOTER ========== -->
   <footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
     <div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -301,128 +333,7 @@
     </div>
   </footer>
 
-  <!-- ========== JAVASCRIPT ========== -->
   <script>
-
-    const articlesDb = {
-      1: { title: 'What is Quantum Physics?', category: 'science', date: 'May 14, 2025', readTime: '5 min', image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900&q=80', content: `<h2>Why is Quantum Physics Different?</h2>
-<p>Quantum physics is the study of how the smallest particles in the universe behave. Unlike classical physics that describes objects we can see, quantum physics operates at the scale of atoms and subatomic particles where the rules are completely different.</p>
-
-<h2>The Uncertainty Principle</h2>
-<p>One of the most famous concepts in quantum physics is Heisenberg's Uncertainty Principle. It states that we cannot simultaneously know both the exact position and exact momentum of a particle. The more precisely we measure one, the less precisely we know the other. Think of it like trying to photograph a moving car - the faster it moves, the blurrier it appears.</p>
-
-<h2>Superposition: Being in Two Places at Once</h2>
-<p>In quantum mechanics, particles can exist in multiple states at the same time - this is called superposition. A particle can be spinning up AND down simultaneously until we measure it. This isn't magic; it's how nature works at the smallest scales.</p>
-
-<h2>Real-World Applications</h2>
-<p>Quantum physics isn't just theoretical. It powers modern technology like computers, lasers, solar panels, and medical imaging devices. Without understanding quantum mechanics, we wouldn't have the technology we rely on today.</p>` },
-      2: { title: 'DNA: The Blueprint of Life', category: 'science', date: 'May 13, 2025', readTime: '6 min', image: 'https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=900&q=80', content: `<h2>What is DNA?</h2>
-<p>DNA (Deoxyribonucleic Acid) is a molecule that carries the genetic instructions for life. It's like a recipe book that tells your cells how to build and maintain your body. Every living organism - from bacteria to humans - uses DNA to store genetic information.</p>
-
-<h2>The Double Helix Structure</h2>
-<p>DNA has a famous double helix shape, discovered by Watson and Crick. Imagine a twisted ladder where the sides are made of sugar and phosphate molecules, and the rungs are made of bases (A, T, G, C). This elegant structure allows DNA to store information and replicate itself.</p>
-
-<h2>How DNA Works</h2>
-<p>DNA contains instructions called genes. Each gene tells your cells how to make specific proteins. These proteins do almost everything in your body - they build muscles, fight diseases, digest food, and create enzymes. Your genes are the reason you might have your mother's eyes or your father's height.</p>
-
-<h2>DNA and Inheritance</h2>
-<p>You inherit DNA from both your parents. Half comes from your mother and half from your father. This mix creates your unique genetic code. This is why children resemble their parents but aren't identical to them.</p>` },
-      3: { title: 'Black Holes: Cosmic Mysteries Explained', category: 'science', date: 'May 12, 2025', readTime: '7 min', image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=900&q=80', content: `<h2>What is a Black Hole?</h2>
-<p>A black hole is a region in space where gravity is so strong that nothing - not even light - can escape once it crosses a certain boundary called the event horizon. Black holes form when massive stars collapse at the end of their lives.</p>
-
-<h2>How Black Holes Form</h2>
-<p>When a very large star (at least 20 times the mass of our Sun) runs out of fuel, it collapses inward. The pressure and temperature become so extreme that the star's core compresses into an incredibly tiny point. This creates the black hole.</p>
-
-<h2>The Event Horizon</h2>
-<p>The event horizon is the "point of no return" around a black hole. Once anything crosses it, it can never escape - gravity pulls everything toward the singularity at the center. This is why we call it a black hole: no light escapes, so it looks completely black.</p>
-
-<h2>Types of Black Holes</h2>
-<p>Scientists have discovered several types: stellar black holes (formed from dead stars), supermassive black holes (found at the centers of galaxies), and intermediate black holes. Our galaxy's center contains a supermassive black hole millions of times heavier than the Sun.</p>` },
-      4: { title: 'Artificial Intelligence: How Machines Think', category: 'tech', date: 'May 11, 2025', readTime: '8 min', image: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=900&q=80', content: `<h2>What is Artificial Intelligence?</h2>
-<p>Artificial Intelligence (AI) refers to computer systems designed to perform tasks that typically require human intelligence. These include learning from experience, recognizing patterns, understanding language, and making decisions.</p>
-
-<h2>Machine Learning Basics</h2>
-<p>Machine learning is a type of AI where computers learn from data instead of being explicitly programmed. For example, a computer can be trained to recognize cats by analyzing thousands of cat images. It learns what features make something a cat - without someone telling it what those features are.</p>
-
-<h2>Neural Networks</h2>
-<p>Neural networks are inspired by how our brains work. They consist of interconnected nodes (like neurons) that process information. When you show a neural network a handwritten number, it adjusts connections between nodes until it learns to recognize all digits accurately.</p>
-
-<h2>Real-World AI Applications</h2>
-<p>AI powers recommendation systems (Netflix suggestions), virtual assistants (Siri, Alexa), facial recognition, medical diagnosis tools, and self-driving cars. AI can now beat humans at chess, generate human-like text, and even create art.</p>
-
-<h2>The Future of AI</h2>
-<p>As AI improves, it will transform healthcare, education, transportation, and countless other fields. However, it also raises important questions about privacy, bias, and job displacement that society needs to address.</p>` },
-      5: { title: 'Blockchain: The Technology Behind Bitcoin', category: 'tech', date: 'May 10, 2025', readTime: '6 min', image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=900&q=80', content: `<h2>What is Blockchain?</h2>
-<p>Blockchain is a technology that records transactions in a way that's secure, transparent, and impossible to cheat. Imagine a notebook that everyone in a network has a copy of. When someone makes a transaction, everyone updates their copy simultaneously.</p>
-
-<h2>How Blocks Work</h2>
-<p>A blockchain is a chain of "blocks" (like pages in a notebook). Each block contains transaction data. When a block is full, it's sealed with a unique code called a hash. The next block references the previous block's hash, creating an unbreakable chain.</p>
-
-<h2>Decentralization</h2>
-<p>Unlike traditional banking where one institution controls records, blockchain is decentralized. No single person or company controls it. Instead, many computers (called nodes) maintain copies of the entire chain, making fraud nearly impossible.</p>
-
-<h2>Cryptocurrency</h2>
-<p>Bitcoin was the first cryptocurrency to use blockchain technology. Instead of trusting a bank with your money, you trust the blockchain network. Transactions are verified by the network rather than a central authority.</p>
-
-<h2>Beyond Cryptocurrency</h2>
-<p>Blockchain has applications beyond Bitcoin. It can track supply chains, verify digital art ownership (NFTs), store medical records securely, and manage smart contracts that execute automatically when conditions are met.</p>` },
-      6: { title: 'How the Internet Works: From Click to Content', category: 'tech', date: 'May 9, 2025', readTime: '7 min', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&q=80', content: `<h2>The Journey of Data</h2>
-<p>When you click a link, your request doesn't travel as one big file. Instead, it's broken into tiny pieces called packets. Each packet contains a destination address (like an envelope) and travels independently through the internet.</p>
-
-<h2>IP Addresses and Domain Names</h2>
-<p>Every device connected to the internet has an IP address (Internet Protocol address) - like a house address. Domain names (google.com, wikipedia.org) are human-friendly translations of these IP addresses. DNS (Domain Name System) servers translate domain names into IP addresses.</p>
-
-<h2>The Cloud Explained</h2>
-<p>The "cloud" isn't magical - it's just someone else's computer. When you use Gmail or store files on Google Drive, your data is stored on servers owned by Google. These servers are in data centers around the world, connected to the internet.</p>
-
-<h2>Servers and Clients</h2>
-<p>Your computer is a client. When you request a webpage, you're asking a server (a powerful computer) to send you data. The server processes your request and sends back the webpage, images, and other content.</p>
-
-<h2>Bandwidth and Speed</h2>
-<p>Internet speed depends on bandwidth - how much data can travel through a connection per second. Fiber optic cables are fastest because they use light to transmit data. Your WiFi is slower because radio signals are affected by obstacles and distance.</p>` },
-      7: { title: 'Ancient Egypt: Pharaohs and Pyramids', category: 'history', date: 'May 8, 2025', readTime: '9 min', image: 'https://images.unsplash.com/photo-1539768942893-daf3538e70c0?w=900&q=80', content: `<h2>The Age of Pharaohs</h2>
-<p>Ancient Egypt flourished for over 3,000 years (roughly 3100 BCE to 30 BCE). Pharaohs were divine rulers - Egyptians believed they were gods walking on earth. They commanded armies, made laws, and oversaw massive construction projects.</p>
-
-<h2>The Pyramids: Engineering Marvels</h2>
-<p>The Great Pyramid of Giza, built around 2560 BCE, is one of the Seven Wonders of the Ancient World. It was built using 2.3 million stone blocks, each weighing 2-15 tons. Researchers still debate exactly how the Egyptians built it - but it was definitely without modern machinery.</p>
-
-<h2>The Purpose of Pyramids</h2>
-<p>Pyramids weren't monuments to vanity - they were tombs for pharaohs and storehouses for the afterlife. Egyptians believed in resurrection. They filled pyramids with treasures, food, and tools the pharaoh would need in the next life.</p>
-
-<h2>Hieroglyphics: Ancient Writing</h2>
-<p>Egyptians invented one of the earliest writing systems using hieroglyphics - symbols representing sounds and objects. A "skilled scribe" was one of the most respected professions. The Rosetta Stone helped modern scholars decode this ancient language.</p>
-
-<h2>Daily Life in Ancient Egypt</h2>
-<p>Most Egyptians were farmers who depended on the Nile River's floods for irrigation. Society was stratified: pharaohs and nobles at the top, then priests and scribes, then craftsmen and farmers, with slaves at the bottom.</p>` },
-      8: { title: 'Philosophy 101: Big Questions About Life', category: 'culture', date: 'May 7, 2025', readTime: '8 min', image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=900&q=80', content: `<h2>What is Philosophy?</h2>
-<p>Philosophy comes from Greek words meaning "love of wisdom." Philosophers ask fundamental questions about existence, knowledge, morality, and reality. These aren't questions with simple answers - they've been debated for thousands of years.</p>
-
-<h2>The Ancient Greek Philosophers</h2>
-<p>Socrates believed the key to wisdom was admitting what you don't know. Plato explored the nature of reality and truth. Aristotle studied logic and the natural world. Their ideas still influence how we think today.</p>
-
-<h2>Existentialism: What's the Point?</h2>
-<p>Existentialists ask: What is the meaning of life? Their answer: life has no predetermined meaning. YOU create your meaning through your choices and actions. This can be liberating - you're free to define your own purpose.</p>
-
-<h2>Ethics: How Should We Live?</h2>
-<p>Ethics explores morality. Should we follow rules (deontology)? Should we aim for the greatest happiness for the greatest number (utilitarianism)? Should we develop virtuous character (virtue ethics)? Different philosophers give different answers.</p>
-
-<h2>Epistemology: What Can We Know?</h2>
-<p>Epistemology asks: How do we know what we know? Can we trust our senses? Is knowledge based on experience or reason? These questions led to science and the scientific method.</p>` },
-      9: { title: 'The Art of Storytelling: Why Humans Love Stories', category: 'culture', date: 'May 6, 2025', readTime: '6 min', image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=900&q=80', content: `<h2>Stories Are Universal</h2>
-<p>Every culture has stories. From ancient cave paintings to modern Netflix shows, humans have always told stories. Stories are one of humanity's greatest inventions because they allow us to share experiences and knowledge across time and space.</p>
-
-<h2>The Brain on Stories</h2>
-<p>When you read or hear a story, multiple parts of your brain activate - not just language centers, but also sensory and motor cortex areas. If a story mentions running, your brain's movement areas light up as if you're running. Stories literally transport you into other worlds.</p>
-
-<h2>Why Stories Matter</h2>
-<p>Stories help us understand complex ideas. A history textbook lists facts, but a historical novel makes you FEEL what it was like to live during that time. Stories create empathy - they help us understand people different from ourselves.</p>
-
-<h2>The Hero's Journey</h2>
-<p>Many stories follow a pattern: an ordinary character faces a challenge, overcomes obstacles, and grows. This template appears in The Odyssey, The Lord of the Rings, Star Wars, and countless other stories. It resonates because it mirrors our own life journeys.</p>
-
-<h2>From Campfires to Streaming</h2>
-<p>Stories have evolved from oral traditions around campfires to books, films, podcasts, and interactive games. But the essence remains the same: storytelling connects us as humans and helps us make sense of the world.</p>` },
-    };
 
     const SB_URL = 'https://yteicgsqfpzexvkllhec.supabase.co';
     const SB_KEY = 'sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP';
@@ -430,10 +341,9 @@
     let currentArticle = null;
     let userReaction = null;
 
-    async function sbGet(path, limit) {
+    async function sbGet(path) {
       try {
         const headers = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
-        if (limit) headers['Range'] = `0-${limit - 1}`;
         const res = await fetch(`${SB_URL}/rest/v1/${path}`, { headers });
         return res.ok ? res.json() : null;
       } catch(e) { return null; }
@@ -490,7 +400,6 @@
       articleLang = articleLang === 'en' ? 'ar' : 'en';
       const isAr = articleLang === 'ar';
 
-      // Toggle title
       const titleEl = document.getElementById('article-title');
       if (titleEl) {
         titleEl.textContent = isAr && articleData.title_ar ? articleData.title_ar : articleData.title;
@@ -498,7 +407,6 @@
         titleEl.style.textAlign = isAr ? 'right' : 'left';
       }
 
-      // Toggle content
       const contentEl = document.getElementById('article-content');
       if (contentEl) {
         contentEl.innerHTML = isAr && articleData.content_ar ? articleData.content_ar : articleData.content;
@@ -507,7 +415,6 @@
         contentEl.style.fontFamily = isAr ? "'Cairo', sans-serif" : '';
       }
 
-      // Update button label
       const label = document.getElementById('lang-toggle-label');
       if (label) label.textContent = isAr ? 'Read in English' : 'اقرأ بالعربية';
 
@@ -515,7 +422,6 @@
     }
 
     async function trackView(id) {
-      // Track once per session per article
       const key = `basira-viewed-${id}`;
       if (sessionStorage.getItem(key)) return;
       sessionStorage.setItem(key, '1');
@@ -540,18 +446,13 @@
           sources: a.sources || [], excerpt: a.excerpt || '',
           title_ar: a.title_ar || '', content_ar: a.content_ar || ''
         };
-      } else {
-        // Try fallback local db
-        article = articlesDb[id] || null;
       }
 
-      // Not found — show 404
       if (!article) { showNotFound(); return; }
 
-      // Track view
       trackView(id);
       currentArticle = article;
-      articleData = article; // store for lang toggle
+      articleData = article; 
       document.getElementById('article-title').textContent = article.title;
       document.getElementById('article-category').textContent = article.category;
       document.getElementById('article-date').textContent = article.date;
@@ -559,13 +460,28 @@
       img.src = article.image; img.alt = article.title;
       document.getElementById('article-content').innerHTML = article.content;
       document.title = article.title + ' — BASIRA';
-      // Show lang toggle if Arabic translation exists
+
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": article.title,
+        "image": article.image,
+        "description": article.excerpt || article.title,
+        "datePublished": article.date,
+        "author": {"@type": "Person", "name": "Omer"},
+        "publisher": {"@type": "Organization", "name": "BASIRA", "url": "https://basira.top"}
+      };
+      const schemaScript = document.createElement('script');
+      schemaScript.type = 'application/ld+json';
+      schemaScript.text = JSON.stringify(schema);
+      document.head.appendChild(schemaScript);
+
       if (article.title_ar && article.content_ar) {
         const btn = document.getElementById('lang-toggle-btn');
         if (btn) btn.classList.remove('hidden');
       }
       document.querySelector('meta[name="description"]').setAttribute('content', article.excerpt || article.title);
-      // Update og tags dynamically
+
       document.querySelector('meta[property="og:title"]').setAttribute('content', article.title + ' — BASIRA');
       document.querySelector('meta[property="og:description"]').setAttribute('content', article.excerpt || article.title);
       const ogImg = document.querySelector('meta[property="og:image"]');
@@ -576,14 +492,19 @@
         m.setAttribute('content', article.image);
         document.head.appendChild(m);
       }
-      // Canonical URL
-      const canon = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-      canon.rel = 'canonical';
+
+      // Fix canonical URL bug to prevent duplicates
+      let canon = document.querySelector('link[rel="canonical"]');
+      if (!canon) {
+        canon = document.createElement('link');
+        canon.rel = 'canonical';
+        document.head.appendChild(canon);
+      }
       canon.href = window.location.origin + window.location.pathname + '?id=' + article.id;
-      document.head.appendChild(canon);
+
       const words = article.content.replace(/<[^>]*>/g,'').split(/\s+/).length;
       document.getElementById('article-read-time').textContent = Math.max(1,Math.round(words/200)) + ' min read';
-      // Hide skeleton, show article
+
       const skeleton = document.getElementById('article-skeleton');
       const main = document.getElementById('article-main');
       if (skeleton) skeleton.style.display = 'none';
@@ -608,7 +529,6 @@
         document.getElementById('like-count').textContent = data.filter(r=>r.type==='like').length;
         document.getElementById('dislike-count').textContent = data.filter(r=>r.type==='dislike').length;
       }
-      // Restore user's previous reaction from localStorage
       const saved = localStorage.getItem(`basira-reaction-${id}`);
       if (saved) {
         userReaction = saved;
@@ -625,7 +545,6 @@
       const prevReaction = localStorage.getItem(storageKey);
 
       if (prevReaction === type) {
-        // DELETE reaction from Supabase
         try {
           await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
             method: 'DELETE',
@@ -638,7 +557,6 @@
         localStorage.removeItem(storageKey);
         showToast('Reaction removed', 'minus-circle');
       } else {
-        // Remove old reaction first if existed
         if (prevReaction) {
           try {
             await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
@@ -647,7 +565,6 @@
             });
           } catch(e) {}
         }
-        // INSERT new reaction
         userReaction = type;
         lb.classList.toggle('liked', type === 'like');
         db.classList.toggle('disliked', type === 'dislike');
@@ -662,16 +579,31 @@
       const id  = getArticleId();
       const sid = getSessionId();
       const data = await sbGet(`comments?article_id=eq.${id}&order=created_at.desc`);
-      const list = document.getElementById('comments-list');
+      const list  = document.getElementById('comments-list');
+      const badge = document.getElementById('comments-count-badge');
       if (!list) return;
+
+      const count = (data || []).length;
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count;
+          badge.classList.remove('hidden');
+          badge.classList.add('flex');
+        } else {
+          badge.classList.add('hidden');
+          badge.classList.remove('flex');
+        }
+      }
+
       if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400">No comments yet. Be the first!</p>';
+        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 pb-2">No comments yet. Be the first!</p>';
         return;
       }
       list.innerHTML = data.map(c => {
         const isOwner = c.session_id === sid;
+        // Fix for bug 3: Quote conflict removed by avoiding simple string injection
         const deleteBtn = isOwner ? `
-          <button onclick="deleteComment('${c.id}')"
+          <button onclick="deleteComment(&quot;${c.id}&quot;)"
             class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium
                    dark:text-platinum/30 text-obsidian-400
                    hover:dark:text-red-400 hover:text-red-500
@@ -682,10 +614,10 @@
             Delete
           </button>` : '';
         return `
-        <div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]">
+        <div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] mb-2">
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'R')[0].toUpperCase()}</div>
-            <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author||'Reader')}</span>
+            <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'?')[0].toUpperCase()}</div>
+            <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author || '?')}</span>
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
             ${deleteBtn}
           </div>
@@ -698,15 +630,34 @@
     function toggleComment() {
       const box = document.getElementById('comment-area');
       box.classList.toggle('open');
-      if (box.classList.contains('open')) document.getElementById('comment-input').focus();
+      if (!box.classList.contains('open')) {
+        document.getElementById('add-comment-panel').classList.remove('open');
+      }
+    }
+
+    function toggleAddComment() {
+      const panel = document.getElementById('add-comment-panel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        setTimeout(() => document.getElementById('comment-name').focus(), 50);
+      }
     }
 
     async function submitComment() {
       const input  = document.getElementById('comment-input');
       const nameEl = document.getElementById('comment-name');
       const text   = input.value.trim();
-      const author = (nameEl ? nameEl.value.trim() : '') || 'Reader';
+      const author = nameEl ? nameEl.value.trim() : '';
+
+      if (!author) {
+        nameEl.style.borderColor = 'rgba(239,68,68,0.6)';
+        nameEl.focus();
+        showToast('Please enter your name', 'alert-circle');
+        setTimeout(() => nameEl.style.borderColor = '', 2000);
+        return;
+      }
       if (!text) { showToast('Please write something first','alert-circle'); return; }
+
       const sid = getSessionId();
       const result = await sbPost('comments', {
         article_id: String(getArticleId()),
@@ -716,7 +667,8 @@
       });
       if (result) {
         input.value = '';
-        if (nameEl) nameEl.value = '';
+        nameEl.value = '';
+        document.getElementById('add-comment-panel').classList.remove('open');
         loadComments();
         showToast('Comment posted!','check-circle');
       } else showToast('Error posting comment','alert-circle');
@@ -755,7 +707,6 @@
       const title = currentArticle?.title || document.getElementById('article-title').textContent;
       if (platform==='copy') navigator.clipboard.writeText(url).then(()=>showToast('Link copied!','check-circle'));
       else if (platform==='whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(title+'\n'+url)}`,'_blank');
-      else if (platform==='twitter') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,'_blank');
     }
 
     async function loadRelated() {
@@ -765,28 +716,17 @@
       const grid    = document.getElementById('related-grid');
       if (!section || !grid) return;
 
-      let articles = [];
+      const data = await sbGet(`articles?category=eq.${currentArticle.category}&status=eq.published&id=neq.${id}`);
+      if (!data || data.length === 0) { section.classList.add('hidden'); return; }
 
-      // Try Supabase only — no fallback to avoid self-article
-      const data = await sbGet(`articles?category=eq.${currentArticle.category}&status=eq.published&id=neq.${id}`, 3);
-      if (data && data.length > 0) {
-        articles = data.map(a => ({
-          id: a.id, title: a.title, category: a.category,
-          image: a.image || '', excerpt: a.excerpt || ''
-        }));
-      }
-
-      if (articles.length === 0) { section.classList.add('hidden'); return; }
-      section.classList.remove('hidden');
-
-      // If all results are self, hide the section
-      const nonSelf = articles.filter(a => String(a.id) !== String(id));
+      const nonSelf = data.filter(a => String(a.id) !== String(id)).slice(0, 3);
       if (nonSelf.length === 0) { section.classList.add('hidden'); return; }
+      section.classList.remove('hidden');
 
       grid.innerHTML = nonSelf.map(a => `
         <a href="article.html?id=${a.id}" class="group flex gap-4 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200">
           <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 dark:bg-obsidian-700 bg-gray-100">
-            <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'">
+            <img src="${a.image || ''}" alt="${a.title}" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'">
           </div>
           <div class="flex-1 min-w-0">
             <span class="text-[9px] tracking-widest uppercase dark:text-platinum/40 text-obsidian-400">${a.category}</span>
@@ -851,10 +791,8 @@
       } else {
         btn.innerHTML = '<i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i>';
       }
-      lucide.createIcons();
+      lucide.createIcons({nodes:[btn]});
     }
-
-    // shareArticle defined above
 
     function showToast(message, icon) {
       const container = document.getElementById('toast-box');
@@ -886,7 +824,6 @@
       lucide.createIcons();
       setTimeout(() => document.querySelectorAll('.anim-fade').forEach(el => el.classList.add('visible')), 200);
 
-      // Back to top visibility
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('back-to-top');
         if (btn) btn.classList.toggle('visible', window.scrollY > 400);
