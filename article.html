@@ -571,7 +571,7 @@
       const key = `basira-viewed-${id}`;
       if (sessionStorage.getItem(key)) return;
       sessionStorage.setItem(key, '1');
-      await sbPost('views', { article_id: id });
+      await sbPost('views', { article_id: String(id) });
     }
 
     function showNotFound() {
