@@ -82,6 +82,17 @@
     @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
     .add-comment-panel { display:none; }
     .add-comment-panel.open { display:block; animation: slideDown 0.25s ease; }
+    /* === Modern Comment Cards === */
+    @keyframes commentIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .comment-card { animation: commentIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .comment-card:hover { transform: translateY(-2px); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .comment-input-glow:focus { box-shadow: 0 0 0 3px rgba(192,192,192,0.09); }
+    .dark .comment-input-glow:focus { box-shadow: 0 0 0 3px rgba(192,192,192,0.06); }
+    .comment-delete-btn { opacity: 0; transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease; }
+    .comment-card:hover .comment-delete-btn { opacity: 1; }
     /* Sources modal */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; }
   </style>
@@ -250,53 +261,73 @@
 
           <div id="comment-area" class="comment-area mt-5">
 
-            <div id="comments-list" class="space-y-3 mb-4"></div>
+            <div id="comments-list" class="space-y-0 mb-4"></div>
 
             <button onclick="toggleAddComment()"
-              class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl
-                     border-2 border-dashed dark:border-white/[0.08] border-obsidian-800/[0.08]
+              class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl
+                     border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                     dark:bg-white/[0.02] bg-obsidian-800/[0.015]
                      dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium
-                     hover:dark:border-platinum/20 hover:dark:text-platinum/70
-                     hover:border-obsidian-800/20 hover:text-obsidian-600
-                     transition-all duration-200 group">
-              <i data-lucide="plus-circle" class="w-4 h-4 group-hover:scale-110 transition-transform duration-200"></i>
-              Add your comment
+                     hover:dark:bg-white/[0.05] hover:bg-obsidian-800/[0.04]
+                     hover:dark:border-platinum/20 hover:border-obsidian-800/20
+                     hover:dark:text-platinum/70 hover:text-obsidian-600
+                     active:scale-[0.99] transition-all duration-300 group">
+              <div class="w-6 h-6 rounded-lg dark:bg-platinum/[0.07] bg-obsidian-800/[0.05]
+                   flex items-center justify-center
+                   group-hover:dark:bg-platinum/[0.13] group-hover:bg-obsidian-800/[0.08]
+                   group-hover:scale-110 transition-all duration-300">
+                <i data-lucide="pencil-line" class="w-3.5 h-3.5"></i>
+              </div>
+              <span>Write a comment</span>
             </button>
 
-            <div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl
-                 border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                 dark:bg-white/[0.02] bg-white/60">
-              <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-3">New Comment</p>
-              <input id="comment-name" type="text" placeholder="Your name *" required
-                class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80
-                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
-                       dark:text-white text-obsidian-900
-                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
-                       text-[13px] font-light outline-none
-                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
-              <textarea id="comment-input" rows="3" placeholder="Write your comment..."
-                class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80
-                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
-                       dark:text-white text-obsidian-900
-                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
-                       text-[14px] font-light outline-none
-                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
-              <div class="flex gap-3 mt-3">
-                <button onclick="submitComment()"
-                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl
-                         dark:bg-white/90 bg-obsidian-800
-                         dark:text-obsidian-900 text-cream
-                         text-[13px] font-semibold
-                         hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">
-                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                  Post Comment
-                </button>
-                <button onclick="toggleAddComment()"
-                  class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04]
-                         dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium
-                         hover:dark:bg-white/[0.07] transition-all duration-200">
-                  Cancel
-                </button>
+            <div id="add-comment-panel" class="add-comment-panel mt-3">
+              <div class="p-5 rounded-2xl
+                   dark:bg-gradient-to-b dark:from-white/[0.04] dark:to-white/[0.015]
+                   bg-gradient-to-b from-white/90 to-white/50
+                   border dark:border-white/[0.08] border-obsidian-800/[0.07]
+                   dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]
+                   shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="w-1 h-4 rounded-full dark:bg-platinum/40 bg-obsidian-500/60"></div>
+                  <p class="text-[11px] font-semibold tracking-[0.2em] uppercase dark:text-platinum/40 text-obsidian-500">New Comment</p>
+                </div>
+                <input id="comment-name" type="text" placeholder="Your name *" required
+                  class="comment-input-glow w-full px-4 py-3 rounded-xl mb-3
+                         dark:bg-obsidian-900/70 bg-white
+                         border dark:border-white/[0.07] border-obsidian-800/[0.08]
+                         dark:text-white text-obsidian-900
+                         dark:placeholder-platinum/20 placeholder-obsidian-300/80
+                         text-[13px] font-light outline-none
+                         focus:dark:border-platinum/25 focus:border-obsidian-800/20 transition-all duration-300">
+                <textarea id="comment-input" rows="3" placeholder="Share your thoughts..."
+                  class="comment-input-glow w-full px-4 py-3 rounded-xl
+                         dark:bg-obsidian-900/70 bg-white
+                         border dark:border-white/[0.07] border-obsidian-800/[0.08]
+                         dark:text-white text-obsidian-900
+                         dark:placeholder-platinum/20 placeholder-obsidian-300/80
+                         text-[13px] font-light outline-none
+                         focus:dark:border-platinum/25 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
+                <div class="flex gap-2.5 mt-3">
+                  <button onclick="submitComment()"
+                    class="flex items-center gap-2 px-5 py-2.5 rounded-xl
+                           dark:bg-platinum/90 bg-obsidian-800
+                           dark:text-obsidian-950 text-white
+                           text-[13px] font-semibold
+                           hover:dark:bg-platinum hover:bg-obsidian-700
+                           active:scale-95 transition-all duration-200 shadow-sm">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                    Post
+                  </button>
+                  <button onclick="toggleAddComment()"
+                    class="px-4 py-2.5 rounded-xl
+                           dark:bg-white/[0.04] bg-obsidian-800/[0.04]
+                           dark:text-platinum/50 text-obsidian-500 text-[13px] font-medium
+                           hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07]
+                           active:scale-95 transition-all duration-200">
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -596,32 +627,66 @@
       }
 
       if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 pb-2">No comments yet. Be the first!</p>';
+        list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 py-4 text-center">No comments yet — be the first to share your thoughts!</p>';
         return;
       }
-      list.innerHTML = data.map(c => {
+      const avatarColors = [
+        'from-violet-500/30 to-purple-700/20',
+        'from-sky-500/30 to-blue-700/20',
+        'from-emerald-500/30 to-teal-700/20',
+        'from-amber-500/30 to-orange-600/20',
+        'from-rose-500/30 to-pink-700/20',
+        'from-platinum/20 to-platinum/10'
+      ];
+      list.innerHTML = data.map((c, idx) => {
         const isOwner = c.session_id === sid;
-        // Fix for bug 3: Quote conflict removed by avoiding simple string injection
+        const initial = (c.author||'?')[0].toUpperCase();
+        const color = avatarColors[initial.charCodeAt(0) % avatarColors.length];
         const deleteBtn = isOwner ? `
           <button onclick="deleteComment(&quot;${c.id}&quot;)"
-            class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium
+            class="comment-delete-btn ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-medium
                    dark:text-platinum/30 text-obsidian-400
                    hover:dark:text-red-400 hover:text-red-500
-                   hover:dark:bg-red-500/10 hover:bg-red-500/5
+                   hover:dark:bg-red-500/10 hover:bg-red-50
                    border dark:border-white/[0.04] border-obsidian-800/[0.04]
                    transition-all duration-200">
-            <i data-lucide="trash-2" class="w-3 h-3"></i>
-            Delete
+            <i data-lucide="trash-2" class="w-3 h-3"></i>Delete
           </button>` : '';
         return `
-        <div class="p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] mb-2">
-          <div class="flex items-center gap-2 mb-2">
-            <div class="w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500">${(c.author||'?')[0].toUpperCase()}</div>
-            <span class="text-[12px] font-medium dark:text-platinum/60 text-obsidian-500">${sanitize(c.author || '?')}</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
-            ${deleteBtn}
+        <div class="comment-card relative group p-5 rounded-2xl mb-3
+             dark:bg-gradient-to-br dark:from-white/[0.045] dark:to-white/[0.015]
+             bg-gradient-to-br from-white/85 to-white/50
+             border dark:border-white/[0.07] border-obsidian-800/[0.06]
+             dark:hover:border-white/[0.13] hover:border-obsidian-800/[0.12]
+             dark:hover:shadow-[0_6px_28px_rgba(0,0,0,0.35)]
+             hover:shadow-[0_6px_24px_rgba(0,0,0,0.06)]
+             transition-all duration-300"
+             style="animation-delay:${idx * 0.07}s">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br ${color}
+                 border dark:border-white/[0.08] border-obsidian-800/[0.06]
+                 flex items-center justify-center text-[13px] font-bold
+                 dark:text-platinum/90 text-obsidian-700 shadow-sm
+                 group-hover:scale-105 transition-transform duration-300">
+              ${initial}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span class="text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700">${sanitize(c.author || '?')}</span>
+                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full
+                     dark:bg-platinum/[0.05] bg-obsidian-800/[0.04]
+                     dark:text-platinum/30 text-obsidian-400
+                     border dark:border-white/[0.04] border-obsidian-800/[0.03]">
+                  ${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+                </span>
+                ${deleteBtn}
+              </div>
+              <p class="text-[13px] dark:text-platinum/60 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p>
+            </div>
           </div>
-          <p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p>
+          <div class="absolute inset-x-0 bottom-0 h-[1px] rounded-b-2xl
+               bg-gradient-to-r from-transparent dark:via-platinum/[0.07] via-obsidian-800/[0.04] to-transparent
+               opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>`;
       }).join('');
       lucide.createIcons({ nodes: [list] });
