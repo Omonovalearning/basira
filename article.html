@@ -213,7 +213,7 @@
 
     <section class="py-0">
       <div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12">
-        <img id="article-image" src="" alt="Article" loading="lazy" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="this.style.display='none'">
+        <img id="article-image" alt="Article" loading="lazy" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 anim-fade anim-delay-2 my-12" onerror="if(this.src) this.style.display='none'">
       </div>
     </section>
 
@@ -488,6 +488,7 @@
       document.getElementById('article-category').textContent = article.category;
       document.getElementById('article-date').textContent = article.date;
       const img = document.getElementById('article-image');
+      img.style.display = 'block';
       img.src = article.image; img.alt = article.title;
       document.getElementById('article-content').innerHTML = article.content;
       document.title = article.title + ' — BASIRA';
