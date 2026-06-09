@@ -78,15 +78,10 @@
     .reaction-btn.disliked { color:#ef4444!important; border-color:#ef4444!important; }
     /* Comment area */
     .comment-area { display:none; }
-    .comment-area.open { display:block; animation: slideDown 0.3s cubic-bezier(0.16,1,0.3,1); }
-    @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+    .comment-area.open { display:block; animation: slideDown 0.25s ease; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
     .add-comment-panel { display:none; }
-    .add-comment-panel.open { display:block; animation: slideDown 0.3s cubic-bezier(0.16,1,0.3,1); }
-    
-    /* إخفاء شريط التمرير لحقل التعليق (Premium Look) */
-    textarea#comment-input::-webkit-scrollbar { display: none; }
-    textarea#comment-input { -ms-overflow-style: none; scrollbar-width: none; }
-
+    .add-comment-panel.open { display:block; animation: slideDown 0.25s ease; }
     /* Sources modal */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; }
   </style>
@@ -253,60 +248,59 @@
             </button>
           </div>
 
-          <!-- بداية قسم التعليقات المحدث -->
-          <div id="comment-area" class="comment-area mt-6">
+          <div id="comment-area" class="comment-area mt-5">
 
-            <div id="comments-list" class="space-y-3 mb-5"></div>
+            <div id="comments-list" class="space-y-3 mb-4"></div>
 
-            <!-- الزر الجديد التفاعلي لإضافة التعليق -->
             <button onclick="toggleAddComment()"
-              class="w-full flex items-center justify-between p-4 rounded-2xl
-                     dark:bg-white/[0.02] bg-obsidian-800/[0.02]
-                     border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                     hover:dark:bg-white/[0.04] hover:bg-obsidian-800/[0.04]
-                     transition-all duration-300 group cursor-text">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center">
-                  <i data-lucide="user" class="w-4 h-4 dark:text-platinum/70 text-obsidian-600"></i>
-                </div>
-                <span class="dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium">Write a comment...</span>
-              </div>
-              <div class="w-8 h-8 rounded-full dark:bg-white/[0.04] bg-obsidian-800/[0.04] flex items-center justify-center group-hover:dark:bg-platinum/20 group-hover:bg-obsidian-800/10 transition-colors">
-                <i data-lucide="plus" class="w-4 h-4 dark:text-platinum/80 text-obsidian-600"></i>
-              </div>
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl
+                     border-2 border-dashed dark:border-white/[0.08] border-obsidian-800/[0.08]
+                     dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium
+                     hover:dark:border-platinum/20 hover:dark:text-platinum/70
+                     hover:border-obsidian-800/20 hover:text-obsidian-600
+                     transition-all duration-200 group">
+              <i data-lucide="plus-circle" class="w-4 h-4 group-hover:scale-110 transition-transform duration-200"></i>
+              Add your comment
             </button>
 
-            <!-- صندوق إضافة التعليق (Premium UI) -->
-            <div id="add-comment-panel" class="add-comment-panel mt-3 p-5 sm:p-6 rounded-3xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:bg-obsidian-800/30 bg-white/50 backdrop-blur-md shadow-sm">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-8 h-8 rounded-full dark:bg-platinum/20 bg-obsidian-800/10 flex items-center justify-center">
-                  <i data-lucide="message-square-plus" class="w-4 h-4 dark:text-platinum/80 text-obsidian-700"></i>
-                </div>
-                <span class="text-[14px] font-semibold dark:text-platinum/90 text-obsidian-800">Add a Comment</span>
-              </div>
-
+            <div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl
+                 border dark:border-white/[0.06] border-obsidian-800/[0.06]
+                 dark:bg-white/[0.02] bg-white/60">
+              <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-3">New Comment</p>
               <input id="comment-name" type="text" placeholder="Your name *" required
-                class="w-full px-5 py-3.5 rounded-2xl mb-3 dark:bg-obsidian-900/60 bg-white/80 border dark:border-white/[0.06] border-obsidian-800/[0.06] dark:text-white text-obsidian-900 dark:placeholder-platinum/30 placeholder-obsidian-400/50 text-[13px] font-medium outline-none focus:ring-2 dark:focus:ring-platinum/30 focus:ring-obsidian-800/20 transition-all duration-300">
-
-              <textarea id="comment-input" rows="1" placeholder="Write your thoughts here..."
-                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
-                class="w-full px-5 py-3.5 rounded-2xl dark:bg-obsidian-900/60 bg-white/80 border dark:border-white/[0.06] border-obsidian-800/[0.06] dark:text-white text-obsidian-900 dark:placeholder-platinum/30 placeholder-obsidian-400/50 text-[14px] leading-relaxed outline-none focus:ring-2 dark:focus:ring-platinum/30 focus:ring-obsidian-800/20 transition-all duration-300 resize-none min-h-[56px] max-h-[250px] overflow-y-auto"></textarea>
-
-              <div class="flex items-center justify-end gap-3 mt-5">
-                <button onclick="toggleAddComment()"
-                  class="px-5 py-2.5 rounded-xl dark:bg-transparent bg-transparent dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium hover:dark:text-platinum hover:text-obsidian-800 transition-all duration-200">
-                  Cancel
-                </button>
-                <button id="submit-comment-btn" onclick="submitComment()"
-                  class="flex items-center justify-center gap-2 min-w-[100px] px-6 py-2.5 rounded-xl dark:bg-platinum bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-md">
+                class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[13px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300">
+              <textarea id="comment-input" rows="3" placeholder="Write your comment..."
+                class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80
+                       border dark:border-white/[0.08] border-obsidian-800/[0.08]
+                       dark:text-white text-obsidian-900
+                       dark:placeholder-platinum/25 placeholder-obsidian-400/50
+                       text-[14px] font-light outline-none
+                       focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea>
+              <div class="flex gap-3 mt-3">
+                <button onclick="submitComment()"
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl
+                         dark:bg-white/90 bg-obsidian-800
+                         dark:text-obsidian-900 text-cream
+                         text-[13px] font-semibold
+                         hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200">
                   <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                  <span>Post</span>
+                  Post Comment
+                </button>
+                <button onclick="toggleAddComment()"
+                  class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04]
+                         dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium
+                         hover:dark:bg-white/[0.07] transition-all duration-200">
+                  Cancel
                 </button>
               </div>
             </div>
-          </div>
-          <!-- نهاية قسم التعليقات المحدث -->
 
+          </div>
         </div>
 
         <div id="related-section" class="mt-12 pt-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] hidden">
@@ -499,6 +493,7 @@
         document.head.appendChild(m);
       }
 
+      // Fix canonical URL bug to prevent duplicates
       let canon = document.querySelector('link[rel="canonical"]');
       if (!canon) {
         canon = document.createElement('link');
@@ -542,60 +537,42 @@
       }
     }
 
-    // ── قفل زر اللايك المحدث (Debounce Lock) ─────────────────────────
-    let isReacting = false; 
-
     async function react(type) {
-      if (isReacting) return; // منع التكرار السريع
-      isReacting = true;
-
       const id = String(getArticleId());
       const lb = document.getElementById('btn-like');
       const db = document.getElementById('btn-dislike');
       const storageKey = `basira-reaction-${id}`;
       const prevReaction = localStorage.getItem(storageKey);
 
-      // تعطيل الأزرار بصرياً أثناء المعالجة
-      lb.style.pointerEvents = 'none';
-      db.style.pointerEvents = 'none';
-
-      try {
-        if (prevReaction === type) {
+      if (prevReaction === type) {
+        try {
+          await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+          });
+        } catch(e) {}
+        userReaction = null;
+        lb.classList.remove('liked');
+        db.classList.remove('disliked');
+        localStorage.removeItem(storageKey);
+        showToast('Reaction removed', 'minus-circle');
+      } else {
+        if (prevReaction) {
           try {
-            await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
+            await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
               method: 'DELETE',
               headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
             });
           } catch(e) {}
-          userReaction = null;
-          lb.classList.remove('liked');
-          db.classList.remove('disliked');
-          localStorage.removeItem(storageKey);
-          showToast('Reaction removed', 'minus-circle');
-        } else {
-          if (prevReaction) {
-            try {
-              await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
-                method: 'DELETE',
-                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-              });
-            } catch(e) {}
-          }
-          userReaction = type;
-          lb.classList.toggle('liked', type === 'like');
-          db.classList.toggle('disliked', type === 'dislike');
-          localStorage.setItem(storageKey, type);
-          await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
-          showToast(type === 'like' ? 'Thanks! ❤️' : 'Feedback noted', type === 'like' ? 'heart' : 'frown');
         }
-        await loadReactions();
-      } catch (e) {
-        console.error('Reaction error:', e);
-      } finally {
-        isReacting = false; // فك القفل
-        lb.style.pointerEvents = 'auto';
-        db.style.pointerEvents = 'auto';
+        userReaction = type;
+        lb.classList.toggle('liked', type === 'like');
+        db.classList.toggle('disliked', type === 'dislike');
+        localStorage.setItem(storageKey, type);
+        await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
+        showToast(type === 'like' ? 'Thanks! ❤️' : 'Feedback noted', type === 'like' ? 'heart' : 'frown');
       }
+      loadReactions();
     }
 
     async function loadComments() {
@@ -624,6 +601,7 @@
       }
       list.innerHTML = data.map(c => {
         const isOwner = c.session_id === sid;
+        // Fix for bug 3: Quote conflict removed by avoiding simple string injection
         const deleteBtn = isOwner ? `
           <button onclick="deleteComment(&quot;${c.id}&quot;)"
             class="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium
@@ -643,7 +621,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
             ${deleteBtn}
           </div>
-          <p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content).replace(/\n/g, '<br>')}</p>
+          <p class="text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p>
         </div>`;
       }).join('');
       lucide.createIcons({ nodes: [list] });
@@ -661,19 +639,13 @@
       const panel = document.getElementById('add-comment-panel');
       panel.classList.toggle('open');
       if (panel.classList.contains('open')) {
-        setTimeout(() => document.getElementById('comment-name').focus(), 100);
+        setTimeout(() => document.getElementById('comment-name').focus(), 50);
       }
     }
 
-    // ── تحديث كود إضافة التعليق (مع حالة التحميل) ─────────────────────────
-    let isSubmittingComment = false;
-
     async function submitComment() {
-      if (isSubmittingComment) return;
-
       const input  = document.getElementById('comment-input');
       const nameEl = document.getElementById('comment-name');
-      const btn    = document.getElementById('submit-comment-btn');
       const text   = input.value.trim();
       const author = nameEl ? nameEl.value.trim() : '';
 
@@ -684,45 +656,22 @@
         setTimeout(() => nameEl.style.borderColor = '', 2000);
         return;
       }
-      if (!text) { 
-        input.focus();
-        showToast('Please write something first','alert-circle'); 
-        return; 
-      }
+      if (!text) { showToast('Please write something first','alert-circle'); return; }
 
-      isSubmittingComment = true;
-      const originalBtnContent = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Posting...</span>`;
-      btn.classList.add('opacity-80', 'cursor-not-allowed');
-      lucide.createIcons({nodes:[btn]});
-
-      try {
-        const sid = getSessionId();
-        const result = await sbPost('comments', {
-          article_id: String(getArticleId()),
-          content: text,
-          author: author,
-          session_id: sid
-        });
-        
-        if (result) {
-          input.value = '';
-          input.style.height = ''; // إعادة ضبط حجم الحقل المتمدد
-          nameEl.value = '';
-          document.getElementById('add-comment-panel').classList.remove('open');
-          await loadComments();
-          showToast('Comment posted!','check-circle');
-        } else {
-          showToast('Error posting comment','alert-circle');
-        }
-      } catch (e) {
-        showToast('Error posting comment','alert-circle');
-      } finally {
-        isSubmittingComment = false;
-        btn.innerHTML = originalBtnContent;
-        btn.classList.remove('opacity-80', 'cursor-not-allowed');
-        lucide.createIcons({nodes:[btn]});
-      }
+      const sid = getSessionId();
+      const result = await sbPost('comments', {
+        article_id: String(getArticleId()),
+        content: text,
+        author: author,
+        session_id: sid
+      });
+      if (result) {
+        input.value = '';
+        nameEl.value = '';
+        document.getElementById('add-comment-panel').classList.remove('open');
+        loadComments();
+        showToast('Comment posted!','check-circle');
+      } else showToast('Error posting comment','alert-circle');
     }
 
     async function deleteComment(commentId) {
