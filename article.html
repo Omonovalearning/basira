@@ -272,18 +272,14 @@
 
             <div id="comments-list" class="space-y-2 mb-5"></div>
 
-            <button onclick="toggleAddComment()"
-              class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl relative overflow-hidden
-                     border dark:border-white/[0.06] border-obsidian-800/[0.06]
-                     dark:bg-white/[0.02] bg-white/50
-                     dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium
-                     hover:dark:bg-white/[0.045] hover:bg-white/80
-                     hover:dark:border-platinum/15 hover:border-obsidian-800/15
-                     hover:dark:text-platinum/70 hover:text-obsidian-600
-                     active:scale-[0.99] transition-all duration-300 group">
-              <span class="absolute inset-0 bg-gradient-to-r dark:from-white/[0.02] dark:to-transparent from-obsidian-800/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></span>
-              <i data-lucide="edit-3" class="w-4 h-4 relative z-10 group-hover:scale-110 group-hover:rotate-[-8deg] transition-transform duration-300"></i>
-              <span class="relative z-10" data-en="Write a comment" data-ar="اكتب تعليقاً">Write a comment</span>
+<button onclick="toggleAddComment()"
+              class="w-full flex items-center gap-3 py-2.5 px-3 rounded-full relative
+                     border dark:border-white/[0.10] border-obsidian-800/[0.10]
+                     dark:bg-transparent bg-white/40
+                     hover:dark:border-platinum/25 hover:border-obsidian-800/20
+                     transition-all duration-300 group">
+              <span class="comment-avatar w-9 h-9 rounded-full flex-shrink-0"></span>
+              <span class="text-[14px] font-light dark:text-platinum/35 text-obsidian-400" data-en="Add a comment" data-ar="أضف تعليقاً">Add a comment</span>
             </button>
 
             <div id="add-comment-panel" class="add-comment-panel mt-3">
