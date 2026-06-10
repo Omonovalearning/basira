@@ -90,7 +90,8 @@
     .comment-card { animation: commentIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; transition: transform 0.22s ease, box-shadow 0.22s ease; }
     .dark .comment-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,192,192,0.08); }
     .comment-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05); }
-    .comment-avatar { background: conic-gradient(from 200deg at 40% 40%, #9ca3af, #C0C0C0, #6b7280, #C0C0C0) !important; transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1); }
+.comment-avatar { background: dark:#262626 #d4d4d4 !important; display:flex; align-items:center; justify-content:center; transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1); }
+    .dark .comment-avatar { background:#2a2a2a !important; }
     .comment-card:hover .comment-avatar { transform: scale(1.13) rotate(8deg); }
     .comment-inner-glow { opacity: 0; transition: opacity 0.3s ease; }
     .comment-card:hover .comment-inner-glow { opacity: 1; }
@@ -278,7 +279,9 @@
                      dark:bg-transparent bg-white/40
                      hover:dark:border-platinum/25 hover:border-obsidian-800/20
                      transition-all duration-300 group">
-              <span class="comment-avatar w-9 h-9 rounded-full flex-shrink-0"></span>
+<span class="comment-avatar w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center">
+                <i data-lucide="user" class="w-4 h-4 dark:text-platinum/40 text-obsidian-400"></i>
+              </span>
               <span class="text-[14px] font-light dark:text-platinum/35 text-obsidian-400" data-en="Add a comment" data-ar="أضف تعليقاً">Add a comment</span>
             </button>
 
