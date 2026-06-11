@@ -76,6 +76,55 @@
     .reaction-btn { transition: all 0.2s ease; }
     .reaction-btn.liked { color:#22c55e!important; border-color:#22c55e!important; }
     .reaction-btn.disliked { color:#ef4444!important; border-color:#ef4444!important; }
+    .reaction-btn.reacted-love { color:#f4506e!important; border-color:#f4506e!important; }
+    .reaction-btn.reacted-care { color:#f7b125!important; border-color:#f7b125!important; }
+    .reaction-btn.reacted-wow { color:#f7b125!important; border-color:#f7b125!important; }
+
+    /* Facebook-style reaction popup */
+    .reaction-popup {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(0.85);
+      transform-origin: bottom left;
+      transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1), visibility 0.18s;
+      z-index: 50;
+    }
+    .dark .reaction-popup {
+      background: #2a2a2a;
+      border-color: rgba(255,255,255,0.07);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .reaction-popup.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+    .reaction-option {
+      width: 40px; height: 40px; cursor: pointer;
+      transition: transform 0.16s cubic-bezier(0.34,1.56,0.64,1), margin 0.16s ease;
+      transform-origin: bottom center;
+      opacity: 0; transform: scale(0) translateY(10px);
+    }
+    .reaction-popup.show .reaction-option {
+      animation: reactionPopIn 0.32s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    .reaction-popup.show .reaction-option:nth-child(1) { animation-delay: 0.02s; }
+    .reaction-popup.show .reaction-option:nth-child(2) { animation-delay: 0.06s; }
+    .reaction-popup.show .reaction-option:nth-child(3) { animation-delay: 0.10s; }
+    @keyframes reactionPopIn {
+      from { opacity: 0; transform: scale(0) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .reaction-option img { width: 100%; height: 100%; display: block; pointer-events: none; }
+    .reaction-option:hover { transform: scale(1.4) translateY(-12px); z-index: 2; }
+    .reaction-option:hover ~ .reaction-option { margin-left: 4px; }
     /* Comment area */
     .comment-area { display:none; }
     .comment-area.open { display:block; animation: slideDown 0.25s ease; }
@@ -90,8 +139,9 @@
     .comment-card { animation: commentIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; transition: transform 0.22s ease, box-shadow 0.22s ease; }
     .dark .comment-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,192,192,0.08); }
     .comment-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05); }
-.comment-avatar { background: dark:#262626 #d4d4d4 !important; display:flex; align-items:center; justify-content:center; transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1); }
-    .dark .comment-avatar { background:#2a2a2a !important; }
+    .comment-avatar { background: conic-gradient(from 200deg at 40% 40%, #9ca3af, #C0C0C0, #6b7280, #C0C0C0) !important; transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1); }
+    .comment-avatar-placeholder { background: #d4d4d4; }
+    .dark .comment-avatar-placeholder { background: #2a2a2a; }
     .comment-card:hover .comment-avatar { transform: scale(1.13) rotate(8deg); }
     .comment-inner-glow { opacity: 0; transition: opacity 0.3s ease; }
     .comment-card:hover .comment-inner-glow { opacity: 1; }
@@ -246,11 +296,32 @@
         <div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
           <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p>
           <div class="flex flex-wrap items-center gap-3">
-            <button onclick="react('like')" id="btn-like" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
-              <i data-lucide="thumbs-up" class="w-4 h-4"></i>
-              <span id="like-count">0</span>
-            </button>
-            <button onclick="react('dislike')" id="btn-dislike" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
+            <div class="like-btn-wrap relative">
+              <button id="btn-like"
+                onclick="handleLikeClick()"
+                oncontextmenu="return false;"
+                class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200 select-none">
+                <span id="like-icon" class="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="thumbs-up" class="w-4 h-4"></i>
+                </span>
+                <span id="like-label">Like</span>
+                <span id="like-count">0</span>
+              </button>
+              <div id="reaction-popup" class="reaction-popup">
+                <div class="reaction-option" data-type="love" onclick="react('love')" title="Love">
+                  <img src="https://emojicdn.elk.sh/%E2%9D%A4%EF%B8%8F?style=apple" alt="Love" draggable="false">
+                </div>
+                <div class="reaction-option" data-type="care" onclick="react('care')" title="Care">
+                  <img src="https://emojicdn.elk.sh/%F0%9F%A5%B0?style=apple" alt="Care" draggable="false">
+                </div>
+                <div class="reaction-option" data-type="wow" onclick="react('wow')" title="Wow">
+                  <img src="https://emojicdn.elk.sh/%F0%9F%98%AE?style=apple" alt="Wow" draggable="false">
+                </div>
+              </div>
+            </div>
+            <button id="btn-dislike"
+              onclick="react('dislike')"
+              class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200 select-none">
               <i data-lucide="thumbs-down" class="w-4 h-4"></i>
               <span id="dislike-count">0</span>
             </button>
@@ -273,13 +344,13 @@
 
             <div id="comments-list" class="space-y-2 mb-5"></div>
 
-<button onclick="toggleAddComment()"
+            <button onclick="toggleAddComment()"
               class="w-full flex items-center gap-3 py-2.5 px-3 rounded-full relative
                      border dark:border-white/[0.10] border-obsidian-800/[0.10]
                      dark:bg-transparent bg-white/40
                      hover:dark:border-platinum/25 hover:border-obsidian-800/20
                      transition-all duration-300 group">
-<span class="comment-avatar w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center">
+              <span class="comment-avatar-placeholder w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center">
                 <i data-lucide="user" class="w-4 h-4 dark:text-platinum/40 text-obsidian-400"></i>
               </span>
               <span class="text-[14px] font-light dark:text-platinum/35 text-obsidian-400" data-en="Add a comment" data-ar="أضف تعليقاً">Add a comment</span>
@@ -563,62 +634,157 @@
       });
     }
 
+    const REACTION_META = {
+      like: { label: 'Like', emoji: null, icon: 'thumbs-up', cls: 'liked' },
+      love: { label: 'Love', emoji: 'https://emojicdn.elk.sh/%E2%9D%A4%EF%B8%8F?style=apple', cls: 'reacted-love' },
+      care: { label: 'Care', emoji: 'https://emojicdn.elk.sh/%F0%9F%A5%B0?style=apple', cls: 'reacted-care' },
+      wow:  { label: 'Wow',  emoji: 'https://emojicdn.elk.sh/%F0%9F%98%AE?style=apple', cls: 'reacted-wow' },
+      dislike: { label: 'Dislike', emoji: null, icon: 'thumbs-down', cls: 'disliked' }
+    };
+    const ALL_REACTION_TYPES = Object.keys(REACTION_META);
+    const LIKE_BTN_TYPES = ['like','love','care','wow']; // types displayed on the main Like button
+
+    function setLikeButtonState(type) {
+      const lb = document.getElementById('btn-like');
+      const db = document.getElementById('btn-dislike');
+      const iconEl = document.getElementById('like-icon');
+      const labelEl = document.getElementById('like-label');
+
+      // Reset like button
+      LIKE_BTN_TYPES.forEach(t => lb.classList.remove(REACTION_META[t].cls));
+      // Reset dislike button
+      db.classList.remove(REACTION_META.dislike.cls);
+
+      if (type && LIKE_BTN_TYPES.includes(type)) {
+        lb.classList.add(REACTION_META[type].cls);
+        labelEl.textContent = REACTION_META[type].label;
+        if (REACTION_META[type].emoji) {
+          iconEl.innerHTML = `<img src="${REACTION_META[type].emoji}" class="w-4 h-4" alt="${REACTION_META[type].label}">`;
+        } else {
+          iconEl.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i>`;
+          if (window.lucide) lucide.createIcons();
+        }
+      } else {
+        labelEl.textContent = 'Like';
+        iconEl.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      if (type === 'dislike') {
+        db.classList.add(REACTION_META.dislike.cls);
+      }
+    }
+
     async function loadReactions() {
       const id = getArticleId();
       const data = await sbGet(`reactions?article_id=eq.${id}&select=type`);
       if (data) {
-        document.getElementById('like-count').textContent = data.filter(r=>r.type==='like').length;
-        document.getElementById('dislike-count').textContent = data.filter(r=>r.type==='dislike').length;
+        document.getElementById('like-count').textContent = data.filter(r => r.type !== 'dislike').length;
+        document.getElementById('dislike-count').textContent = data.filter(r => r.type === 'dislike').length;
       }
       const saved = localStorage.getItem(`basira-reaction-${id}`);
-      if (saved) {
-        userReaction = saved;
-        document.getElementById('btn-like').classList.toggle('liked', saved==='like');
-        document.getElementById('btn-dislike').classList.toggle('disliked', saved==='dislike');
-      }
+      userReaction = saved || null;
+      setLikeButtonState(userReaction);
     }
 
     async function react(type) {
       if (isReacting) return;
       isReacting = true;
+      hideReactionPopup();
 
       const id = String(getArticleId());
-      const lb = document.getElementById('btn-like');
-      const db = document.getElementById('btn-dislike');
       const storageKey = `basira-reaction-${id}`;
       const prevReaction = localStorage.getItem(storageKey);
 
-      if (prevReaction === type) {
-        try {
-          await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-          });
-        } catch(e) {}
-        userReaction = null;
-        lb.classList.remove('liked');
-        db.classList.remove('disliked');
-        localStorage.removeItem(storageKey);
-        showToast('Reaction removed', 'minus-circle');
-      } else {
-        if (prevReaction) {
+      try {
+        if (prevReaction === type) {
           try {
-            await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
+            await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
               method: 'DELETE',
               headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
             });
           } catch(e) {}
+          userReaction = null;
+          localStorage.removeItem(storageKey);
+          showToast('Reaction removed', 'minus-circle');
+        } else {
+          if (prevReaction) {
+            try {
+              await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
+                method: 'DELETE',
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+              });
+            } catch(e) {}
+          }
+          userReaction = type;
+          localStorage.setItem(storageKey, type);
+          try {
+            await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
+          } catch(e) {}
+          showToast(REACTION_META[type].label + '!', type === 'dislike' ? 'thumbs-down' : (type === 'like' ? 'thumbs-up' : 'heart'));
         }
-        userReaction = type;
-        lb.classList.toggle('liked', type === 'like');
-        db.classList.toggle('disliked', type === 'dislike');
-        localStorage.setItem(storageKey, type);
-        await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
-        showToast(type === 'like' ? 'Thanks! ❤️' : 'Feedback noted', type === 'like' ? 'heart' : 'frown');
+        setLikeButtonState(userReaction);
+        await loadReactions();
+      } finally {
+        isReacting = false;
       }
-      await loadReactions();
-      isReacting = false;
     }
+
+    function handleLikeClick() {
+      if (suppressLikeClick) { suppressLikeClick = false; return; }
+      // Short click = toggle 'like' (or remove current reaction if any)
+      react(userReaction ? userReaction : 'like');
+    }
+
+    /* === Reaction popup show/hide (long-press + hover) === */
+    let reactionPressTimer = null;
+    let suppressLikeClick = false;
+    (function initReactionPopup() {
+      const wrap = document.querySelector('.like-btn-wrap');
+      const popup = document.getElementById('reaction-popup');
+      const btn = document.getElementById('btn-like');
+      if (!wrap || !popup || !btn) return;
+
+      const LONG_PRESS_MS = 400;
+
+      const show = () => popup.classList.add('show');
+      const hide = () => popup.classList.remove('show');
+      window.hideReactionPopup = hide;
+
+      // Desktop hover (mouse-capable devices only — avoids touch ghost-event conflicts)
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        wrap.addEventListener('mouseenter', show);
+        wrap.addEventListener('mouseleave', hide);
+      }
+
+      // Touch long-press
+      btn.addEventListener('touchstart', () => {
+        suppressLikeClick = false;
+        reactionPressTimer = setTimeout(() => {
+          show();
+          suppressLikeClick = true;
+          if (navigator.vibrate) navigator.vibrate(10);
+        }, LONG_PRESS_MS);
+      }, { passive: true });
+
+      btn.addEventListener('touchend', (e) => {
+        if (reactionPressTimer) { clearTimeout(reactionPressTimer); reactionPressTimer = null; }
+        if (suppressLikeClick) {
+          // Long-press just opened the popup: stop this touch from also firing a click
+          e.preventDefault();
+          setTimeout(() => { suppressLikeClick = false; }, 50);
+        }
+      });
+
+      const cancelPress = () => { if (reactionPressTimer) { clearTimeout(reactionPressTimer); reactionPressTimer = null; } };
+      btn.addEventListener('touchmove', cancelPress);
+      btn.addEventListener('touchcancel', cancelPress);
+
+      // Hide popup on outside tap
+      document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) hide();
+      });
+    })();
 
     async function loadComments() {
       const id  = getArticleId();
@@ -644,18 +810,9 @@
         list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 py-4 text-center">No comments yet — be the first to share your thoughts!</p>';
         return;
       }
-      const avatarColors = [
-        'from-violet-500/30 to-purple-700/20',
-        'from-sky-500/30 to-blue-700/20',
-        'from-emerald-500/30 to-teal-700/20',
-        'from-amber-500/30 to-orange-600/20',
-        'from-rose-500/30 to-pink-700/20',
-        'from-platinum/20 to-platinum/10'
-      ];
       list.innerHTML = data.map((c, idx) => {
         const isOwner = c.session_id === sid;
         const initial = (c.author||'?')[0].toUpperCase();
-        const color = avatarColors[initial.charCodeAt(0) % avatarColors.length];
         const deleteBtn = isOwner ? `
           <button onclick="deleteComment(&quot;${c.id}&quot;)"
             class="comment-delete-btn ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-medium
