@@ -693,38 +693,41 @@
       hideReactionPopup();
 
       const id = String(getArticleId());
+      const sid = getSessionId();
       const storageKey = `basira-reaction-${id}`;
       const prevReaction = localStorage.getItem(storageKey);
 
       try {
         if (prevReaction === type) {
-          try {
-            await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${type}`, {
-              method: 'DELETE',
-              headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-            });
-          } catch(e) {}
-          userReaction = null;
-          localStorage.removeItem(storageKey);
-          showToast('Reaction removed', 'minus-circle');
-        } else {
-          if (prevReaction) {
-            try {
-              await fetch(`${SB_URL}/rest/v1/reactions?article_id=eq.${id}&type=eq.${prevReaction}`, {
-                method: 'DELETE',
-                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-              });
-            } catch(e) {}
+          // Remove reaction safely using session_id
+          const ok = await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
+          if (ok) {
+            userReaction = null;
+            localStorage.removeItem(storageKey);
+            showToast('Reaction removed', 'minus-circle');
+          } else {
+            showToast('Error: Could not connect to database', 'alert-circle');
           }
-          userReaction = type;
-          localStorage.setItem(storageKey, type);
-          try {
-            await sbPost('reactions', { article_id: id, type: type, session_id: getSessionId() });
-          } catch(e) {}
-          showToast(REACTION_META[type].label + '!', type === 'dislike' ? 'thumbs-down' : (type === 'like' ? 'thumbs-up' : 'heart'));
+        } else {
+          // Change or Add reaction
+          if (prevReaction) {
+            await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
+          }
+          
+          const result = await sbPost('reactions', { article_id: id, type: type, session_id: sid });
+          
+          if (result) {
+            userReaction = type;
+            localStorage.setItem(storageKey, type);
+            showToast(REACTION_META[type].label + '!', type === 'dislike' ? 'thumbs-down' : (type === 'like' ? 'thumbs-up' : 'heart'));
+          } else {
+            showToast('Error: Failed to save reaction to database', 'alert-circle');
+          }
         }
         setLikeButtonState(userReaction);
         await loadReactions();
+      } catch (error) {
+        showToast('Network error occurred', 'alert-circle');
       } finally {
         isReacting = false;
       }
