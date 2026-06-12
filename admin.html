@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BASIRA Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.383.0"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: { 900:'#0A0A0A',800:'#111111',700:'#1A1A1A',600:'#222222',500:'#2A2A2A' },
+            platinum: { DEFAULT:'#C0C0C0',light:'#D4D4D4' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:system-ui,sans-serif}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}
+    .header-blur{backdrop-filter:blur(20px)}
+
+    /* LOGIN */
+    #login-screen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center}
+
+    /* TOAST */
+    @keyframes tIn{from{transform:translateY(-10px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+    @keyframes tOut{from{opacity:1}to{transform:translateY(-10px) scale(.96);opacity:0}}
+    .toast-in{animation:tIn .3s cubic-bezier(.16,1,.3,1) forwards}
+    .toast-out{animation:tOut .25s ease-in forwards}
+
+    /* EDITOR */
+    #content-editor{min-height:220px;resize:vertical}
+    .tab-btn.active{background:rgba(192,192,192,.08);color:rgba(192,192,192,.9)}
+
+    /* PREVIEW */
+    .preview-content h2{font-size:1.1rem;font-weight:700;margin:1.4rem 0 .6rem;color:rgba(192,192,192,.88)}
+    .preview-content p{font-size:.9rem;line-height:1.8;margin-bottom:.8rem;color:rgba(192,192,192,.5);font-weight:300}
+  </style>
+</head>
+
+<body class="dark:bg-obsidian-900 bg-gray-50 dark:text-white text-gray-800 antialiased min-h-screen">
+
+<div id="toast-box" class="fixed top-5 right-5 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
+<div id="login-screen" class="dark:bg-obsidian-900 bg-gray-50">
+  <div class="w-full max-w-[380px] mx-4 p-8 rounded-3xl border dark:border-white/[0.06] border-gray-200 dark:bg-obsidian-800/60 bg-white shadow-2xl">
+    <div class="flex items-center gap-2.5 mb-8">
+      <div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-gray-100 border dark:border-platinum/20 border-gray-200 flex items-center justify-center">
+        <i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-gray-600"></i>
+      </div>
+      <span class="text-[14px] font-semibold tracking-[0.2em] uppercase dark:text-platinum text-gray-800">BASIRA Admin</span>
+    </div>
+    <h2 class="text-[20px] font-bold dark:text-white text-gray-900 mb-1">Welcome back</h2>
+    <p class="text-[13px] dark:text-platinum/40 text-gray-500 mb-7">Sign in to manage your articles</p>
+    <div class="space-y-3">
+      <input id="login-pass" type="password" placeholder="Enter admin password" autocomplete="new-password"
+        class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-700/60 bg-gray-50 dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition"
+        onkeydown="if(event.key==='Enter')doLogin()">
+      <button onclick="doLogin()" class="w-full py-3 rounded-xl dark:bg-white/90 bg-gray-900 dark:text-obsidian-900 text-white text-[13px] font-semibold hover:dark:bg-white hover:bg-gray-700 transition">
+        Sign In
+      </button>
+    </div>
+    <p class="text-[11px] dark:text-platinum/20 text-gray-400 text-center mt-5">: <span class="dark:text-platinum/40 text-gray-500 font-mono"></span></p>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden min-h-screen">
+
+  <header class="sticky top-0 z-[100] header-blur dark:bg-obsidian-900/80 bg-white/80 border-b dark:border-white/[0.04] border-gray-200">
+    <div class="max-w-[1400px] mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-[60px]">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-gray-100 border dark:border-platinum/20 border-gray-200 flex items-center justify-center">
+            <i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum text-gray-600"></i>
+          </div>
+          <span class="text-[13px] font-semibold tracking-[0.2em] uppercase dark:text-platinum text-gray-700">BASIRA Admin</span>
+          <span class="px-2 py-0.5 rounded-md dark:bg-green-500/10 bg-green-50 dark:text-green-400 text-green-600 text-[10px] font-medium">Live</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="index.html" target="_blank" class="flex items-center gap-1.5 text-[12px] dark:text-platinum/40 text-gray-500 hover:dark:text-platinum hover:text-gray-800 transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:block">View Site</span>
+          </a>
+          <button onclick="doLogout()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] dark:text-platinum/40 text-gray-500 hover:dark:bg-white/[0.04] hover:bg-gray-100 transition">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:block">Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-8">
+    <div class="grid lg:grid-cols-[280px_1fr] gap-6">
+
+      <aside class="space-y-4">
+        <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+          <p class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/40 text-gray-400 mb-4">Overview</p>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[13px] dark:text-platinum/60 text-gray-600">Total Articles</span>
+              <span id="stat-total" class="text-[15px] font-bold dark:text-white text-gray-900">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[13px] dark:text-platinum/60 text-gray-600">Published</span>
+              <span id="stat-published" class="text-[15px] font-bold text-green-500">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[13px] dark:text-platinum/60 text-gray-600">Drafts</span>
+              <span id="stat-drafts" class="text-[15px] font-bold text-yellow-500">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white space-y-1">
+          <button onclick="showTab('write')" data-tab="write" class="tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition text-left">
+            <i data-lucide="pen-line" class="w-4 h-4 flex-shrink-0"></i> Write Article
+          </button>
+          <button onclick="showTab('manage')" data-tab="manage" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition text-left">
+            <i data-lucide="layout-list" class="w-4 h-4 flex-shrink-0"></i> Manage Articles
+          </button>
+          <button onclick="showTab('export')" data-tab="export" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition text-left">
+            <i data-lucide="download" class="w-4 h-4 flex-shrink-0"></i> Export Code
+          </button>
+          <button onclick="showTab('subscribers')" data-tab="subscribers" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition text-left">
+            <i data-lucide="mail" class="w-4 h-4 flex-shrink-0"></i> Subscribers
+          </button>
+          <button onclick="showTab('github')" data-tab="github" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition text-left">
+            <i data-lucide="upload-cloud" class="w-4 h-4 flex-shrink-0"></i> GitHub Deploy
+          </button>
+        </div>
+
+        <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+          <p class="text-[11px] font-medium tracking-widests uppercase dark:text-platinum/40 text-gray-400 mb-3">By Category</p>
+          <div id="cat-stats" class="space-y-2"></div>
+        </div>
+      </aside>
+
+      <main>
+
+        <div id="tab-write" class="space-y-5">
+          <div class="flex items-center justify-between">
+            <h1 class="text-[20px] font-bold dark:text-white text-gray-900">Write New Article</h1>
+            <div class="flex items-center gap-2">
+              <button onclick="saveDraft()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-medium dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.07] hover:bg-gray-200 transition">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i> Save Draft
+              </button>
+              <button onclick="publishArticle()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold dark:bg-white/90 bg-gray-900 dark:text-obsidian-900 text-white hover:dark:bg-white hover:bg-gray-700 transition">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i> Publish
+              </button>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Title *</label>
+              <input id="art-title" type="text" placeholder="Article title..."
+                class="w-full px-4 py-3 rounded-xl text-[14px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Category *</label>
+              <select id="art-category"
+                class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+                <option value="">Select category...</option>
+                <option value="science">Science</option>
+                <option value="tech">Technology</option>
+                <option value="history">History</option>
+                <option value="culture">Culture</option>
+                <option value="quotes">Quotes</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Read Time</label>
+              <input id="art-readtime" type="text" placeholder="e.g. 5 min"
+                class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Image URL</label>
+              <div class="flex gap-2">
+                <input id="art-image" type="url" placeholder="https://images.unsplash.com/..."
+                  class="flex-1 px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition"
+                  oninput="previewImage(this.value)">
+                <button onclick="getSuggestedImage()" class="flex-shrink-0 px-4 py-3 rounded-xl text-[12px] dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/60 text-gray-600 hover:dark:bg-white/[0.07] transition">
+                  Suggest
+                </button>
+              </div>
+              <div id="img-preview" class="hidden mt-2 w-full h-28 rounded-xl overflow-hidden border dark:border-white/[0.05] border-gray-200">
+                <img id="img-preview-el" src="" alt="" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Excerpt *</label>
+              <textarea id="art-excerpt" rows="2" placeholder="Short description shown on the articles page..."
+                class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition resize-none"></textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-[11px] font-medium dark:text-platinum/50 text-gray-500 uppercase tracking-wider">Content *</label>
+                <div class="flex items-center gap-1">
+                  <button onclick="switchEditor('write')" id="editor-write-btn" class="px-3 py-1 rounded-lg text-[11px] dark:text-platinum/60 text-gray-600 dark:bg-white/[0.06] bg-gray-100 transition">Write</button>
+                  <button onclick="switchEditor('preview')" id="editor-preview-btn" class="px-3 py-1 rounded-lg text-[11px] dark:text-platinum/40 text-gray-400 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition">Preview</button>
+                  <button onclick="insertTemplate()" class="px-3 py-1 rounded-lg text-[11px] dark:text-platinum/40 text-gray-400 hover:dark:bg-white/[0.04] hover:bg-gray-50 transition">Template</button>
+                </div>
+              </div>
+              <div id="editor-write-panel">
+                <textarea id="content-editor" placeholder="Write your article content using HTML tags:&#10;&#10;<h2>Section Title</h2>&#10;<p>Paragraph text here...</p>&#10;&#10;<h2>Another Section</h2>&#10;<p>More content...</p>"
+                  class="w-full px-4 py-3 rounded-xl text-[13px] font-mono border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-platinum/70 text-gray-700 dark:placeholder-platinum/20 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition resize-y"
+                  style="min-height:220px"></textarea>
+              </div>
+              <div id="editor-preview-panel" class="hidden px-5 py-4 rounded-xl border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/40 bg-white" style="min-height:220px">
+                <div id="preview-content" class="preview-content"></div>
+              </div>
+              <p class="text-[10px] dark:text-platinum/25 text-gray-400 mt-1.5">Use &lt;h2&gt; for section titles and &lt;p&gt; for paragraphs.</p>
+            </div>
+
+            <div class="mt-6 p-4 rounded-2xl border dark:border-white/[0.06] border-gray-200 dark:bg-obsidian-800/20 bg-gray-50">
+              <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="languages" class="w-4 h-4 dark:text-platinum/40 text-gray-500"></i>
+                <p class="text-[12px] font-medium dark:text-platinum/50 text-gray-600">Arabic Translation <span class="dark:text-platinum/25 text-gray-400 font-normal">(optional)</span></p>
+              </div>
+              <input id="art-title-ar" type="text" placeholder="العنوان بالعربية"
+                class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition mb-3"
+                dir="rtl">
+              <textarea id="content-editor-ar" rows="6"
+                placeholder="اكتب محتوى المقالة بالعربية هنا..."
+                class="w-full px-4 py-3 rounded-xl text-[13px] font-mono border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-platinum/70 text-gray-700 dark:placeholder-platinum/20 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition resize-y"
+                dir="rtl" style="min-height:160px"></textarea>
+            </div>
+
+            <div class="sm:col-span-2">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-[11px] font-medium dark:text-platinum/50 text-gray-500 uppercase tracking-wider">Sources</label>
+                <button onclick="addSourceField()" class="flex items-center gap-1 text-[11px] dark:text-platinum/40 text-gray-400 hover:dark:text-platinum/70 hover:text-gray-600 transition">
+                  <i data-lucide="plus" class="w-3 h-3"></i> Add Source
+                </button>
+              </div>
+              <div id="sources-container" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-manage" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <h1 class="text-[20px] font-bold dark:text-white text-gray-900">Manage Articles</h1>
+            <div class="flex items-center gap-2">
+              <select id="filter-cat" onchange="renderManageList()" class="px-3 py-2 rounded-xl text-[12px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-platinum/70 text-gray-600 outline-none transition">
+                <option value="">All Categories</option>
+                <option value="science">Science</option>
+                <option value="tech">Technology</option>
+                <option value="history">History</option>
+                <option value="culture">Culture</option>
+                <option value="quotes">Quotes</option>
+              </select>
+            </div>
+          </div>
+          <div id="manage-list" class="space-y-3"></div>
+        </div>
+
+        <div id="tab-subscribers" class="hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <h1 class="text-[20px] font-bold dark:text-white text-gray-900">Subscribers</h1>
+            <div class="flex items-center gap-2">
+              <span id="sub-count" class="px-3 py-1 rounded-full text-[11px] font-medium dark:bg-white/[0.05] bg-gray-100 dark:text-platinum/60 text-gray-600">— subscribers</span>
+              <button onclick="exportSubscribers()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-medium dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.07] hover:bg-gray-200 transition">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+              </button>
+            </div>
+          </div>
+          <div id="subscribers-list" class="space-y-2">
+            <div class="text-center py-12 dark:text-platinum/30 text-gray-400 text-[13px]">Loading subscribers...</div>
+          </div>
+        </div>
+
+        <div id="tab-export" class="hidden space-y-5">
+          <h1 class="text-[20px] font-bold dark:text-white text-gray-900">Export Articles Code</h1>
+          <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+            <p class="text-[13px] dark:text-platinum/50 text-gray-600 mb-4 leading-relaxed">
+              After adding articles here, copy the generated code below and paste it into the <code class="dark:text-platinum/70 text-gray-700 font-mono text-[12px] dark:bg-white/[0.05] bg-gray-100 px-1.5 py-0.5 rounded">const articles = [...]</code> section in your <strong>articles.html</strong> file.
+            </p>
+            <div class="flex items-center gap-2 mb-3">
+              <button onclick="generateCode()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[12px] font-semibold dark:bg-white/90 bg-gray-900 dark:text-obsidian-900 text-white hover:dark:bg-white hover:bg-gray-700 transition">
+                <i data-lucide="code-2" class="w-4 h-4"></i> Generate Code
+              </button>
+              <button onclick="copyCode()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[12px] dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.07] hover:bg-gray-200 transition">
+                <i data-lucide="copy" class="w-4 h-4"></i> Copy
+              </button>
+              <button onclick="downloadCode()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[12px] dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/70 text-gray-600 hover:dark:bg-white/[0.07] hover:bg-gray-200 transition">
+                <i data-lucide="download" class="w-4 h-4"></i> Download
+              </button>
+            </div>
+            <textarea id="code-output" readonly placeholder="Click 'Generate Code' to see the output..."
+              class="w-full h-80 px-4 py-3 rounded-xl text-[11px] font-mono border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-900/60 bg-gray-50 dark:text-platinum/60 text-gray-700 outline-none resize-none"></textarea>
+          </div>
+          <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+            <h3 class="text-[14px] font-semibold dark:text-white text-gray-900 mb-3">How to publish a new article:</h3>
+            <ol class="space-y-2.5 text-[13px] dark:text-platinum/50 text-gray-600">
+              <li class="flex gap-3"><span class="w-5 h-5 rounded-full dark:bg-white/[0.06] bg-gray-100 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0 mt-0.5">1</span>Write and publish the article in the "Write" tab above.</li>
+              <li class="flex gap-3"><span class="w-5 h-5 rounded-full dark:bg-white/[0.06] bg-gray-100 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0 mt-0.5">2</span>Come to this tab and click "Generate Code".</li>
+              <li class="flex gap-3"><span class="w-5 h-5 rounded-full dark:bg-white/[0.06] bg-gray-100 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0 mt-0.5">3</span>Copy the code and open <strong>articles.html</strong> in VS Code.</li>
+              <li class="flex gap-3"><span class="w-5 h-5 rounded-full dark:bg-white/[0.06] bg-gray-100 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0 mt-0.5">4</span>Find <code class="font-mono text-[12px] dark:bg-white/[0.05] bg-gray-100 px-1 py-0.5 rounded">const articles = [</code> and replace the entire array with the generated code.</li>
+              <li class="flex gap-3"><span class="w-5 h-5 rounded-full dark:bg-white/[0.06] bg-gray-100 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-gray-600 flex-shrink-0 mt-0.5">5</span>Save the file and push to GitHub — the article goes live instantly.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div id="tab-github" class="hidden space-y-5">
+          <h1 class="text-[20px] font-bold dark:text-white text-gray-900">GitHub Deploy</h1>
+
+          <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+            <div class="flex items-center gap-2 mb-4">
+              <i data-lucide="settings" class="w-4 h-4 dark:text-platinum/50 text-gray-500"></i>
+              <h3 class="text-[14px] font-semibold dark:text-white text-gray-900">GitHub Settings</h3>
+              <span class="px-2 py-0.5 rounded-md text-[10px] dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/40 text-gray-500">saved locally</span>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Repository <span class="normal-case font-normal dark:text-platinum/30 text-gray-400">(username/repo-name)</span></label>
+                <input id="gh-repo" type="text" placeholder="e.g. Omonovalearning/basira"
+                  class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Branch <span class="normal-case font-normal dark:text-platinum/30 text-gray-400">(default: main)</span></label>
+                <input id="gh-branch" type="text" placeholder="main"
+                  class="w-full px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium dark:text-platinum/50 text-gray-500 mb-1.5 uppercase tracking-wider">Personal Access Token</label>
+                <div class="flex gap-2">
+                  <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    class="flex-1 px-4 py-3 rounded-xl text-[13px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition font-mono">
+                  <button onclick="toggleTokenVisibility()" class="px-3 py-3 rounded-xl dark:bg-white/[0.04] bg-gray-100 dark:text-platinum/50 text-gray-500 hover:dark:bg-white/[0.07] transition">
+                    <i id="token-eye" data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <p class="text-[10px] dark:text-platinum/25 text-gray-400 mt-1.5">
+                  Generate at: <a href="https://github.com/settings/tokens" target="_blank" class="underline hover:dark:text-platinum/50">github.com/settings/tokens</a> → New token (classic) → tick <code class="font-mono">repo</code>
+                </p>
+              </div>
+              <button onclick="saveGitHubSettings()"
+                class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[12px] font-semibold dark:bg-white/90 bg-gray-900 dark:text-obsidian-900 text-white hover:dark:bg-white hover:bg-gray-700 transition">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i> Save Settings
+              </button>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/40 bg-white">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-[14px] font-semibold dark:text-white text-gray-900">Deploy to GitHub</h3>
+                <p class="text-[12px] dark:text-platinum/40 text-gray-500 mt-0.5">Generates static pages &amp; uploads them directly to your repo</p>
+              </div>
+              <button onclick="deployToGitHub()" id="deploy-btn"
+                class="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[12px] font-semibold dark:bg-white/90 bg-gray-900 dark:text-obsidian-900 text-white hover:dark:bg-white hover:bg-gray-700 transition">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i> Deploy Now
+              </button>
+            </div>
+            <div id="deploy-progress" class="hidden mt-4 space-y-2">
+              <div class="h-2 rounded-full dark:bg-obsidian-700 bg-gray-200 overflow-hidden">
+                <div id="deploy-bar" class="h-full rounded-full dark:bg-green-400 bg-green-500 transition-all duration-300" style="width:0%"></div>
+              </div>
+              <p id="deploy-text" class="text-[11px] dark:text-platinum/50 text-gray-500"></p>
+              <div id="deploy-log" class="mt-3 max-h-48 overflow-y-auto space-y-1 p-3 rounded-xl dark:bg-obsidian-900/50 bg-gray-50 border dark:border-white/[0.04] border-gray-200 font-mono"></div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/20 bg-gray-50">
+            <p class="text-[12px] font-medium dark:text-platinum/50 text-gray-600 mb-3">What gets deployed:</p>
+            <ul class="space-y-2 text-[11px] dark:text-platinum/35 text-gray-500">
+              <li class="flex gap-2"><span class="dark:text-green-400 text-green-500 font-bold">●</span>All published articles as <code class="font-mono dark:bg-white/[0.05] bg-gray-100 px-1 rounded">articles/article-title.html</code></li>
+              <li class="flex gap-2"><span class="dark:text-green-400 text-green-500 font-bold">●</span>Updated <code class="font-mono dark:bg-white/[0.05] bg-gray-100 px-1 rounded">Sitemap.xml</code> with all article URLs</li>
+            </ul>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-modal" class="hidden fixed inset-0 z-[300] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="w-full max-w-sm rounded-2xl dark:bg-obsidian-800 bg-white border dark:border-white/[0.06] border-gray-200 p-6 shadow-2xl">
+    <h3 id="confirm-title" class="text-lg font-bold dark:text-white text-gray-900 mb-2"></h3>
+    <p id="confirm-msg" class="text-[13px] dark:text-platinum/60 text-gray-500 mb-6"></p>
+    <div class="flex gap-3">
+      <button onclick="closeConfirm()" class="flex-1 py-2.5 rounded-xl text-[13px] font-medium dark:bg-white/[0.05] bg-gray-100 dark:text-platinum/80 text-gray-700 hover:dark:bg-white/[0.08] hover:bg-gray-200 transition">Cancel</button>
+      <button id="confirm-ok" class="flex-1 py-2.5 rounded-xl text-[13px] font-semibold bg-red-500 text-white hover:bg-red-600 transition">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  // ================================
+  // SUPABASE
+  // ================================
+  const SB_URL = 'https://yteicgsqfpzexvkllhec.supabase.co';
+  const SB_KEY = 'sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP';
+
+  async function sbGet(table) {
+    const sep = table.includes('?') ? '&' : '?';
+    const res = await fetch(`${SB_URL}/rest/v1/${table}${sep}order=created_at.desc`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    return res.ok ? res.json() : [];
+  }
+
+  async function sbInsert(table, data) {
+    const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+    return res.ok ? res.json() : null;
+  }
+
+  async function sbDelete(table, id) {
+    const res = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    return res.ok;
+  }
+
+  async function sbUpdate(table, id, data) {
+    const res = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    return res.ok;
+  }
+
+  // ================================
+  // AUTH
+  // ================================
+  const ADMIN_PASS = '06fdy1j9@O';
+
+  const MAX_ATTEMPTS = 3;
+  const LOCKOUT_MS   = 60 * 60 * 1000; // 1 hour
+
+  function getLockoutState() {
+    try {
+      const raw = localStorage.getItem('basira-admin-lockout');
+      return raw ? JSON.parse(raw) : { attempts: 0, lockedUntil: null };
+    } catch(e) { return { attempts: 0, lockedUntil: null }; }
+  }
+
+  function setLockoutState(state) {
+    localStorage.setItem('basira-admin-lockout', JSON.stringify(state));
+  }
+
+  function checkLockout() {
+    const state = getLockoutState();
+    if (state.lockedUntil && Date.now() < state.lockedUntil) {
+      const remaining = Math.ceil((state.lockedUntil - Date.now()) / 60000);
+      showLockoutMessage(remaining);
+      return true;
+    }
+    // Reset if lockout expired
+    if (state.lockedUntil && Date.now() >= state.lockedUntil) {
+      setLockoutState({ attempts: 0, lockedUntil: null });
+    }
+    return false;
+  }
+
+  function showLockoutMessage(minutesLeft) {
+    const input = document.getElementById('login-pass');
+    const btn   = document.querySelector('[onclick="doLogin()"]');
+    input.disabled = true;
+    input.placeholder = `Locked — try again in ${minutesLeft} min`;
+    input.style.borderColor = '#ef4444';
+    if (btn) { btn.disabled = true; btn.textContent = `Locked (${minutesLeft}m)`; }
+  }
+
+  function doLogin() {
+    if (checkLockout()) return;
+    const pass  = document.getElementById('login-pass').value;
+    const state = getLockoutState();
+    if (pass === ADMIN_PASS) {
+      // Success — reset lockout
+      setLockoutState({ attempts: 0, lockedUntil: null });
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').classList.remove('hidden');
+      initDashboard();
+    } else {
+      // Failed attempt
+      const attempts = state.attempts + 1;
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').style.borderColor = '#ef4444';
+      setTimeout(() => document.getElementById('login-pass').style.borderColor = '', 1500);
+      if (attempts >= MAX_ATTEMPTS) {
+        const lockedUntil = Date.now() + LOCKOUT_MS;
+        setLockoutState({ attempts, lockedUntil });
+        showLockoutMessage(60);
+        showToast('Too many attempts — locked for 1 hour', 'lock');
+      } else {
+        setLockoutState({ attempts, lockedUntil: null });
+        showToast(`Wrong password — ${MAX_ATTEMPTS - attempts} attempt${MAX_ATTEMPTS - attempts !== 1 ? 's' : ''} left`, 'alert-circle');
+      }
+    }
+  }
+
+  function doLogout() {
+    document.getElementById('dashboard').classList.add('hidden');
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-pass').value = '';
+  }
+
+  // ================================
+  // ARTICLES STATE
+  // ================================
+  let adminArticles = [];
+
+  // Default articles (same as articles.html)
+  const defaultArticles = [
+    { id:1, title:'What is Quantum Physics?', category:'science', image:'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&q=80', excerpt:'At the atomic scale, reality behaves in ways that challenge everything we know.', readTime:'7 min', date:'May 10, 2025', status:'published', sources:[{title:'Quantum Mechanics — Stanford Encyclopedia',url:'https://plato.stanford.edu/entries/qm/'}], content:'<h2>Why is Quantum Physics Different?</h2><p>Quantum physics studies the smallest particles in the universe.</p>' },
+    { id:2, title:'DNA: The Blueprint of Life', category:'science', image:'https://images.unsplash.com/photo-1530973428-5bf2db2e4d71?w=800&q=80', excerpt:'Inside every cell lies a molecule containing complete instructions for building you.', readTime:'7 min', date:'May 8, 2025', status:'published', sources:[], content:'<h2>What is DNA?</h2><p>DNA carries all genetic instructions needed to build every living organism.</p>' },
+    { id:3, title:'Black Holes Explained', category:'science', image:'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&q=80', excerpt:'Where gravity is so extreme that not even light escapes.', readTime:'8 min', date:'May 5, 2025', status:'published', sources:[], content:'<h2>What is a Black Hole?</h2><p>A region of space where gravity overwhelms everything.</p>' },
+    { id:4, title:'Artificial Intelligence: How Machines Think', category:'tech', image:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80', excerpt:'AI systems now write poetry, diagnose cancer, and drive cars.', readTime:'8 min', date:'May 12, 2025', status:'published', sources:[], content:'<h2>What is AI?</h2><p>Computer systems performing tasks requiring human intelligence.</p>' },
+    { id:5, title:'Blockchain: The Technology Behind Bitcoin', category:'tech', image:'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80', excerpt:'A distributed ledger that no single entity controls.', readTime:'7 min', date:'May 7, 2025', status:'published', sources:[], content:'<h2>What is Blockchain?</h2><p>A database with copies on thousands of computers simultaneously.</p>' },
+    { id:6, title:'How the Internet Works', category:'tech', image:'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80', excerpt:'When you press Enter, a global infrastructure springs into action.', readTime:'7 min', date:'May 3, 2025', status:'published', sources:[], content:'<h2>Packets</h2><p>Data is broken into small pieces called packets.</p>' },
+    { id:7, title:'Ancient Egypt: Pharaohs, Pyramids and Power', category:'history', image:'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&q=80', excerpt:'For 3,000 years, one civilization dominated the ancient world.', readTime:'9 min', date:'Apr 28, 2025', status:'published', sources:[], content:'<h2>Three Thousand Years</h2><p>Ancient Egypt flourished from roughly 3100 BCE to 30 BCE.</p>' },
+    { id:8, title:"The Renaissance: Europe's Great Rebirth", category:'history', image:'https://images.unsplash.com/photo-1569587112025-0d460e81a126?w=800&q=80', excerpt:"From Michelangelo's ceiling to Leonardo's notebooks.", readTime:'8 min', date:'Apr 20, 2025', status:'published', sources:[], content:'<h2>What Was the Renaissance?</h2><p>A cultural revolution sweeping Europe from the 14th to 17th centuries.</p>' },
+    { id:9, title:"Philosophy 101: Life's Biggest Questions", category:'culture', image:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80', excerpt:'What is real? What can we know? How should we live?', readTime:'8 min', date:'Apr 15, 2025', status:'published', sources:[], content:'<h2>Why Philosophy Matters</h2><p>Philosophy asks questions science cannot answer.</p>' },
+    { id:10, title:'The Art of Storytelling', category:'culture', image:'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80', excerpt:'Humans have told stories since before writing existed.', readTime:'6 min', date:'Apr 10, 2025', status:'published', sources:[], content:'<h2>The First Technology</h2><p>Long before writing, humans told stories.</p>' },
+    { id:11, title:'"The only way to do great work is to love what you do."', category:'quotes', image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', excerpt:'Steve Jobs, Stanford 2005.', readTime:'3 min', date:'May 1, 2025', status:'published', sources:[], content:`<h2>The Quote in Context</h2><p>Steve Jobs delivered these words at Stanford's 2005 commencement.</p>` },
+    { id:12, title:'"In the middle of every difficulty lies opportunity."', category:'quotes', image:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80', excerpt:'Albert Einstein. A sentence that distills a profound truth.', readTime:'3 min', date:'Apr 25, 2025', status:'published', sources:[], content:`<h2>Einstein's Approach</h2><p>Greatest breakthroughs came from questioning assumptions.</p>` },
+  ];
+
+  function mapArticle(a) {
+    return {
+      id: a.id,
+      title: a.title,
+      category: a.category,
+      image: a.image || '',
+      excerpt: a.excerpt || '',
+      readTime: a.read_time || a.readTime || '5 min',
+      date: a.created_at
+        ? new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+        : (a.date || ''),
+      status: a.status || 'published',
+      content: a.content || '',
+      sources: a.sources || [],
+      title_ar: a.title_ar || '',
+      content_ar: a.content_ar || ''
+    };
+  }
+
+  async function loadArticles() {
+    // Show loading
+    document.getElementById('manage-list').innerHTML =
+      '<div class="text-center py-12 dark:text-platinum/30 text-gray-400 text-[13px]">Loading from Supabase...</div>';
+
+    try {
+      const data = await sbGet('articles');
+      if (data && data.length > 0) {
+        adminArticles = data.map(mapArticle);
+      } else {
+        // Supabase is empty — show fallback with note
+        adminArticles = [...defaultArticles];
+        showToast('No articles in DB — showing defaults', 'info');
+      }
+    } catch(e) {
+      adminArticles = [...defaultArticles];
+      showToast('Supabase error — showing defaults', 'alert-circle');
+    }
+    updateStats();
+    renderCatStats();
+    renderManageList();
+  }
+
+  async function saveArticles() {
+    try { localStorage.setItem('basira-admin-articles', JSON.stringify(adminArticles)); } catch(e) {}
+  }
+
+  function getNextId() {
+    return adminArticles.length > 0 ? Math.max(...adminArticles.map(a=>a.id)) + 1 : 1;
+  }
+
+  // ================================
+  // INIT
+  // ================================
+  function initDashboard() {
+    loadArticles();
+    updateStats();
+    renderCatStats();
+    addSourceField();
+    loadGitHubSettings();
+    if(window.lucide) lucide.createIcons();
+  }
+
+  function updateStats() {
+    const published = adminArticles.filter(a=>a.status==='published').length;
+    const drafts = adminArticles.filter(a=>a.status==='draft').length;
+    document.getElementById('stat-total').textContent = adminArticles.length;
+    document.getElementById('stat-published').textContent = published;
+    document.getElementById('stat-drafts').textContent = drafts;
+  }
+
+  function renderCatStats() {
+    const cats = { science:'Science', tech:'Technology', history:'History', culture:'Culture', quotes:'Quotes' };
+    const el = document.getElementById('cat-stats');
+    el.innerHTML = Object.entries(cats).map(([k,label])=>{
+      const count = adminArticles.filter(a=>a.category===k).length;
+      const pct = adminArticles.length > 0 ? Math.round(count/adminArticles.length*100) : 0;
+      return `
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-[12px] dark:text-platinum/55 text-gray-600">${label}</span>
+            <span class="text-[12px] font-medium dark:text-platinum/70 text-gray-700">${count}</span>
+          </div>
+          <div class="h-1 rounded-full dark:bg-white/[0.04] bg-gray-100 overflow-hidden">
+            <div class="h-full rounded-full dark:bg-platinum/40 bg-gray-400 transition-all duration-500" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ================================
+  // TABS
+  // ================================
+  function showTab(name) {
+    ['write','manage','export','subscribers','github'].forEach(t => {
+      document.getElementById('tab-'+t).classList.toggle('hidden', t!==name);
+    });
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.tab===name);
+    });
+    if(name==='manage')     renderManageList();
+    if(name==='export')     generateCode();
+    if(name==='subscribers') loadSubscribers();
+  }
+
+  // ================================
+  // WRITE
+  // ================================
+  let sourceCount = 0;
+
+  function addSourceField() {
+    sourceCount++;
+    const container = document.getElementById('sources-container');
+    const row = document.createElement('div');
+    row.id = 'source-row-'+sourceCount;
+    row.className = 'flex gap-2';
+    row.innerHTML = `
+      <input type="text" placeholder="Source title" data-src-title="${sourceCount}"
+        class="flex-1 px-3 py-2.5 rounded-xl text-[12px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+      <input type="url" placeholder="https://..." data-src-url="${sourceCount}"
+        class="flex-1 px-3 py-2.5 rounded-xl text-[12px] border dark:border-white/[0.07] border-gray-200 dark:bg-obsidian-800/60 bg-white dark:text-white text-gray-900 dark:placeholder-platinum/25 placeholder-gray-400 outline-none focus:dark:border-platinum/25 focus:border-gray-400 transition">
+      <button onclick="document.getElementById('source-row-${sourceCount}').remove()" class="w-9 h-[42px] flex items-center justify-center rounded-xl dark:hover:bg-white/[0.05] hover:bg-gray-100 transition flex-shrink-0">
+        <i data-lucide="x" class="w-3.5 h-3.5 dark:text-platinum/40 text-gray-400"></i>
+      </button>`;
+    container.appendChild(row);
+    if(window.lucide) lucide.createIcons({nodes:[row]});
+  }
+
+  function getSources() {
+    const sources = [];
+    document.querySelectorAll('[data-src-title]').forEach(el=>{
+      const id = el.getAttribute('data-src-title');
+      const urlEl = document.querySelector(`[data-src-url="${id}"]`);
+      if(el.value.trim() && urlEl?.value.trim()) {
+        sources.push({ title: el.value.trim(), url: urlEl.value.trim() });
+      }
+    });
+    return sources;
+  }
+
+  function getFormData() {
+    return {
+      id: getNextId(),
+      title: document.getElementById('art-title').value.trim(),
+      category: document.getElementById('art-category').value,
+      image: document.getElementById('art-image').value.trim() || 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&q=80',
+      excerpt: document.getElementById('art-excerpt').value.trim(),
+      readTime: document.getElementById('art-readtime').value.trim() || '5 min',
+      title_ar: document.getElementById('art-title-ar').value.trim(),
+      content_ar: document.getElementById('content-editor-ar').value.trim(),
+      date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+      content: document.getElementById('content-editor').value.trim(),
+      sources: getSources(),
+    };
+  }
+
+  function validateForm(data) {
+    if (!data.title) { showToast('Title is required','alert-circle'); return false; }
+    if (!data.category) { showToast('Please select a category','alert-circle'); return false; }
+    if (!data.excerpt) { showToast('Excerpt is required','alert-circle'); return false; }
+    if (!data.content) { showToast('Content is required','alert-circle'); return false; }
+    return true;
+  }
+
+  async function publishArticle() {
+    const data = { ...getFormData(), status:'published' };
+    if (!validateForm(data)) return;
+    showToast('Publishing...', 'loader');
+    const result = await sbInsert('articles', {
+      title: data.title,
+      category: data.category,
+      image: data.image,
+      excerpt: data.excerpt,
+      read_time: data.readTime,
+      content: data.content,
+      sources: data.sources,
+      title_ar: data.title_ar, // Added missing Arabic field
+      content_ar: data.content_ar, // Added missing Arabic field
+      status: 'published'
+    });
+    if (result) {
+      data.id = result[0]?.id || data.id;
+      adminArticles.unshift(data);
+      await saveArticles();
+      updateStats();
+      renderCatStats();
+      clearForm();
+      showToast('Article published! 🎉','check-circle');
+    } else {
+      adminArticles.unshift(data);
+      await saveArticles();
+      updateStats();
+      renderCatStats();
+      clearForm();
+      showToast('Saved locally (Supabase error)','alert-circle');
+    }
+  }
+
+  async function saveDraft() {
+    const data = { ...getFormData(), status:'draft' };
+    if (!data.title) { showToast('Title is required','alert-circle'); return; }
+    const result = await sbInsert('articles', {
+      title: data.title,
+      category: data.category,
+      image: data.image,
+      excerpt: data.excerpt,
+      read_time: data.readTime,
+      content: data.content,
+      sources: data.sources,
+      title_ar: data.title_ar, // Added missing Arabic field
+      content_ar: data.content_ar, // Added missing Arabic field
+      status: 'draft'
+    });
+    if (result) data.id = result[0]?.id || data.id;
+    adminArticles.unshift(data);
+    await saveArticles();
+    updateStats();
+    renderCatStats();
+    clearForm();
+    showToast('Draft saved','save');
+  }
+
+  function clearForm() {
+    ['art-title','art-excerpt','art-readtime','art-image','art-title-ar'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.value = '';
+    });
+    document.getElementById('art-category').value = '';
+    document.getElementById('content-editor').value = '';
+    document.getElementById('content-editor-ar').value = '';
+    document.getElementById('sources-container').innerHTML = '';
+    document.getElementById('img-preview').classList.add('hidden');
+    sourceCount = 0;
+    addSourceField();
+  }
+
+  function insertTemplate() {
+    document.getElementById('content-editor').value =
+`<h2>Introduction</h2>
+<p>Start with a compelling opening that hooks the reader and explains why this topic matters.</p>
+
+<h2>Core Concept</h2>
+<p>Explain the main idea in simple, clear language. Use analogies and everyday examples.</p>
+
+<h2>How It Works</h2>
+<p>Break down the mechanics. What are the key parts? How do they interact?</p>
+
+<h2>Real-World Impact</h2>
+<p>Connect the concept to everyday life. Why should the reader care?</p>
+
+<h2>Key Takeaways</h2>
+<p>Summarize the most important points. Leave the reader with something memorable.</p>`;
+    showToast('Template inserted','file-text');
+  }
+
+  function previewImage(url) {
+    const preview = document.getElementById('img-preview');
+    const img = document.getElementById('img-preview-el');
+    if (url && url.startsWith('http')) {
+      img.src = url;
+      preview.classList.remove('hidden');
+    } else {
+      preview.classList.add('hidden');
+    }
+  }
+
+  function getSuggestedImage() {
+    const cat = document.getElementById('art-category').value;
+    const seeds = {
+      science:'https://images.unsplash.com/photo-1532094349884-543559059a4f?w=800&q=80',
+      tech:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+      history:'https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=800&q=80',
+      culture:'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=800&q=80',
+      quotes:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80',
+    };
+    const url = seeds[cat] || seeds.science;
+    document.getElementById('art-image').value = url;
+    previewImage(url);
+    showToast('Image suggested!','image');
+  }
+
+  function switchEditor(mode) {
+    const writePanel = document.getElementById('editor-write-panel');
+    const previewPanel = document.getElementById('editor-preview-panel');
+    const writeBtn = document.getElementById('editor-write-btn');
+    const previewBtn = document.getElementById('editor-preview-btn');
+    if(mode==='preview') {
+      const content = document.getElementById('content-editor').value;
+      document.getElementById('preview-content').innerHTML = content || '<p class="dark:text-platinum/25 text-gray-400">Nothing to preview yet...</p>';
+      writePanel.classList.add('hidden');
+      previewPanel.classList.remove('hidden');
+      writeBtn.classList.remove('dark:bg-white/[0.06]','bg-gray-100');
+      previewBtn.classList.add('dark:bg-white/[0.06]','bg-gray-100');
+    } else {
+      writePanel.classList.remove('hidden');
+      previewPanel.classList.add('hidden');
+      previewBtn.classList.remove('dark:bg-white/[0.06]','bg-gray-100');
+      writeBtn.classList.add('dark:bg-white/[0.06]','bg-gray-100');
+    }
+  }
+
+  // ================================
+  // MANAGE LIST
+  // ================================
+  async function loadSubscribers() {
+    const el = document.getElementById('subscribers-list');
+    const countEl = document.getElementById('sub-count');
+    el.innerHTML = '<div class="text-center py-12 dark:text-platinum/30 text-gray-400 text-[13px]">Loading...</div>';
+    const data = await sbGet('subscribers');
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div class="text-center py-12 dark:text-platinum/30 text-gray-400 text-[13px]">No subscribers yet.</div>';
+      countEl.textContent = '0 subscribers';
+      return;
+    }
+    countEl.textContent = data.length + ' subscriber' + (data.length !== 1 ? 's' : '');
+    el.innerHTML = data.map(s => `
+      <div class="flex items-center gap-4 p-4 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/30 bg-white group">
+        <div class="w-8 h-8 rounded-full dark:bg-platinum/10 bg-gray-100 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="mail" class="w-3.5 h-3.5 dark:text-platinum/40 text-gray-500"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium dark:text-white text-gray-900">${s.email}</p>
+          <p class="text-[11px] dark:text-platinum/30 text-gray-400">${s.created_at ? new Date(s.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '-'}</p>
+        </div>
+        <button onclick="deleteSubscriber(${s.id}, \`${s.email.replace(/`/g, "")}\`)"
+          class="w-8 h-8 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100
+                 dark:hover:bg-red-500/10 hover:bg-red-50
+                 dark:text-platinum/30 text-gray-400
+                 dark:hover:text-red-400 hover:text-red-500 transition" title="Remove">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>`).join('');
+    if(window.lucide) lucide.createIcons({ nodes: [el] });
+  }
+
+  function deleteSubscriber(id, email) {
+    showConfirm('Remove Subscriber', email + ' will be removed from the newsletter list.', async () => {
+      const ok = await sbDelete('subscribers', id);
+      if (ok) { loadSubscribers(); showToast('Subscriber removed','trash-2'); }
+      else showToast('Error — try again','alert-circle');
+    });
+  }
+
+  function exportSubscribers() {
+    const items = document.querySelectorAll('#subscribers-list [data-lucide="mail"]');
+    const rows  = [...document.querySelectorAll('#subscribers-list .flex-1 p:first-child')]
+      .map(p => p.textContent.trim());
+    if (rows.length === 0) { showToast('No subscribers to export', 'alert-circle'); return; }
+    const csv  = 'Email\r\n' + rows.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = 'basira-subscribers.csv';
+    a.click();
+    showToast('CSV downloaded!', 'download');
+  }
+
+  function renderManageList() {
+    const cat = document.getElementById('filter-cat').value;
+    const list = cat ? adminArticles.filter(a=>a.category===cat) : adminArticles;
+    const el = document.getElementById('manage-list');
+
+    if(list.length===0) {
+      el.innerHTML = '<div class="text-center py-12 dark:text-platinum/30 text-gray-400 text-[13px]">No articles yet.</div>';
+      return;
+    }
+
+    el.innerHTML = list.map(a=>`
+      <div class="flex items-center gap-4 p-4 rounded-2xl border dark:border-white/[0.04] border-gray-200 dark:bg-obsidian-800/30 bg-white hover:dark:bg-obsidian-800/50 hover:bg-gray-50 transition group">
+        <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 dark:bg-obsidian-700 bg-gray-100">
+          <img src="${a.image}" alt="" loading="lazy" class="w-full h-full object-cover dark:brightness-75" onerror="this.style.display='none'">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="px-2 py-0.5 rounded-md text-[9px] tracking-widest uppercase font-medium ${a.status==='published' ? 'dark:bg-green-500/10 bg-green-50 dark:text-green-400 text-green-600' : 'dark:bg-yellow-500/10 bg-yellow-50 dark:text-yellow-400 text-yellow-600'}">${a.status}</span>
+            <span class="text-[10px] dark:text-platinum/30 text-gray-400">${a.category} · ${a.readTime}</span>
+          </div>
+          <p class="text-[13px] font-semibold dark:text-white text-gray-900 truncate">${a.title}</p>
+          <p class="text-[11px] dark:text-platinum/30 text-gray-400">${a.date}</p>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          ${a.status==='draft' ? `<button onclick="publishExisting(${a.id})" class="px-3 py-1.5 rounded-lg text-[11px] font-medium dark:bg-green-500/10 bg-green-50 dark:text-green-400 text-green-600 hover:dark:bg-green-500/20 transition">Publish</button>` : ''}
+          <button onclick="editArticle(${a.id})" class="w-8 h-8 flex items-center justify-center rounded-lg dark:hover:bg-white/[0.05] hover:bg-gray-100 dark:text-platinum/30 text-gray-400 dark:hover:text-platinum hover:text-gray-700 transition" title="Edit">
+            <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+          </button>
+          <a href="/articles/${toSlug(a.title)}.html" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-lg dark:hover:bg-white/[0.05] hover:bg-gray-100 dark:text-platinum/30 text-gray-400 dark:hover:text-platinum hover:text-gray-700 transition" title="View article">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <button onclick="deleteArticle(${a.id})" class="w-8 h-8 flex items-center justify-center rounded-lg dark:hover:bg-red-500/10 hover:bg-red-50 dark:text-platinum/30 text-gray-400 dark:hover:text-red-400 hover:text-red-500 transition" title="Delete">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>`).join('');
+
+    if(window.lucide) lucide.createIcons({nodes:[el]});
+  }
+
+  function editArticle(id) {
+    const a = adminArticles.find(x => x.id === id);
+    if (!a) return;
+    // Store editing id
+    window._editingId = id;
+    // Fill form fields
+    document.getElementById('art-title').value    = a.title    || '';
+    document.getElementById('art-category').value = a.category || '';
+    document.getElementById('art-image').value    = a.image    || '';
+    document.getElementById('art-excerpt').value  = a.excerpt  || '';
+    document.getElementById('art-readtime').value = a.readTime || '5 min';
+    document.getElementById('content-editor').value = a.content || '';
+    document.getElementById('art-title-ar').value = a.title_ar || '';
+    document.getElementById('content-editor-ar').value = a.content_ar || '';
+    // Clear old sources and re-add
+    document.getElementById('sources-container').innerHTML = '';
+    sourceCount = 0;
+    (a.sources || []).forEach(src => {
+      addSourceField();
+      document.querySelector(`[data-src-title="${sourceCount}"]`).value = src.title || '';
+      document.querySelector(`[data-src-url="${sourceCount}"]`).value   = src.url   || '';
+    });
+    // Preview image
+    previewImage(a.image);
+    // Change publish button to "Update"
+    const pubBtn = document.querySelector('[onclick="publishArticle()"]');
+    if (pubBtn) { pubBtn.textContent = 'Update Article'; pubBtn.setAttribute('onclick', 'updateArticle()'); }
+    // Switch to write tab
+    showTab('write');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Editing: ' + a.title.slice(0,30) + '...', 'edit');
+  }
+
+  async function updateArticle() {
+    const id = window._editingId;
+    if (!id) { publishArticle(); return; }
+    const data = getFormData();
+    if (!validateForm(data)) return;
+    showToast('Updating...', 'loader');
+    const ok = await sbUpdate('articles', id, {
+      title:    data.title,
+      category: data.category,
+      image:    data.image,
+      excerpt:  data.excerpt,
+      read_time: data.readTime,
+      content:  data.content,
+      sources:  data.sources,
+      title_ar: data.title_ar || null,
+      content_ar: data.content_ar || null,
+    });
+    if (ok) {
+      // Update local array
+      const idx = adminArticles.findIndex(a => a.id === id);
+      if (idx !== -1) adminArticles[idx] = { ...adminArticles[idx], ...data, id };
+      window._editingId = null;
+      // Reset button back
+      const pubBtn = document.querySelector('[onclick="updateArticle()"]');
+      if (pubBtn) { pubBtn.textContent = 'Publish'; pubBtn.setAttribute('onclick', 'publishArticle()'); }
+      clearForm();
+      updateStats();
+      renderCatStats();
+      showToast('Article updated! ✅', 'check-circle');
+    } else {
+      showToast('Update failed — try again', 'alert-circle');
+    }
+  }
+
+  async function publishExisting(id) {
+    const a = adminArticles.find(x=>x.id===id);
+    if (!a) return;
+    const ok = await sbUpdate('articles', id, { status: 'published' });
+    if (ok) {
+      a.status = 'published';
+      updateStats();
+      renderCatStats();
+      renderManageList();
+      showToast('Published! 🎉', 'check-circle');
+    } else {
+      showToast('Supabase error — try again', 'alert-circle');
+    }
+  }
+
+  function deleteArticle(id) {
+    showConfirm('Delete Article', 'This action cannot be undone. The article will be permanently removed.', async () => { await _deleteArticle(id); });
+  }
+
+  async function _deleteArticle(id) {
+    const ok = await sbDelete('articles', id);
+    if (ok) {
+      adminArticles = adminArticles.filter(a => a.id !== id);
+      updateStats();
+      renderCatStats();
+      renderManageList();
+      showToast('Article deleted', 'trash-2');
+    } else {
+      showToast('Delete failed — try again', 'alert-circle');
+    }
+  }
+
+  // ================================
+  // EXPORT
+  // ================================
+  function generateCode() {
+    const published = adminArticles.filter(a=>a.status==='published');
+    const code = 'const articles = ' + JSON.stringify(published, null, 2) + ';';
+    document.getElementById('code-output').value = code;
+    showToast(`Generated code for ${published.length} articles`,'code-2');
+  }
+
+  function copyCode() {
+    const code = document.getElementById('code-output').value;
+    if(!code || code.includes('Generate')) { showToast('Generate code first','alert-circle'); return; }
+    navigator.clipboard.writeText(code).then(()=> showToast('Copied to clipboard!','copy')).catch(()=> showToast('Select and copy manually','copy'));
+  }
+
+  function downloadCode() {
+    const code = document.getElementById('code-output').value;
+    if(!code || code.includes('Generate')) { generateCode(); }
+    const blob = new Blob([code], {type:'text/javascript'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'basira-articles.js';
+    a.click();
+    showToast('Downloaded!','download');
+  }
+
+  // ================================
+  // SLUG GENERATOR
+  // ================================
+
+  function toSlug(title) {
+    if (!title) return 'article';
+    const s = title.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 60);
+    return s || 'article';
+  }
+
+  function eHtml(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ================================
+  // SITEMAP GENERATOR
+  // ================================
+
+  function generateSitemapXml(published, today) {
+    const staticPages = [
+      {loc:'https://basira.top/',              changefreq:'weekly',  priority:'1.0'},
+      {loc:'https://basira.top/articles.html', changefreq:'daily',   priority:'0.9'},
+      {loc:'https://basira.top/about.html',    changefreq:'monthly', priority:'0.7'},
+    ];
+    const articlePages = published.map(a => ({
+      loc: 'https://basira.top/articles/' + toSlug(a.title) + '.html',
+      changefreq: 'monthly', priority: '0.7'
+    }));
+    const all = [...staticPages, ...articlePages];
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      all.map(p => '  <url>\n    <loc>' + p.loc + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <changefreq>' + p.changefreq + '</changefreq>\n    <priority>' + p.priority + '</priority>\n  </url>').join('\n') +
+      '\n</urlset>';
+  }
+
+  function generateSitemap() {
+    const published = adminArticles.filter(a => a.status === 'published');
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('sitemap-output').value = generateSitemapXml(published, today);
+    showToast('Sitemap generated — ' + (published.length + 3) + ' URLs', 'map');
+  }
+
+  function copySitemap() {
+    const xml = document.getElementById('sitemap-output').value;
+    if (!xml) { showToast('Generate sitemap first', 'alert-circle'); return; }
+    navigator.clipboard.writeText(xml).then(() => showToast('Sitemap copied!', 'copy'));
+  }
+
+  function downloadSitemap() {
+    const xml = document.getElementById('sitemap-output').value || generateSitemapXml(adminArticles.filter(a=>a.status==='published'), new Date().toISOString().split('T')[0]);
+    const blob = new Blob([xml], {type:'application/xml'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Sitemap.xml';
+    a.click();
+    showToast('Sitemap.xml downloaded!', 'download');
+  }
+
+  // ================================
+  // STATIC HTML BUILDER
+  // ================================
+
+  function buildStaticHTML(a) {
+    var slug  = toSlug(a.title);
+    var url   = 'https://basira.top/articles/' + slug + '.html';
+    var rd    = a.date || new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    var rawRt = a.readTime || a.read_time || '5 min';
+    var rt    = rawRt.includes('min') ? rawRt : rawRt + ' min read';
+    var E     = eHtml;
+    var cj    = JSON.stringify(a.content    || '');
+    var caj   = JSON.stringify(a.content_ar || '');
+    var taj   = JSON.stringify(a.title_ar   || '');
+    var sj    = JSON.stringify(a.sources    || []);
+    var ha    = !!(a.title_ar && a.content_ar);
+    var aid   = String(a.id);
+    var tJson = JSON.stringify(a.title || '');
+    var schema = JSON.stringify({
+      "@context":"https://schema.org","@type":"BlogPosting",
+      "headline":a.title,"image":a.image||'',
+      "description":a.excerpt||a.title,"datePublished":rd,
+      "author":{"@type":"Person","name":"Omer"},
+      "publisher":{"@type":"Organization","name":"BASIRA","url":"https://basira.top"}
+    });
+
+    var p = [];
+    function A(s){ p.push(s); }
+
+    A('<!DOCTYPE html>');
+    A('<html lang="en" class="dark">');
+    A('<head>');
+    A('<meta charset="UTF-8">');
+    A('<link rel="icon" type="image/png" href="/favicon.png">');
+    A('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+    A('<meta name="description" content="' + E(a.excerpt||a.title) + '">');
+    A('<meta property="og:title" content="' + E(a.title) + ' \u2014 BASIRA">');
+    A('<meta property="og:description" content="' + E(a.excerpt||a.title) + '">');
+    A('<meta property="og:image" content="' + E(a.image||'') + '">');
+    A('<meta property="og:type" content="article">');
+    A('<meta property="og:url" content="' + url + '">');
+    A('<meta name="twitter:card" content="summary_large_image">');
+    A('<meta name="robots" content="index, follow">');
+    A('<link rel="canonical" href="' + url + '">');
+    A('<script type="application/ld+json">' + schema + '<\/script>');
+    A('<title>' + E(a.title) + ' \u2014 BASIRA</title>');
+    A('<link rel="preconnect" href="https://fonts.googleapis.com">');
+    A('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+    A('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">');
+    A('<script src="https://cdn.tailwindcss.com"><\/script>');
+    A('<script src="https://unpkg.com/lucide@0.383.0"><\/script>');
+    A('<script>tailwind.config={darkMode:"class",theme:{extend:{fontFamily:{sans:["Inter","sans-serif"]},colors:{obsidian:{950:"#050505",900:"#0A0A0A",800:"#111111",700:"#1A1A1A",600:"#222222",500:"#2A2A2A",400:"#333333",300:"#444444"},platinum:{DEFAULT:"#C0C0C0",light:"#D4D4D4"},cream:{DEFAULT:"#FAFAF8"}}}}}<\/script>');
+    A('<style>*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:"Inter",sans-serif;overflow-x:hidden}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}.dark ::-webkit-scrollbar-thumb{background:#2A2A2A;border-radius:10px}::-webkit-scrollbar-thumb{background:#CCC;border-radius:10px}.header-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}.theme-transition,.theme-transition *{transition:background-color .5s ease,color .5s ease,border-color .5s ease !important}@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}.anim-fade{opacity:0;transform:translateY(40px)}.anim-fade.visible{animation:fadeInUp .9s cubic-bezier(.16,1,.3,1) forwards}.toggle-track{transition:background-color .3s ease}.toggle-thumb{transition:transform .35s cubic-bezier(.68,-.3,.32,1.3)}@keyframes tIn{from{transform:translateY(-16px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}@keyframes tOut{from{opacity:1}to{transform:translateY(-16px) scale(.96);opacity:0}}.toast-in{animation:tIn .35s cubic-bezier(.16,1,.3,1) forwards}.toast-out{animation:tOut .25s ease-in forwards}.article-content{line-height:1.9}.article-content h2{margin-top:2rem;margin-bottom:1rem;font-weight:600;font-size:1.5rem}.article-content p{margin-bottom:1rem}#back-to-top{opacity:0;transform:translateY(10px);transition:all .3s ease;pointer-events:none}#back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}.reaction-btn{transition:all .2s ease}.reaction-btn.liked{color:#22c55e!important;border-color:#22c55e!important}.reaction-btn.disliked{color:#ef4444!important;border-color:#ef4444!important}.comment-area{display:none}.comment-area.open{display:block;animation:slideDown .25s ease}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}.add-comment-panel{display:none}.add-comment-panel.open{display:block;animation:slideDown .25s ease}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}<\/style>');
+    A('<\/head>');
+    A('<body class="dark:bg-obsidian-900 bg-cream dark:text-white text-obsidian-800 antialiased min-h-screen">');
+    A('<div class="fixed top-0 left-0 right-0 z-[150] h-[3px] dark:bg-obsidian-700 bg-obsidian-200"><div id="read-progress" class="h-full bg-gradient-to-r from-platinum to-platinum/60" style="width:0%"></div></div>');
+    A('<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:&quot;smooth&quot;})" class="fixed bottom-6 right-6 z-[100] w-11 h-11 rounded-full dark:bg-obsidian-700 bg-white shadow-lg border dark:border-white/[0.08] border-obsidian-800/[0.08] flex items-center justify-center dark:text-platinum/60 text-obsidian-500 transition-all duration-300"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>');
+    A('<div id="sources-modal" class="modal-overlay hidden" onclick="closeSources(event)"><div class="max-w-[540px] w-full max-h-[80vh] overflow-y-auto rounded-2xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] p-6"><div class="flex items-center justify-between mb-5"><h3 class="text-[17px] font-semibold dark:text-white text-obsidian-900">Sources &amp; References</h3><button onclick="document.getElementById(&quot;sources-modal&quot;).classList.add(&quot;hidden&quot;)" class="p-2 rounded-lg dark:hover:bg-white/[0.05] transition"><i data-lucide="x" class="w-4 h-4"></i></button></div><div id="sources-list" class="space-y-3"></div></div></div>');
+    A('<div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>');
+    A('<header class="fixed top-0 left-0 right-0 z-[100] header-blur dark:bg-obsidian-900/70 bg-cream/70 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12"><div class="flex items-center justify-between h-[72px] gap-4"><a href="/index.html" class="flex-shrink-0 flex items-center gap-2.5 group"><div class="w-8 h-8 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/20 border-obsidian-800/10 flex items-center justify-center"><i data-lucide="brain" class="w-4 h-4 dark:text-platinum text-obsidian-700"></i></div><span class="text-[15px] font-semibold tracking-[0.25em] uppercase dark:text-platinum-light text-obsidian-800">BASIRA</span></a><nav class="hidden md:flex items-center gap-1"><a href="/index.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Home</a><a href="/articles.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Articles</a><a href="/about.html" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">About</a><a href="/index.html#contact" class="px-4 py-2 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 hover:text-obsidian-800 rounded-lg dark:hover:bg-white/[0.03] hover:bg-obsidian-800/[0.03] transition-all duration-200">Contact</a></nav><div class="flex items-center gap-3 flex-shrink-0"><button onclick="toggleLanguage()" id="langBtn" class="px-3 py-1.5 text-[12px] font-medium border dark:border-platinum/20 border-obsidian-800/20 dark:text-platinum/70 text-obsidian-600 rounded-lg dark:hover:bg-platinum/10 hover:bg-obsidian-800/5 transition-all duration-200">&#x627;&#x644;&#x639;&#x631;&#x628;&#x64A;&#x629;</button><button onclick="toggleTheme()" class="relative w-[52px] h-[28px] rounded-full dark:bg-obsidian-600 bg-gray-200 toggle-track cursor-pointer flex items-center px-[3px]"><div class="toggle-thumb w-[22px] h-[22px] rounded-full dark:bg-platinum bg-obsidian-700 flex items-center justify-center shadow-sm dark:translate-x-[24px] translate-x-0"><i data-lucide="moon" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:block hidden"></i><i data-lucide="sun" class="w-3 h-3 dark:text-obsidian-900 text-cream dark:hidden block"></i></div></button><button id="mobile-btn" onclick="toggleMobile()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg dark:hover:bg-white/5 transition"><i data-lucide="menu" class="w-5 h-5 dark:text-platinum/60 text-obsidian-500"></i></button></div></div></div><div id="mobile-menu" class="md:hidden hidden border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="px-5 py-4 flex flex-col gap-1 dark:bg-obsidian-900/90 bg-cream/90 header-blur"><a href="/index.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Home</a><a href="/articles.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Articles</a><a href="/about.html" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">About</a><a href="/index.html#contact" class="px-4 py-3 text-[13px] font-medium dark:text-platinum/60 dark:hover:text-platinum text-obsidian-500 rounded-lg transition">Contact</a></div></div></header>');
+    A('<main class="pt-[72px]"><section class="py-16 lg:py-24 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12"><a href="/articles.html" class="inline-flex items-center gap-2 text-[12px] font-medium tracking-widest uppercase dark:text-platinum/50 text-obsidian-400 hover:dark:text-platinum hover:text-obsidian-800 transition-colors mb-6"><i data-lucide="arrow-left" class="w-3 h-3"></i>Back to Articles</a><div class="anim-fade"><span class="inline-block px-3 py-1.5 rounded-full dark:bg-platinum/[0.05] bg-obsidian-800/[0.04] text-[10px] font-medium tracking-[0.25em] uppercase dark:text-platinum/60 text-obsidian-500 mb-6">' + E(a.category||'') + '</span><h1 class="text-[36px] sm:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.1] dark:text-white text-obsidian-900 mb-6">' + E(a.title) + '</h1><div class="flex flex-wrap items-center gap-6 text-[13px] font-light dark:text-platinum/40 text-obsidian-500"><div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i><span>' + E(rd) + '</span></div><div class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i><span>' + E(rt) + '</span></div><div class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i><span>By Omer</span></div></div></div></div></section>');
+    A('<section class="py-0"><div class="max-w-[1000px] mx-auto px-5 sm:px-8 lg:px-12"><img src="' + E(a.image||'') + '" alt="' + E(a.title) + '" loading="eager" class="w-full rounded-2xl dark:brightness-75 brightness-90 dark:saturate-50 saturate-75 my-12" onerror="this.style.display=&quot;none&quot;"></div></section>');
+    A('<section class="py-16 lg:py-24"><div class="max-w-[900px] mx-auto px-5 sm:px-8 lg:px-12"><article id="article-content" class="article-content dark:text-platinum/70 text-obsidian-600 text-[16px] leading-[1.9]"></article>');
+    A('<div class="mt-10 flex flex-wrap items-center gap-3"><button onclick="openSources()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="book-open" class="w-4 h-4"></i>Sources Used</button>' + (ha ? '<button id="lang-toggle-btn" onclick="toggleArticleLang()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[12px] font-medium tracking-wide hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all duration-300"><i data-lucide="languages" class="w-4 h-4"></i><span id="lang-toggle-label">&#x627;&#x642;&#x631;&#x623; &#x628;&#x627;&#x644;&#x639;&#x631;&#x628;&#x64A;&#x629;</span></button>' : '') + '</div>');
+    A('<div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p><div class="flex flex-wrap items-center gap-3"><button onclick="react(&quot;like&quot;)" id="btn-like" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="thumbs-up" class="w-4 h-4"></i><span id="like-count">0</span></button><button onclick="react(&quot;dislike&quot;)" id="btn-dislike" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="thumbs-down" class="w-4 h-4"></i><span id="dislike-count">0</span></button><button onclick="toggleComment()" id="comments-toggle-btn" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="message-circle" class="w-4 h-4"></i><span>Comments</span><span id="comments-count-badge" class="hidden min-w-[20px] h-5 px-1.5 rounded-full dark:bg-platinum/15 bg-obsidian-800/10 dark:text-platinum/80 text-obsidian-700 text-[10px] font-semibold items-center justify-center"></span></button><button onclick="shareArticle(&quot;whatsapp&quot;)" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp</button><button onclick="shareArticle(&quot;copy&quot;)" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200"><i data-lucide="link" class="w-4 h-4"></i><span>Copy Link</span></button></div>');
+    A('<div id="comment-area" class="comment-area mt-5"><div id="comments-list" class="space-y-3 mb-5"></div><button onclick="toggleAddComment()" id="add-comment-trigger" class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/40 text-obsidian-400 text-[13px] font-medium hover:dark:border-platinum/20 hover:dark:text-platinum/70 hover:border-obsidian-800/20 hover:text-obsidian-600 transition-all duration-200 group"><i data-lucide="plus-circle" class="w-4 h-4 group-hover:scale-110 transition-transform duration-200"></i>Add your comment</button><div id="add-comment-panel" class="add-comment-panel mt-3 p-5 rounded-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] dark:bg-white/[0.02] bg-white/60"><div class="flex items-center justify-between mb-4"><p class="text-[12px] font-semibold dark:text-platinum/60 text-obsidian-600">New Comment</p></div><input id="comment-name" type="text" placeholder="Your name *" required class="w-full px-5 py-3 rounded-xl mb-3 dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[13px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300"><textarea id="comment-input" rows="3" placeholder="Write your comment..." class="w-full px-5 py-3 rounded-xl dark:bg-obsidian-800/60 bg-white/80 border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 dark:placeholder-platinum/25 placeholder-obsidian-400/50 text-[14px] font-light outline-none focus:dark:border-platinum/20 focus:border-obsidian-800/20 transition-all duration-300 resize-none"></textarea><div class="flex gap-3 mt-3"><button onclick="submitComment()" class="flex items-center gap-2 px-6 py-2.5 rounded-xl dark:bg-white/90 bg-obsidian-800 dark:text-obsidian-900 text-cream text-[13px] font-semibold hover:dark:bg-white hover:bg-obsidian-700 transition-all duration-200"><i data-lucide="send" class="w-3.5 h-3.5"></i>Post Comment</button><button onclick="toggleAddComment()" class="px-5 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium hover:dark:bg-white/[0.07] transition-all duration-200">Cancel</button></div></div></div></div>');
+    A('<div id="related-section" class="mt-12 pt-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04] hidden"><p class="text-[12px] font-medium tracking-[0.25em] uppercase dark:text-platinum/30 text-obsidian-400 mb-5">Related Articles</p><div id="related-grid" class="space-y-3"></div></div>');
+    A('<\/div><\/section><\/main>');
+    A('<footer class="py-10 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]"><div class="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12"><div class="flex flex-col md:flex-row items-center justify-between gap-6"><div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 border dark:border-platinum/15 border-obsidian-800/10 flex items-center justify-center"><i data-lucide="brain" class="w-3.5 h-3.5 dark:text-platinum/60 text-obsidian-500"></i></div><span class="text-[13px] font-semibold tracking-[0.25em] uppercase dark:text-platinum/50 text-obsidian-500">BASIRA</span></div><div class="flex items-center gap-6"><a href="/index.html" class="text-[11px] font-medium tracking-widest uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">Home</a><a href="/articles.html" class="text-[11px] font-medium tracking-widests uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">Articles</a><a href="/about.html" class="text-[11px] font-medium tracking-widests uppercase dark:text-platinum/25 text-obsidian-400 hover:dark:text-platinum/60 hover:text-obsidian-700 transition-colors duration-300">About</a></div><p class="text-[11px] font-light dark:text-platinum/20 text-obsidian-400/50">\u00a9 2025 BASIRA.</p></div></div></footer>');
+
+    var sv = 'const SB_URL="https://yteicgsqfpzexvkllhec.supabase.co";'
+           + 'const SB_KEY="sb_publishable_uJW4I-RH_MzzHNv20eBhPA_qZymgSVP";'
+           + 'const STATIC_ID=' + JSON.stringify(aid) + ';'
+           + 'const STATIC_TITLE=' + tJson + ';'
+           + 'const STATIC_TITLE_AR=' + taj + ';'
+           + 'const STATIC_CONTENT=' + cj + ';'
+           + 'const STATIC_CONTENT_AR=' + caj + ';'
+           + 'const STATIC_SOURCES=' + sj + ';'
+           + 'let articleLang="en",userReaction=null;'
+           + 'let articleData={id:STATIC_ID,title:STATIC_TITLE,title_ar:STATIC_TITLE_AR,content:STATIC_CONTENT,content_ar:STATIC_CONTENT_AR,sources:STATIC_SOURCES};'
+           + 'let currentArticle=articleData;'
+           + 'function getArticleId(){return STATIC_ID;}'
+           + 'function getSessionId(){let s=localStorage.getItem("basira-session");if(!s){s="sid_"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("basira-session",s);}return s;}'
+           + 'function sanitize(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}'
+           + 'async function trackView(id){const key="basira-viewed-"+id;if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,"1");await sbPost("views",{article_id:id});}'
+           + 'async function sbGet(path){try{const r=await fetch(SB_URL+"/rest/v1/"+path,{headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});return r.ok?r.json():null;}catch(e){return null;}}'
+           + 'async function sbPost(t,d){try{const r=await fetch(SB_URL+"/rest/v1/"+t,{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json","Prefer":"return=representation"},body:JSON.stringify(d)});return r.ok?r.json():null;}catch(e){return null;}}'
+           + 'async function sbDelete(path){try{const r=await fetch(SB_URL+"/rest/v1/"+path,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});return r.ok;}catch(e){return false;}}'
+           + 'async function loadComments(){const id=getArticleId(),sid=getSessionId(),data=await sbGet("comments?article_id=eq."+id+"&order=created_at.desc"),list=document.getElementById("comments-list");if(!list)return;const count=(data||[]).length,badge=document.getElementById("comments-count-badge");if(badge){if(count>0){badge.textContent="("+count+")";badge.classList.remove("hidden");badge.classList.add("flex");}else{badge.classList.add("hidden");badge.classList.remove("flex");}}if(!data||!data.length){list.innerHTML="<p class=\\"text-[12px] dark:text-platinum/25 text-obsidian-400 pb-2\\">No comments yet. Be the first!</p>";return;}list.innerHTML=data.map(function(c){const own=c.session_id===sid;const db=own?"<button onclick=\\"deleteComment("+JSON.stringify(c.id)+")\\" class=\\"ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium dark:text-platinum/30 text-obsidian-400 hover:dark:text-red-400 hover:text-red-500 hover:dark:bg-red-500/10 hover:bg-red-500/5 border dark:border-white/[0.04] border-obsidian-800/[0.04] transition-all duration-200\\"><i data-lucide=\\"trash-2\\" class=\\"w-3 h-3\\"></i>Delete</button>":"";return "<div class=\\"p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06]\\"><div class=\\"flex items-center gap-2 mb-2\\"><div class=\\"w-7 h-7 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[11px] font-semibold dark:text-platinum/60 text-obsidian-500\\">"+(sanitize(c.author||"?")[0].toUpperCase())+"</div><span class=\\"text-[12px] font-medium dark:text-platinum/60 text-obsidian-500\\">"+sanitize(c.author||"?")+"</span><span class=\\"text-[10px] font-medium px-2 py-0.5 rounded-md dark:bg-white/[0.04] bg-obsidian-800/[0.03] dark:text-platinum/30 text-obsidian-400\\">"+new Date(c.created_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+"</span>"+db+"</div><p class=\\"text-[13px] dark:text-platinum/70 text-obsidian-600 leading-relaxed\\">"+sanitize(c.content)+"</p></div>";}).join("");if(window.lucide)lucide.createIcons({nodes:[list]});}'
+           + 'function toggleComment(){const box=document.getElementById("comment-area");box.classList.toggle("open");if(!box.classList.contains("open")){const p=document.getElementById("add-comment-panel");if(p)p.classList.remove("open");}}'
+           + 'function toggleAddComment(){const panel=document.getElementById("add-comment-panel");panel.classList.toggle("open");if(panel.classList.contains("open"))setTimeout(function(){document.getElementById("comment-name").focus();},50);}'
+           + 'async function submitComment(){const input=document.getElementById("comment-input"),nameEl=document.getElementById("comment-name"),text=input.value.trim(),author=nameEl?nameEl.value.trim():"";if(!author){nameEl.style.borderColor="rgba(239,68,68,0.6)";nameEl.focus();showToast("Please enter your name","alert-circle");setTimeout(function(){nameEl.style.borderColor="";},2000);return;}if(!text){showToast("Please write something first","alert-circle");return;}const result=await sbPost("comments",{article_id:String(getArticleId()),content:text,author:author,session_id:getSessionId()});if(result){input.value="";nameEl.value="";document.getElementById("add-comment-panel").classList.remove("open");loadComments();showToast("Comment posted!","check-circle");}else showToast("Error posting comment","alert-circle");}'
+           + 'async function deleteComment(id){if(!confirm("Delete your comment?"))return;const ok=await sbDelete("comments?id=eq."+id+"&session_id=eq."+getSessionId());if(ok){loadComments();showToast("Comment deleted","trash-2");}else showToast("Could not delete","alert-circle");}'
+           + 'async function loadReactions(){const id=getArticleId(),data=await sbGet("reactions?article_id=eq."+id+"&select=type");if(data){document.getElementById("like-count").textContent=data.filter(function(r){return r.type==="like";}).length;document.getElementById("dislike-count").textContent=data.filter(function(r){return r.type==="dislike";}).length;}const saved=localStorage.getItem("basira-reaction-"+id);if(saved){userReaction=saved;document.getElementById("btn-like").classList.toggle("liked",saved==="like");document.getElementById("btn-dislike").classList.toggle("disliked",saved==="dislike");}}'
+           + 'async function react(type){const id=String(getArticleId()),k="basira-reaction-"+id,prev=localStorage.getItem(k);if(prev===type){try{await fetch(SB_URL+"/rest/v1/reactions?article_id=eq."+id+"&type=eq."+type,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});}catch(e){}userReaction=null;document.getElementById("btn-like").classList.remove("liked");document.getElementById("btn-dislike").classList.remove("disliked");localStorage.removeItem(k);showToast("Reaction removed","minus-circle");}else{if(prev){try{await fetch(SB_URL+"/rest/v1/reactions?article_id=eq."+id+"&type=eq."+prev,{method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});}catch(e){}}userReaction=type;document.getElementById("btn-like").classList.toggle("liked",type==="like");document.getElementById("btn-dislike").classList.toggle("disliked",type==="dislike");localStorage.setItem(k,type);await sbPost("reactions",{article_id:id,type:type,session_id:getSessionId()});showToast(type==="like"?"Thanks!":"Feedback noted",type==="like"?"heart":"frown");}loadReactions();}'
+           + 'function openSources(){const sources=STATIC_SOURCES,list=document.getElementById("sources-list");if(!list)return;if(!sources||!sources.length){list.innerHTML="<p class=\\"text-[13px] dark:text-platinum/40 text-obsidian-500\\">No sources listed.</p>";}else{list.innerHTML=sources.map(function(s,i){return "<a href="+JSON.stringify(s.url)+" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"flex items-start gap-3 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200 group\\"><span class=\\"flex-shrink-0 w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center text-[10px] font-bold dark:text-platinum/60 text-obsidian-500\\">"+( i+1)+"</span><div><p class=\\"text-[13px] font-medium dark:text-platinum/80 text-obsidian-700 group-hover:dark:text-white transition-colors\\">"+s.title+"</p><p class=\\"text-[11px] dark:text-platinum/30 text-obsidian-400 mt-0.5 break-all\\">"+s.url+"</p></div></a>";}).join("");}document.getElementById("sources-modal").classList.remove("hidden");}'
+           + 'function closeSources(e){if(e.target.id==="sources-modal")document.getElementById("sources-modal").classList.add("hidden");}'
+           + 'function shareArticle(p){const u=' + JSON.stringify(url) + ',t=STATIC_TITLE;if(p==="copy")navigator.clipboard.writeText(u).then(function(){showToast("Link copied!","check-circle");});else if(p==="whatsapp")window.open("https://wa.me/?text="+encodeURIComponent(t+"\\n"+u),"_blank");}'
+           + (ha ? 'function toggleArticleLang(){articleLang=articleLang==="en"?"ar":"en";const isAr=articleLang==="ar";const h=document.querySelector("h1");if(h&&isAr&&STATIC_TITLE_AR){h.textContent=STATIC_TITLE_AR;h.style.direction="rtl";}else if(h){h.textContent=STATIC_TITLE;h.style.direction="ltr";}const c=document.getElementById("article-content");if(c){c.innerHTML=isAr&&STATIC_CONTENT_AR?STATIC_CONTENT_AR:STATIC_CONTENT;c.style.direction=isAr?"rtl":"ltr";}const lbl=document.getElementById("lang-toggle-label");if(lbl)lbl.textContent=isAr?"Read in English":"\u0627\u0642\u0631\u0623 \u0628\u0627\u0644\u0639\u0631\u0628\u064a\u0629";}' : '')
+           + 'async function loadRelated(){const cat=' + JSON.stringify(a.category||'') + ',id=STATIC_ID,section=document.getElementById("related-section"),grid=document.getElementById("related-grid");if(!section||!grid)return;const data=await sbGet("articles?category=eq."+cat+"&status=eq.published&id=neq."+id);if(!data||!data.length){section.classList.add("hidden");return;}function sl(t){return(t||"").toLowerCase().replace(/[^\\w\\s-]/g,"").trim().replace(/\\s+/g,"-").replace(/-+/g,"-").substring(0,60)||"article";}const nonSelf=data.filter(function(x){return String(x.id)!==String(id);}).slice(0,3);if(!nonSelf.length){section.classList.add("hidden");return;}section.classList.remove("hidden");grid.innerHTML=nonSelf.map(function(x){return "<a href=\\"/articles/"+sl(x.title)+".html\\" class=\\"group flex gap-4 p-4 rounded-xl dark:bg-white/[0.03] bg-obsidian-800/[0.03] border dark:border-white/[0.06] border-obsidian-800/[0.06] hover:dark:bg-white/[0.06] hover:bg-obsidian-800/[0.06] transition-all duration-200\\"><div class=\\"w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 dark:bg-obsidian-700 bg-gray-100\\"><img src=\\""+( x.image||"")+"\\" alt=\\""+x.title+"\\" class=\\"w-full h-full object-cover dark:brightness-75\\"></div><div class=\\"flex-1 min-w-0\\"><span class=\\"text-[9px] tracking-widest uppercase dark:text-platinum/40 text-obsidian-400\\">"+x.category+"</span><p class=\\"text-[13px] font-semibold dark:text-platinum/80 text-obsidian-700 mt-0.5 line-clamp-2 group-hover:dark:text-white transition-colors\\">"+x.title+"</p></div></a>";}).join("");}'
+           + 'function toggleLanguage(){const html=document.documentElement,btn=document.getElementById("langBtn");if(btn.textContent.trim()==="\u0627\u0644\u0639\u0631\u0628\u064a\u0629"){html.setAttribute("dir","rtl");html.setAttribute("lang","ar");btn.textContent="English";showToast("\u062a\u0645 \u0627\u0644\u062a\u0628\u062f\u064a\u0644 \u0625\u0644\u0649 \u0627\u0644\u0639\u0631\u0628\u064a\u0629","languages");}else{html.setAttribute("dir","ltr");html.setAttribute("lang","en");btn.textContent="\u0627\u0644\u0639\u0631\u0628\u064a\u0629";showToast("Switched to English","languages");}}'
+           + 'function toggleTheme(){const html=document.documentElement,thumb=document.querySelector(".toggle-thumb");html.classList.add("theme-transition");if(html.classList.contains("dark")){html.classList.remove("dark");thumb.classList.replace("translate-x-[24px]","translate-x-0");localStorage.setItem("basira-theme","light");showToast("Light mode","sun");}else{html.classList.add("dark");thumb.classList.replace("translate-x-0","translate-x-[24px]");localStorage.setItem("basira-theme","dark");showToast("Dark mode","moon");}setTimeout(function(){lucide.createIcons();},60);setTimeout(function(){html.classList.remove("theme-transition");},600);}'
+           + 'function toggleMobile(){const menu=document.getElementById("mobile-menu"),btn=document.getElementById("mobile-btn"),isOpen=!menu.classList.contains("hidden");menu.classList.toggle("hidden");btn.innerHTML=isOpen?"<i data-lucide=\\"menu\\" class=\\"w-5 h-5 dark:text-platinum/60 text-obsidian-500\\"></i>":"<i data-lucide=\\"x\\" class=\\"w-5 h-5 dark:text-platinum/60 text-obsidian-500\\"></i>";lucide.createIcons({nodes:[btn]});}'
+           + 'function showToast(msg,icon){const box=document.getElementById("toast-box"),t=document.createElement("div");t.className="toast-in pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl dark:bg-obsidian-700/90 bg-white/90 header-blur shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] min-w-[220px]";t.innerHTML="<div class=\\"w-6 h-6 rounded-md dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center flex-shrink-0\\"><i data-lucide=\\""+icon+"\\" class=\\"w-3 h-3 dark:text-platinum/70 text-obsidian-600\\"></i></div><span class=\\"text-[12px] font-medium dark:text-platinum/80 text-obsidian-700\\">"+msg+"</span>";box.appendChild(t);lucide.createIcons({nodes:[t]});setTimeout(function(){t.classList.replace("toast-in","toast-out");setTimeout(function(){t.remove();},300);},2200);}'
+           + 'function initProgressBar(){const bar=document.getElementById("read-progress");if(!bar)return;window.addEventListener("scroll",function(){const doc=document.documentElement;bar.style.width=Math.min(100,(doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100)+"%";});}'
+           + 'document.addEventListener("DOMContentLoaded",function(){if(localStorage.getItem("basira-theme")==="light"){document.documentElement.classList.remove("dark");const t=document.querySelector(".toggle-thumb");if(t){t.classList.remove("translate-x-[24px]");t.classList.add("translate-x-0");}}const artEl=document.getElementById("article-content");if(STATIC_CONTENT&&STATIC_CONTENT.trim()!==""){artEl.innerHTML=STATIC_CONTENT;}else{artEl.innerHTML="<p style=\\"opacity:.5\\">Loading...</p>";sbGet("articles?id=eq."+STATIC_ID+"&select=content").then(function(d){if(d&&d[0]&&d[0].content){artEl.innerHTML=d[0].content;}else{artEl.innerHTML="<p style=\\"opacity:.5\\">Content not available.</p>";}});}initProgressBar();loadReactions();loadComments();loadRelated();trackView(STATIC_ID);lucide.createIcons();setTimeout(function(){document.querySelectorAll(".anim-fade").forEach(function(el){el.classList.add("visible");});},200);window.addEventListener("scroll",function(){const btn=document.getElementById("back-to-top");if(btn)btn.classList.toggle("visible",window.scrollY>400);});});';
+
+    A('<script>' + sv + '<\/script>');
+    A('<\/body><\/html>');
+
+    return p.join('\n');
+  }
+
+  async function generateStaticPages() {
+    if (typeof JSZip === 'undefined') { showToast('JSZip not loaded — refresh page', 'alert-circle'); return; }
+    const btn  = document.getElementById('gen-static-btn');
+    const prog = document.getElementById('static-progress');
+    const bar  = document.getElementById('static-progress-bar');
+    const txt  = document.getElementById('static-progress-text');
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Generating...';
+    lucide.createIcons({nodes:[btn]});
+    if(prog) prog.classList.remove('hidden');
+
+    const published = adminArticles.filter(a => a.status === 'published');
+    if (!published.length) { showToast('No published articles', 'alert-circle'); btn.disabled=false; return; }
+
+    const zip = new JSZip();
+    const folder = zip.folder('articles');
+
+    // تحقق من أن المقالات لديها محتوى
+    const emptyContent = published.filter(a => !a.content || a.content.trim() === '');
+    if (emptyContent.length > 0) {
+      const names = emptyContent.slice(0,3).map(a => a.title.substring(0,30)).join(', ');
+      if (!confirm('Warning: ' + emptyContent.length + ' article(s) have no content:\n' + names + '\n\nContinue anyway?')) {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="package" class="w-4 h-4"></i> Generate &amp; Download ZIP';
+        lucide.createIcons({nodes:[btn]});
+        if(prog) prog.classList.add('hidden');
+        return;
+      }
+    }
+
+    for (let i = 0; i < published.length; i++) {
+      const a = published[i];
+      folder.file(toSlug(a.title) + '.html', buildStaticHTML(a));
+      const pct = Math.round(((i+1)/published.length)*100);
+      if(bar) bar.style.width = pct + '%';
+      if(txt) txt.textContent = '(' + (i+1) + '/' + published.length + ') ' + a.title.substring(0,40);
+      await new Promise(r => setTimeout(r, 10));
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    zip.file('Sitemap.xml', generateSitemapXml(published, today));
+
+    if(txt) txt.textContent = 'Creating ZIP...';
+    const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'basira-static-pages.zip';
+    link.click();
+
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="package" class="w-4 h-4"></i> Generate &amp; Download ZIP';
+    lucide.createIcons({nodes:[btn]});
+    if(prog) prog.classList.add('hidden');
+    showToast('ZIP downloaded — ' + published.length + ' pages!', 'check-circle');
+  }
+
+  // ================================
+  // GITHUB DEPLOY
+  // ================================
+
+  function saveGitHubSettings() {
+    const repo   = document.getElementById('gh-repo').value.trim();
+    const branch = document.getElementById('gh-branch').value.trim() || 'main';
+    const token  = document.getElementById('gh-token').value.trim();
+    if (!repo || !token) { showToast('Please fill repo and token', 'alert-circle'); return; }
+    localStorage.setItem('gh-repo',   repo);
+    localStorage.setItem('gh-branch', branch);
+    localStorage.setItem('gh-token',  token);
+    showToast('Settings saved!', 'check-circle');
+  }
+
+  function loadGitHubSettings() {
+    const repo   = localStorage.getItem('gh-repo')   || '';
+    const branch = localStorage.getItem('gh-branch') || 'main';
+    const r = document.getElementById('gh-repo');
+    const b = document.getElementById('gh-branch');
+    if (r) r.value = repo;
+    if (b) b.value = branch;
+  }
+
+  function toggleTokenVisibility() {
+    const input = document.getElementById('gh-token');
+    const icon  = document.getElementById('token-eye');
+    input.type  = input.type === 'password' ? 'text' : 'password';
+    icon.setAttribute('data-lucide', input.type === 'password' ? 'eye' : 'eye-off');
+    lucide.createIcons({nodes:[icon]});
+  }
+
+  function addDeployLog(msg, type) {
+    const log = document.getElementById('deploy-log');
+    if (!log) return;
+    const colors = {ok:'dark:text-green-400 text-green-600', err:'dark:text-red-400 text-red-500', info:'dark:text-platinum/50 text-gray-500'};
+    const el = document.createElement('p');
+    el.className = 'text-[10px] font-mono ' + (colors[type] || colors.info);
+    el.textContent = msg;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function getFileSHA(token, repo, branch, path) {
+    try {
+      const res = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + branch,
+        { headers: {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'} });
+      if (res.ok) { const d = await res.json(); return d.sha || null; }
+      return null;
+    } catch(e) { return null; }
+  }
+
+  async function uploadFileToGitHub(token, repo, branch, path, content) {
+    const sha = await getFileSHA(token, repo, branch, path);
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+    const body = {message: 'Deploy: ' + path, content: encoded, branch: branch};
+    if (sha) body.sha = sha;
+    const res = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path, {
+      method: 'PUT',
+      headers: {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    return res.ok;
+  }
+
+  async function deployToGitHub() {
+    const repo   = localStorage.getItem('gh-repo');
+    const branch = localStorage.getItem('gh-branch') || 'main';
+    const token  = document.getElementById('gh-token').value.trim() || localStorage.getItem('gh-token') || '';
+    if (!repo || !token) { showToast('Fill and save GitHub settings first', 'alert-circle'); return; }
+
+    const published = adminArticles.filter(a => a.status === 'published');
+    if (!published.length) { showToast('No published articles', 'alert-circle'); return; }
+
+    const btn  = document.getElementById('deploy-btn');
+    const prog = document.getElementById('deploy-progress');
+    const bar  = document.getElementById('deploy-bar');
+    const txt  = document.getElementById('deploy-text');
+    const log  = document.getElementById('deploy-log');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Deploying...';
+    lucide.createIcons({nodes:[btn]});
+    prog.classList.remove('hidden');
+    log.innerHTML = '';
+    addDeployLog('Starting deploy to ' + repo + ' [' + branch + ']...', 'info');
+
+    const today = new Date().toISOString().split('T')[0];
+    let success = 0, failed = 0;
+    const total = published.length + 1;
+
+    // تحقق من المحتوى قبل الرفع
+    const emptyDeploy = published.filter(a => !a.content || a.content.trim() === '');
+    if (emptyDeploy.length > 0 && !confirm('Warning: ' + emptyDeploy.length + ' article(s) have no content. The deployed pages will be empty. Continue?')) {
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="upload-cloud" class="w-4 h-4"></i> Deploy Now';
+      lucide.createIcons({nodes:[btn]});
+      prog.classList.add('hidden');
+      return;
+    }
+
+    for (let i = 0; i < published.length; i++) {
+      const a    = published[i];
+      const path = 'articles/' + toSlug(a.title) + '.html';
+      txt.textContent = '(' + (i+1) + '/' + published.length + ') ' + a.title.substring(0,35) + '...';
+      bar.style.width = Math.round(((i+1)/total)*100) + '%';
+      const ok = await uploadFileToGitHub(token, repo, branch, path, buildStaticHTML(a));
+      if (ok) { success++; addDeployLog('✓ ' + path, 'ok'); }
+      else    { failed++;  addDeployLog('✗ ' + path, 'err'); }
+      await new Promise(r => setTimeout(r, 300));
+    }
+
+    txt.textContent = 'Uploading Sitemap.xml...';
+    const sitemapOk = await uploadFileToGitHub(token, repo, branch, 'Sitemap.xml', generateSitemapXml(published, today));
+    bar.style.width = '100%';
+    addDeployLog(sitemapOk ? '✓ Sitemap.xml' : '✗ Sitemap.xml', sitemapOk ? 'ok' : 'err');
+    txt.textContent = 'Done! ' + success + ' pages deployed' + (failed > 0 ? ', ' + failed + ' failed' : '') + '.';
+
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="upload-cloud" class="w-4 h-4"></i> Deploy Now';
+    lucide.createIcons({nodes:[btn]});
+    showToast(failed === 0 ? success + ' pages live! 🚀' : success + ' ok, ' + failed + ' failed', failed === 0 ? 'check-circle' : 'alert-circle');
+  }
+
+  // ================================
+  // TOAST
+  // ================================
+  function showToast(msg, icon) {
+    const box = document.getElementById('toast-box');
+    const t = document.createElement('div');
+    t.className = 'toast-in pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-xl dark:bg-obsidian-700/95 bg-white shadow-2xl border dark:border-white/[0.06] border-gray-200 min-w-[200px]';
+    t.innerHTML = `<div class="w-6 h-6 rounded-md dark:bg-platinum/10 bg-gray-100 flex items-center justify-center flex-shrink-0"><i data-lucide="${icon}" class="w-3 h-3 dark:text-platinum/70 text-gray-600"></i></div><span class="text-[12px] font-medium dark:text-platinum/80 text-gray-700">${msg}</span>`;
+    box.appendChild(t);
+    if(window.lucide) lucide.createIcons({nodes:[t]});
+    setTimeout(()=>{ t.classList.replace('toast-in','toast-out'); setTimeout(()=>t.remove(),300); },2200);
+  }
+
+  // ================================
+  // CONFIRM MODAL
+  // ================================
+  let _confirmCallback = null;
+
+  function showConfirm(title, msg, onOk, okLabel) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    const okBtn = document.getElementById('confirm-ok');
+    okBtn.textContent = okLabel || 'Delete';
+    okBtn.onclick = () => { closeConfirm(); if(_confirmCallback) _confirmCallback(); };
+    _confirmCallback = onOk;
+    document.getElementById('confirm-modal').classList.remove('hidden');
+    if(window.lucide) lucide.createIcons({ nodes: [document.getElementById('confirm-modal')] });
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirm-modal').classList.add('hidden');
+    _confirmCallback = null;
+  }
+
+  // ================================
+  // INIT
+  // ================================
+  document.addEventListener('DOMContentLoaded', () => {
+    // Retry lucide icons with delay fallback
+    function initIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+      } else {
+        setTimeout(initIcons, 200);
+      }
+    }
+    initIcons();
+
+    // Safe lockout check
+    try { checkLockout(); } catch(e) {}
+
+    const passEl = document.getElementById('login-pass');
+    if (passEl) passEl.focus();
+  });
+</script>
+</body>
+</html>
