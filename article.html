@@ -348,6 +348,7 @@
               onclick="react('dislike')"
               class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200 select-none">
               <i data-lucide="thumbs-down" class="w-4 h-4"></i>
+              <span id="dislike-count">0</span>
             </button>
             <button onclick="toggleComment()" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -698,21 +699,28 @@
 
     async function loadReactions() {
       const id = getArticleId();
-      const data = await sbGet(`reactions?article_id=eq.${id}&select=type,session_id,author`);
+      // تم إزالة author من الـ select لكي تعمل مع قاعدة البيانات بنجاح
+      const data = await sbGet(`reactions?article_id=eq.${id}&select=type,session_id`);
       allReactionsData = data || [];
 
       const counts = {};
       let totalLikes = 0;
+      let totalDislikes = 0;
       allReactionsData.forEach(r => {
         if (r.type !== 'dislike') {
           counts[r.type] = (counts[r.type] || 0) + 1;
           totalLikes++;
+        } else {
+          totalDislikes++;
         }
       });
 
       const statsContainer = document.getElementById('reaction-stats-container');
       const iconsContainer = document.getElementById('reaction-stacked-icons');
       const totalEl = document.getElementById('reaction-total-count');
+      const dbCountEl = document.getElementById('dislike-count');
+      
+      if(dbCountEl) dbCountEl.textContent = totalDislikes;
 
       if (totalLikes > 0) {
         statsContainer.classList.remove('hidden');
@@ -786,7 +794,7 @@
        listContainer.innerHTML = filtered.map(r => {
          const icon = REACTION_META[r.type].emoji ? `<img src="${REACTION_META[r.type].emoji}" class="w-3.5 h-3.5">` : `<div class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center"><i data-lucide="thumbs-up" class="w-2 h-2"></i></div>`;
          const guestId = r.session_id ? r.session_id.substring(4, 8).toUpperCase() : '0000';
-         const authorName = r.author ? sanitize(r.author) : `Guest ${guestId}`;
+         const authorName = `Guest ${guestId}`;
          return `<div class="flex items-center justify-between p-3 rounded-xl hover:bg-obsidian-800/[0.03] dark:hover:bg-white/[0.03] transition">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-obsidian-700 flex items-center justify-center text-obsidian-500 dark:text-platinum/50 relative">
@@ -813,10 +821,6 @@
       const sid = getSessionId();
       const storageKey = `basira-reaction-${id}`;
       const prevReaction = localStorage.getItem(storageKey);
-      
-      // Attempt to retrieve a saved name if it exists (from previous comments)
-      const savedName = localStorage.getItem('basira-username');
-      const authorData = savedName ? { author: savedName } : {};
 
       try {
         if (prevReaction === type) {
@@ -833,8 +837,7 @@
             await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
           }
           
-          const postData = { article_id: id, type: type, session_id: sid, ...authorData };
-          const result = await sbPost('reactions', postData);
+          const result = await sbPost('reactions', { article_id: id, type: type, session_id: sid });
           
           if (result) {
             userReaction = type;
