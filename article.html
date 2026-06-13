@@ -44,6 +44,8 @@
     ::-webkit-scrollbar-track { background: transparent; }
     .dark ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #CCC; border-radius: 10px; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .theme-transition, .theme-transition *, .theme-transition *::before, .theme-transition *::after {
       transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease !important;
     }
@@ -150,7 +152,7 @@
     .comment-delete-btn { opacity: 0; transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease; }
     .comment-card:hover .comment-delete-btn { opacity: 1; }
     .char-counter { transition: color 0.2s ease; }
-    /* Sources modal */
+    /* Modals */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; }
   </style>
 </head>
@@ -175,6 +177,20 @@
         </button>
       </div>
       <div id="sources-list" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <div id="reaction-modal" class="modal-overlay hidden" onclick="closeReactionModal(event)">
+    <div class="max-w-[420px] w-full max-h-[75vh] flex flex-col rounded-2xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] overflow-hidden">
+       <div class="flex items-center justify-between p-4 border-b dark:border-white/[0.06] border-obsidian-800/[0.06]">
+         <div id="reaction-modal-tabs" class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
+           </div>
+         <button onclick="document.getElementById('reaction-modal').classList.add('hidden')" class="p-2 rounded-lg dark:hover:bg-white/[0.05] hover:bg-obsidian-800/[0.05] transition flex-shrink-0">
+           <i data-lucide="x" class="w-4 h-4"></i>
+         </button>
+       </div>
+       <div id="reaction-modal-list" class="overflow-y-auto p-2 flex-1 min-h-[250px]">
+         </div>
     </div>
   </div>
 
@@ -293,8 +309,18 @@
           </button>
         </div>
 
-        <div class="mt-10 pt-8 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
-          <p class="text-[11px] font-medium tracking-[0.2em] uppercase dark:text-platinum/30 text-obsidian-400 mb-4">Was this helpful?</p>
+        <div class="mt-10 pt-6 border-t dark:border-white/[0.04] border-obsidian-800/[0.04]">
+          
+          <div id="reaction-stats-container" class="flex items-center justify-between pb-4 mb-4 border-b dark:border-white/[0.04] border-obsidian-800/[0.04] hidden">
+             <div class="flex items-center gap-2 cursor-pointer group" onclick="openReactionModal()">
+               <div id="reaction-stacked-icons" class="flex -space-x-1.5"></div>
+               <span id="reaction-total-count" class="text-[13px] font-medium dark:text-platinum/60 text-obsidian-500 group-hover:underline"></span>
+             </div>
+             <div class="text-[13px] font-medium dark:text-platinum/60 text-obsidian-500 cursor-pointer hover:underline" onclick="toggleComment()">
+               <span id="comments-stats-count"></span>
+             </div>
+          </div>
+
           <div class="flex flex-wrap items-center gap-3">
             <div class="like-btn-wrap relative">
               <button id="btn-like"
@@ -305,7 +331,6 @@
                   <i data-lucide="thumbs-up" class="w-4 h-4"></i>
                 </span>
                 <span id="like-label">Like</span>
-                <span id="like-count">0</span>
               </button>
               <div id="reaction-popup" class="reaction-popup">
                 <div class="reaction-option" data-type="love" onclick="react('love')" title="Love">
@@ -323,12 +348,10 @@
               onclick="react('dislike')"
               class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200 select-none">
               <i data-lucide="thumbs-down" class="w-4 h-4"></i>
-              <span id="dislike-count">0</span>
             </button>
-            <button onclick="toggleComment()" id="comments-toggle-btn" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
+            <button onclick="toggleComment()" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
               <span>Comments</span>
-              <span id="comments-count-badge" class="hidden min-w-[20px] h-5 px-1.5 rounded-full dark:bg-platinum/15 bg-obsidian-800/10 dark:text-platinum/80 text-obsidian-700 text-[10px] font-semibold items-center justify-center"></span>
             </button>
             <button onclick="shareArticle('whatsapp')" class="reaction-btn flex items-center gap-2 px-5 py-2.5 rounded-xl border dark:border-white/[0.08] border-obsidian-800/[0.08] dark:text-platinum/60 text-obsidian-500 text-[13px] font-medium transition-all duration-200">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -451,6 +474,7 @@
     let currentArticle = null;
     let userReaction = null;
     let isReacting = false;
+    let allReactionsData = [];
 
     async function sbGet(path) {
       try {
@@ -605,7 +629,6 @@
         document.head.appendChild(m);
       }
 
-      // Fix canonical URL bug to prevent duplicates
       let canon = document.querySelector('link[rel="canonical"]');
       if (!canon) {
         canon = document.createElement('link');
@@ -642,7 +665,7 @@
       dislike: { label: 'Dislike', emoji: null, icon: 'thumbs-down', cls: 'disliked' }
     };
     const ALL_REACTION_TYPES = Object.keys(REACTION_META);
-    const LIKE_BTN_TYPES = ['like','love','care','wow']; // types displayed on the main Like button
+    const LIKE_BTN_TYPES = ['like','love','care','wow'];
 
     function setLikeButtonState(type) {
       const lb = document.getElementById('btn-like');
@@ -650,9 +673,7 @@
       const iconEl = document.getElementById('like-icon');
       const labelEl = document.getElementById('like-label');
 
-      // Reset like button
       LIKE_BTN_TYPES.forEach(t => lb.classList.remove(REACTION_META[t].cls));
-      // Reset dislike button
       db.classList.remove(REACTION_META.dislike.cls);
 
       if (type && LIKE_BTN_TYPES.includes(type)) {
@@ -677,14 +698,111 @@
 
     async function loadReactions() {
       const id = getArticleId();
-      const data = await sbGet(`reactions?article_id=eq.${id}&select=type`);
-      if (data) {
-        document.getElementById('like-count').textContent = data.filter(r => r.type !== 'dislike').length;
-        document.getElementById('dislike-count').textContent = data.filter(r => r.type === 'dislike').length;
+      const data = await sbGet(`reactions?article_id=eq.${id}&select=type,session_id`);
+      allReactionsData = data || [];
+
+      const counts = {};
+      let totalLikes = 0;
+      allReactionsData.forEach(r => {
+        if (r.type !== 'dislike') {
+          counts[r.type] = (counts[r.type] || 0) + 1;
+          totalLikes++;
+        }
+      });
+
+      const statsContainer = document.getElementById('reaction-stats-container');
+      const iconsContainer = document.getElementById('reaction-stacked-icons');
+      const totalEl = document.getElementById('reaction-total-count');
+
+      if (totalLikes > 0) {
+        statsContainer.classList.remove('hidden');
+        const sortedTypes = Object.keys(counts).sort((a,b) => counts[b] - counts[a]).slice(0, 3);
+        iconsContainer.innerHTML = sortedTypes.map((t, index) => {
+           const zIndex = 30 - (index * 10);
+           if (REACTION_META[t].emoji) return `<div class="w-[22px] h-[22px] rounded-full border-2 border-white dark:border-obsidian-900 flex items-center justify-center bg-gray-50 dark:bg-obsidian-800" style="z-index:${zIndex}"><img src="${REACTION_META[t].emoji}" class="w-3.5 h-3.5"></div>`;
+           return `<div class="w-[22px] h-[22px] rounded-full border-2 border-white dark:border-obsidian-900 flex items-center justify-center bg-blue-500 text-white" style="z-index:${zIndex}"><i data-lucide="thumbs-up" class="w-[10px] h-[10px]"></i></div>`;
+        }).join('');
+        totalEl.textContent = totalLikes;
+        if (window.lucide) lucide.createIcons({nodes:[iconsContainer]});
+      } else {
+        // If there are comments but no likes, we still want to show the container for the comments count
+        const commentsText = document.getElementById('comments-stats-count').textContent;
+        if(commentsText && commentsText !== '0 Comments') {
+           statsContainer.classList.remove('hidden');
+           iconsContainer.innerHTML = '';
+           totalEl.textContent = '';
+        } else {
+           statsContainer.classList.add('hidden');
+        }
       }
+
       const saved = localStorage.getItem(`basira-reaction-${id}`);
       userReaction = saved || null;
       setLikeButtonState(userReaction);
+    }
+
+    function openReactionModal() {
+      if(allReactionsData.filter(r => r.type !== 'dislike').length === 0) return;
+      renderReactionTabs('all');
+      document.getElementById('reaction-modal').classList.remove('hidden');
+    }
+
+    function closeReactionModal(e) {
+      if (e.target.id==='reaction-modal') document.getElementById('reaction-modal').classList.add('hidden');
+    }
+
+    function renderReactionTabs(activeType) {
+       const counts = { all: 0 };
+       allReactionsData.forEach(r => {
+         if (r.type !== 'dislike') {
+           counts.all++;
+           counts[r.type] = (counts[r.type] || 0) + 1;
+         }
+       });
+
+       const tabsContainer = document.getElementById('reaction-modal-tabs');
+       let tabsHtml = `<div onclick="renderReactionTabs('all')" class="text-[14px] font-medium pb-3 border-b-2 cursor-pointer transition-colors whitespace-nowrap ${activeType==='all' ? 'border-obsidian-800 dark:border-platinum text-obsidian-900 dark:text-white' : 'border-transparent text-obsidian-500 dark:text-platinum/50 hover:text-obsidian-700'}">All ${counts.all}</div>`;
+
+       Object.keys(counts).forEach(t => {
+         if(t !== 'all' && counts[t] > 0) {
+           const icon = REACTION_META[t].emoji ? `<img src="${REACTION_META[t].emoji}" class="w-4 h-4 inline-block mr-1.5 -mt-0.5">` : `<i data-lucide="thumbs-up" class="w-4 h-4 inline-block mr-1.5 -mt-0.5 text-blue-500"></i>`;
+           tabsHtml += `<div onclick="renderReactionTabs('${t}')" class="text-[14px] font-medium pb-3 border-b-2 cursor-pointer transition-colors flex items-center whitespace-nowrap ${activeType===t ? 'border-obsidian-800 dark:border-platinum text-obsidian-900 dark:text-white' : 'border-transparent text-obsidian-500 dark:text-platinum/50 hover:text-obsidian-700'}">${icon} ${counts[t]}</div>`;
+         }
+       });
+       tabsContainer.innerHTML = tabsHtml;
+       if (window.lucide) lucide.createIcons({nodes:[tabsContainer]});
+
+       renderReactionList(activeType);
+    }
+
+    function renderReactionList(filterType) {
+       const listContainer = document.getElementById('reaction-modal-list');
+       const filtered = allReactionsData.filter(r => r.type !== 'dislike' && (filterType === 'all' || r.type === filterType));
+
+       if(filtered.length === 0) {
+         listContainer.innerHTML = '<p class="text-center text-[13px] text-obsidian-400 py-8">No reactions found.</p>';
+         return;
+       }
+
+       listContainer.innerHTML = filtered.map(r => {
+         const icon = REACTION_META[r.type].emoji ? `<img src="${REACTION_META[r.type].emoji}" class="w-3.5 h-3.5">` : `<div class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center"><i data-lucide="thumbs-up" class="w-2 h-2"></i></div>`;
+         // Note: Since we don't have real usernames for reactions, we use a generic name based on session ID.
+         const guestId = r.session_id ? r.session_id.substring(4, 8).toUpperCase() : '0000';
+         return `<div class="flex items-center justify-between p-3 rounded-xl hover:bg-obsidian-800/[0.03] dark:hover:bg-white/[0.03] transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-obsidian-700 flex items-center justify-center text-obsidian-500 dark:text-platinum/50 relative">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <div class="absolute -bottom-1 -right-1 border-2 border-white dark:border-obsidian-800 rounded-full bg-white dark:bg-obsidian-800">
+                  ${icon}
+                </div>
+              </div>
+              <div>
+                 <p class="text-[13.5px] font-semibold text-obsidian-800 dark:text-platinum/90">Guest ${guestId}</p>
+              </div>
+            </div>
+         </div>`;
+       }).join('');
+       if (window.lucide) lucide.createIcons({nodes:[listContainer]});
     }
 
     async function react(type) {
@@ -699,7 +817,6 @@
 
       try {
         if (prevReaction === type) {
-          // Remove reaction safely using session_id
           const ok = await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
           if (ok) {
             userReaction = null;
@@ -709,7 +826,6 @@
             showToast('Error: Could not connect to database', 'alert-circle');
           }
         } else {
-          // Change or Add reaction
           if (prevReaction) {
             await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
           }
@@ -721,7 +837,7 @@
             localStorage.setItem(storageKey, type);
             showToast(REACTION_META[type].label + '!', type === 'dislike' ? 'thumbs-down' : (type === 'like' ? 'thumbs-up' : 'heart'));
           } else {
-            showToast('Error: Failed to save reaction to database', 'alert-circle');
+            showToast('Error: Failed to save reaction', 'alert-circle');
           }
         }
         setLikeButtonState(userReaction);
@@ -735,11 +851,10 @@
 
     function handleLikeClick() {
       if (suppressLikeClick) { suppressLikeClick = false; return; }
-      // Short click = toggle 'like' (or remove current reaction if any)
       react(userReaction ? userReaction : 'like');
     }
 
-    /* === Reaction popup show/hide (long-press + hover) === */
+    /* === Reaction popup show/hide === */
     let reactionPressTimer = null;
     let suppressLikeClick = false;
     (function initReactionPopup() {
@@ -749,18 +864,15 @@
       if (!wrap || !popup || !btn) return;
 
       const LONG_PRESS_MS = 400;
-
       const show = () => popup.classList.add('show');
       const hide = () => popup.classList.remove('show');
       window.hideReactionPopup = hide;
 
-      // Desktop hover (mouse-capable devices only — avoids touch ghost-event conflicts)
       if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         wrap.addEventListener('mouseenter', show);
         wrap.addEventListener('mouseleave', hide);
       }
 
-      // Touch long-press
       btn.addEventListener('touchstart', () => {
         suppressLikeClick = false;
         reactionPressTimer = setTimeout(() => {
@@ -773,7 +885,6 @@
       btn.addEventListener('touchend', (e) => {
         if (reactionPressTimer) { clearTimeout(reactionPressTimer); reactionPressTimer = null; }
         if (suppressLikeClick) {
-          // Long-press just opened the popup: stop this touch from also firing a click
           e.preventDefault();
           setTimeout(() => { suppressLikeClick = false; }, 50);
         }
@@ -783,7 +894,6 @@
       btn.addEventListener('touchmove', cancelPress);
       btn.addEventListener('touchcancel', cancelPress);
 
-      // Hide popup on outside tap
       document.addEventListener('click', (e) => {
         if (!wrap.contains(e.target)) hide();
       });
@@ -794,20 +904,23 @@
       const sid = getSessionId();
       const data = await sbGet(`comments?article_id=eq.${id}&order=created_at.desc`);
       const list  = document.getElementById('comments-list');
-      const badge = document.getElementById('comments-count-badge');
-      if (!list) return;
-
+      
       const count = (data || []).length;
-      if (badge) {
-        if (count > 0) {
-          badge.textContent = count;
-          badge.classList.remove('hidden');
-          badge.classList.add('flex');
-        } else {
-          badge.classList.add('hidden');
-          badge.classList.remove('flex');
-        }
+      
+      const statsCountEl = document.getElementById('comments-stats-count');
+      if (statsCountEl) {
+        statsCountEl.textContent = count > 0 ? count + ' Comments' : '';
       }
+
+      // Show stats container if there are comments (even if 0 likes)
+      const statsContainer = document.getElementById('reaction-stats-container');
+      if (count > 0 && statsContainer) {
+        statsContainer.classList.remove('hidden');
+      } else if (statsContainer && allReactionsData.filter(r => r.type !== 'dislike').length === 0) {
+        statsContainer.classList.add('hidden');
+      }
+
+      if (!list) return;
 
       if (!data || data.length === 0) {
         list.innerHTML = '<p class="text-[12px] dark:text-platinum/25 text-obsidian-400 py-4 text-center">No comments yet — be the first to share your thoughts!</p>';
@@ -854,9 +967,6 @@
               <p class="text-[13px] dark:text-platinum/60 text-obsidian-600 leading-relaxed">${sanitize(c.content)}</p>
             </div>
           </div>
-          <div class="absolute inset-x-0 bottom-0 h-[1px] rounded-b-2xl
-               bg-gradient-to-r from-transparent dark:via-platinum/[0.07] via-obsidian-800/[0.04] to-transparent
-               opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>`;
       }).join('');
       lucide.createIcons({ nodes: [list] });
