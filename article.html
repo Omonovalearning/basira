@@ -194,6 +194,25 @@
     </div>
   </div>
 
+  <div id="name-prompt-modal" class="modal-overlay hidden" onclick="if(event.target.id==='name-prompt-modal') closeNamePrompt()" style="z-index: 400;">
+    <div class="max-w-[320px] w-full p-6 rounded-3xl dark:bg-obsidian-800 bg-white shadow-2xl border dark:border-white/[0.06] border-obsidian-800/[0.06] transform transition-all">
+      <div class="text-center mb-5">
+        <div class="w-12 h-12 rounded-full dark:bg-platinum/10 bg-obsidian-800/5 flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="user" class="w-6 h-6 dark:text-platinum/80 text-obsidian-700"></i>
+        </div>
+        <h3 class="text-[17px] font-bold dark:text-white text-obsidian-900" data-en="Who is reacting?" data-ar="من يتفاعل؟">Who is reacting?</h3>
+        <p class="text-[13px] dark:text-platinum/50 text-obsidian-500 mt-1" data-en="Please enter your name to continue" data-ar="يرجى إدخال اسمك للمتابعة">Please enter your name to continue</p>
+      </div>
+      <input id="prompt-user-name" type="text" placeholder="Your name..."
+        class="w-full px-4 py-3 rounded-xl mb-4 dark:bg-obsidian-900/70 bg-gray-50 border dark:border-white/[0.07] border-obsidian-800/[0.08] dark:text-white text-obsidian-900 text-[13px] outline-none focus:dark:border-platinum/25 focus:border-obsidian-800/20 transition-all"
+        onkeydown="if(event.key==='Enter') submitNamePrompt()">
+      <div class="flex gap-2">
+        <button onclick="closeNamePrompt()" class="flex-1 py-2.5 rounded-xl dark:bg-white/[0.04] bg-obsidian-800/[0.04] dark:text-platinum/60 text-obsidian-600 text-[13px] font-medium hover:dark:bg-white/[0.07] hover:bg-obsidian-800/[0.07] transition-all" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button onclick="submitNamePrompt()" class="flex-1 py-2.5 rounded-xl dark:bg-platinum/90 bg-obsidian-800 dark:text-obsidian-950 text-white text-[13px] font-semibold hover:dark:bg-platinum hover:bg-obsidian-700 transition-all" data-en="Continue" data-ar="متابعة">Continue</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast-box" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
   <header id="site-header" class="fixed top-0 left-0 right-0 z-[100] header-blur dark:bg-obsidian-900/70 bg-cream/70 border-b dark:border-white/[0.04] border-obsidian-800/[0.04]">
@@ -475,6 +494,7 @@
     let userReaction = null;
     let isReacting = false;
     let allReactionsData = [];
+    let pendingReaction = null;
 
     async function sbGet(path) {
       try {
@@ -698,7 +718,8 @@
 
     async function loadReactions() {
       const id = getArticleId();
-      const data = await sbGet(`reactions?article_id=eq.${id}&select=type,session_id`);
+      // Ensure 'author' column exists in your Supabase 'reactions' table
+      const data = await sbGet(`reactions?article_id=eq.${id}&select=type,session_id,author`);
       allReactionsData = data || [];
 
       const counts = {};
@@ -725,7 +746,6 @@
         totalEl.textContent = totalLikes;
         if (window.lucide) lucide.createIcons({nodes:[iconsContainer]});
       } else {
-        // If there are comments but no likes, we still want to show the container for the comments count
         const commentsText = document.getElementById('comments-stats-count').textContent;
         if(commentsText && commentsText !== '0 Comments') {
            statsContainer.classList.remove('hidden');
@@ -786,8 +806,8 @@
 
        listContainer.innerHTML = filtered.map(r => {
          const icon = REACTION_META[r.type].emoji ? `<img src="${REACTION_META[r.type].emoji}" class="w-3.5 h-3.5">` : `<div class="w-3.5 h-3.5 rounded-full bg-blue-500 text-white flex items-center justify-center"><i data-lucide="thumbs-up" class="w-2 h-2"></i></div>`;
-         // Note: Since we don't have real usernames for reactions, we use a generic name based on session ID.
          const guestId = r.session_id ? r.session_id.substring(4, 8).toUpperCase() : '0000';
+         const authorName = r.author ? sanitize(r.author) : `Guest ${guestId}`;
          return `<div class="flex items-center justify-between p-3 rounded-xl hover:bg-obsidian-800/[0.03] dark:hover:bg-white/[0.03] transition">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-obsidian-700 flex items-center justify-center text-obsidian-500 dark:text-platinum/50 relative">
@@ -797,7 +817,7 @@
                 </div>
               </div>
               <div>
-                 <p class="text-[13.5px] font-semibold text-obsidian-800 dark:text-platinum/90">Guest ${guestId}</p>
+                 <p class="text-[13.5px] font-semibold text-obsidian-800 dark:text-platinum/90">${authorName}</p>
               </div>
             </div>
          </div>`;
@@ -805,7 +825,50 @@
        if (window.lucide) lucide.createIcons({nodes:[listContainer]});
     }
 
-    async function react(type) {
+    function react(type) {
+      const savedName = localStorage.getItem('basira-username');
+      if (savedName) {
+        executeReaction(type, savedName);
+      } else {
+        pendingReaction = type;
+        const modal = document.getElementById('name-prompt-modal');
+        modal.classList.remove('hidden');
+        
+        const isAr = articleLang === 'ar';
+        document.getElementById('prompt-title').textContent = isAr ? 'من يتفاعل؟' : 'Who is reacting?';
+        document.querySelector('#name-prompt-modal p').textContent = isAr ? 'يرجى إدخال اسمك للمتابعة' : 'Please enter your name to continue';
+        document.getElementById('prompt-user-name').placeholder = isAr ? 'اسمك...' : 'Your name...';
+        document.querySelector('#name-prompt-modal button:first-of-type').textContent = isAr ? 'إلغاء' : 'Cancel';
+        document.querySelector('#name-prompt-modal button:last-of-type').textContent = isAr ? 'متابعة' : 'Continue';
+
+        setTimeout(() => document.getElementById('prompt-user-name').focus(), 50);
+      }
+    }
+
+    function closeNamePrompt() {
+      document.getElementById('name-prompt-modal').classList.add('hidden');
+      pendingReaction = null;
+    }
+
+    function submitNamePrompt() {
+      const input = document.getElementById('prompt-user-name');
+      const name = input.value.trim();
+      if (!name) {
+        input.style.borderColor = '#ef4444';
+        setTimeout(() => input.style.borderColor = '', 2000);
+        return;
+      }
+      localStorage.setItem('basira-username', name);
+      const commentNameEl = document.getElementById('comment-name');
+      if(commentNameEl && !commentNameEl.value) commentNameEl.value = name;
+      
+      closeNamePrompt();
+      if (pendingReaction) {
+        executeReaction(pendingReaction, name);
+      }
+    }
+
+    async function executeReaction(type, userName) {
       if (isReacting) return;
       isReacting = true;
       hideReactionPopup();
@@ -830,7 +893,7 @@
             await sbDelete(`reactions?article_id=eq.${id}&session_id=eq.${sid}`);
           }
           
-          const result = await sbPost('reactions', { article_id: id, type: type, session_id: sid });
+          const result = await sbPost('reactions', { article_id: id, type: type, session_id: sid, author: userName });
           
           if (result) {
             userReaction = type;
@@ -912,7 +975,6 @@
         statsCountEl.textContent = count > 0 ? count + ' Comments' : '';
       }
 
-      // Show stats container if there are comments (even if 0 likes)
       const statsContainer = document.getElementById('reaction-stats-container');
       if (count > 0 && statsContainer) {
         statsContainer.classList.remove('hidden');
@@ -984,6 +1046,11 @@
       const panel = document.getElementById('add-comment-panel');
       panel.classList.toggle('open');
       if (panel.classList.contains('open')) {
+        const savedName = localStorage.getItem('basira-username');
+        const nameEl = document.getElementById('comment-name');
+        if (savedName && nameEl && !nameEl.value) {
+           nameEl.value = savedName;
+        }
         setTimeout(() => document.getElementById('comment-name').focus(), 50);
       }
     }
@@ -1019,6 +1086,7 @@
         session_id: sid
       });
       if (result) {
+        localStorage.setItem('basira-username', author);
         input.value = '';
         nameEl.value = '';
         document.getElementById('add-comment-panel').classList.remove('open');
@@ -1172,6 +1240,13 @@
         const thumb = document.querySelector('.toggle-thumb');
         if (thumb) { thumb.classList.remove('translate-x-[24px]'); thumb.classList.add('translate-x-0'); }
       }
+      
+      const savedName = localStorage.getItem('basira-username');
+      if (savedName) {
+         const nameEl = document.getElementById('comment-name');
+         if (nameEl) nameEl.value = savedName;
+      }
+
       initProgressBar();
       loadArticle();
       lucide.createIcons();
